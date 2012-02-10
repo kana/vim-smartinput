@@ -1,4 +1,5 @@
 call vspec#hint({'scope': 'smartpunc#scope()', 'sid': 'smartpunc#sid()'})
+syntax enable
 
 describe 's:are_same_rules'
   before
@@ -97,6 +98,92 @@ describe 's:decode_key_notation'
     Expect Call('s:decode_key_notation', '<C-h>') ==# "\<C-h>"
     Expect Call('s:decode_key_notation', '<BS>') ==# "\<BS>"
     Expect Call('s:decode_key_notation', '<LT><LT>') ==# "\<LT>\<LT>"
+  end
+end
+
+describe 's:find_the_most_proper_rule'
+  before
+    new
+    let b:nrule1 = Call('s:normalize_rule', {
+    \   'at': '\%#',
+    \   'char': '<LT>',
+    \   'input': '<LT>><Left>',
+    \ })
+    let b:nrule2 = Call('s:normalize_rule', {
+    \   'at': '\w\%#',
+    \   'char': '<LT>',
+    \   'input': '<LT>',
+    \ })
+    let b:nrule3 = Call('s:normalize_rule', {
+    \   'at': '\%#',
+    \   'char': '<LT>',
+    \   'input': '<LT>',
+    \   'filetype': ['lisp', 'scheme'],
+    \ })
+    let b:nrule4 = Call('s:normalize_rule', {
+    \   'at': '\%#',
+    \   'char': '<LT>',
+    \   'input': '<LT>><Left>',
+    \   'filetype': ['lisp', 'scheme'],
+    \   'syntax': ['Comment', 'String'],
+    \ })
+    let b:nrules = [b:nrule4, b:nrule3, b:nrule2, b:nrule1]
+  end
+
+  after
+    close!
+  end
+
+  it 'should fail if there is no rule for a given char'
+    Expect Call('s:find_the_most_proper_rule', b:nrules, '[') ==# 0
+  end
+
+  it 'should check the text under the cursor by "at"'
+    setfiletype html
+    call setline(1, '(define foo )  ; ...')
+    Expect getline(1, line('$')) ==# ['(define foo )  ; ...']
+
+    " (define foo #)  ; ...
+    normal! ggf)
+    Expect [line('.'), col('.')] ==# [1, 13]
+    Expect Call('s:find_the_most_proper_rule', b:nrules, '<') ==# b:nrule1
+
+    " (define foo# )  ; ...
+    normal! ggf)h
+    Expect [line('.'), col('.')] ==# [1, 12]
+    Expect Call('s:find_the_most_proper_rule', b:nrules, '<') ==# b:nrule2
+  end
+
+  it 'should check the filetype of the current buffer with "filetype"'
+    setfiletype scheme
+    call setline(1, '(define foo )  ; ...')
+    Expect getline(1, line('$')) ==# ['(define foo )  ; ...']
+
+    " (define foo #)  ; ...
+    normal! ggf)
+    Expect [line('.'), col('.')] ==# [1, 13]
+    Expect Call('s:find_the_most_proper_rule', b:nrules, '<') ==# b:nrule3
+
+    " (define foo# )  ; ...
+    normal! ggf)h
+    Expect [line('.'), col('.')] ==# [1, 12]
+    Expect Call('s:find_the_most_proper_rule', b:nrules, '<') ==# b:nrule3
+  end
+
+  it 'should check the syntax name of text under the cursor with "syntax"'
+    setfiletype scheme
+    call setline(1, '(define foo )  ; ...')
+    Expect getline(1, line('$')) ==# ['(define foo )  ; ...']
+
+    " (define foo #)  ; ...
+    normal! ggf)
+    Expect [line('.'), col('.')] ==# [1, 13]
+    Expect Call('s:find_the_most_proper_rule', b:nrules, '<') ==# b:nrule3
+
+    " (define foo )  ; #...
+    normal! ggf.
+    Expect [line('.'), col('.')] ==# [1, 18]
+    Expect Call('s:find_the_most_proper_rule', b:nrules, '<') ==# b:nrule4
   end
 end
 

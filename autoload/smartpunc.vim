@@ -127,6 +127,41 @@ endfunction
 
 
 
+function! s:find_the_most_proper_rule(nrules, char)  "{{{2
+  " FIXME: Optimize for speed if necessary.
+  let syntax_names = map(synstack(line('.'), col('.')),
+  \                      'synIDattr(synIDtrans(v:val), "name")')
+
+  for nrule in a:nrules
+    if !(a:char ==# nrule._char)
+      continue
+    endif
+
+    if !(search(nrule.at, 'bcnW'))
+      continue
+    endif
+
+    if !(nrule.filetype is 0
+    \    ? !0
+    \    : 0 <= index(nrule.filetype,  &l:filetype))
+      continue
+    endif
+
+    if !(nrule.syntax is 0
+    \    ? !0
+    \    : 0 <= max(map(copy(nrule.syntax), 'index(syntax_names, v:val)')))
+      continue
+    endif
+
+    return nrule
+  endfor
+
+  return 0
+endfunction
+
+
+
+
 function! s:normalize_rule(urule)  "{{{2
   let nrule = deepcopy(a:urule)
 
