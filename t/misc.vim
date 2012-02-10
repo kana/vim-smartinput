@@ -43,3 +43,54 @@ describe 's:decode_key_notation'
     Expect Call('s:decode_key_notation', '<LT><LT>') ==# "\<LT>\<LT>"
   end
 end
+
+describe 's:normalize_rule'
+  it 'should copy a given rule recursively'
+    let urule = {
+    \   'at': '\%#',
+    \   'char': '(',
+    \   'input': '()<Left>',
+    \   'filetype': ['foo', 'bar'],
+    \   'syntax': ['String', 'Comment'],
+    \ }
+    let nrule = Call('s:normalize_rule', urule)
+
+    Expect nrule isnot urule
+    Expect nrule.filetype isnot urule.filetype
+    Expect nrule.syntax isnot urule.syntax
+  end
+
+  it 'should sort "filetype" and "syntax"'
+    let urule = {
+    \   'at': '\%#',
+    \   'char': '(',
+    \   'input': '()<Left>',
+    \   'filetype': ['foo', 'bar'],
+    \   'syntax': ['String', 'Comment'],
+    \ }
+    let nrule = Call('s:normalize_rule', urule)
+
+    Expect nrule.filetype ==# ['bar', 'foo']
+    Expect nrule.syntax ==# ['Comment', 'String']
+  end
+
+  it 'should complete optional items'
+    let urule = {
+    \   'at': '\%#',
+    \   'char': '(',
+    \   'input': '()<Left>',
+    \ }
+    let nrule = Call('s:normalize_rule', urule)
+
+    Expect nrule ==# {
+    \   'at': urule.at,
+    \   'char': urule.char,
+    \   '_char': Call('s:decode_key_notation', urule.char),
+    \   'input': urule.input,
+    \   '_input': Call('s:decode_key_notation', urule.input),
+    \   'filetype': 0,
+    \   'syntax': 0,
+    \   'priority': 3 + 0 + 0,
+    \ }
+  end
+end

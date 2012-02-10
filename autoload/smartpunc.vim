@@ -81,6 +81,33 @@ endfunction
 
 
 
+function! s:normalize_rule(urule)  "{{{2
+  let nrule = deepcopy(a:urule)
+
+  let nrule._char = s:decode_key_notation(nrule.char)
+
+  let nrule._input = s:decode_key_notation(nrule.input)
+
+  if has_key(nrule, 'filetype')
+    call sort(nrule.filetype)
+  else
+    let nrule.filetype = 0
+  endif
+
+  if has_key(nrule, 'syntax')
+    call sort(nrule.syntax)
+  else
+    let nrule.syntax = 0
+  endif
+
+  let nrule.priority =  s:calculate_rule_priority(nrule)
+
+  return nrule
+endfunction
+
+
+
+
 "{{{2
 
 
