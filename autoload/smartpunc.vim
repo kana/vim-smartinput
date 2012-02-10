@@ -55,6 +55,13 @@ let s:available_nrules = []  "{{{2
 
 
 " Interface  "{{{1
+function! smartpunc#clear_rules()  "{{{2
+  let s:available_nrules = []
+endfunction
+
+
+
+
 function! smartpunc#define_rule(urule)  "{{{2
   let nrule = s:normalize_rule(a:urule)
   call s:remove_a_same_rule(s:available_nrules, nrule)
