@@ -150,3 +150,24 @@ describe 's:normalize_rule'
     \ }
   end
 end
+
+describe 's:remove_a_same_rule'
+  it 'should remove a same rule by equivalence and in place'
+    let _nruleA = {
+    \   'at': '\%#',
+    \   'char': '(',
+    \   'input': '()<Left>',
+    \ }
+    let nruleA = Call('s:normalize_rule', _nruleA)
+    let _nruleB = {
+    \   'at': '\%#',
+    \   'char': '[',
+    \   'input': '[]<Left>',
+    \ }
+    let nruleB = Call('s:normalize_rule', _nruleB)
+    let nrules = [nruleA, nruleB, nruleA, nruleA]
+
+    call Call('s:remove_a_same_rule', nrules, deepcopy(nruleA))
+    Expect nrules ==# [nruleB, nruleA, nruleA]
+  end
+end

@@ -121,6 +121,18 @@ endfunction
 
 
 
+function! s:remove_a_same_rule(nrules, nrule)  "{{{2
+  for i in range(len(a:nrules))
+    if s:are_same_rules(a:nrule, a:nrules[i])
+      call remove(a:nrules, i)
+      return
+    endif
+  endfor
+endfunction
+
+
+
+
 "{{{2
 
 
