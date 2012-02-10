@@ -127,6 +127,36 @@ endfunction
 
 
 
+function! s:do_smart_input_assistant(nrule, fallback_char)  "{{{2
+  " This function MUST be called in Insert mode with the following step:
+  " <C-\><C-o>:call s:do_smart_input_assistant(...)<Return><Right>
+  "
+  " Because the treatment of the cursor position to do smart input assistant
+  " is very complex:
+  "
+  " - <C-\><C-o> temporarily escapes from Insert mode while keeping the cursor
+  "   position even if the cursor is at the end of the line.  It is useful to
+  "   detect the correct cursor position for the later process.
+  " - The alternate "input" in a:nrule is fed by ":normal! a" or ":normal! i".
+  "   Though <C-\><C-o> keeps the cursor position at the end of the line,
+  "   ":normal! a" and ":normal! i" work as if <C-o> is used to escape.
+  "   So that ":normal! a" must be used if the cursor at the end of the line,
+  "   otherwise ":normal! i" must be used.
+  " - <Esc> from Insert mode has a side effect; the cursor is moved to left by
+  "   1 character.  Though this side effect must be countered, it is not
+  "   possible in this function.  Because the counter must be done after the
+  "   alternate "input".  If the cursor is at the last character of the line,
+  "   it is not possible to adjust its position to the end of the line unless
+  "   'virtualedit' is configured.
+
+  execute 'normal!'
+  \       (col('.') == col('$') ? 'a' : 'i')
+  \       . (a:nrule is 0 ? a:fallback_char : a:nrule._input)
+endfunction
+
+
+
+
 function! s:find_the_most_proper_rule(nrules, char)  "{{{2
   " FIXME: Optimize for speed if necessary.
   let syntax_names = map(synstack(line('.'), col('.')),
