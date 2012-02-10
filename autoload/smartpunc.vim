@@ -42,7 +42,33 @@
 
 
 
+" Variables  "{{{1
+let s:available_nrules = []  "{{{2
+" :: [NRule] -- sorted by priority in descending order.
+
+
+
+
+"{{{2
+
+
+
+
 " Interface  "{{{1
+function! smartpunc#define_rule(urule)  "{{{2
+  let nrule = s:normalize_rule(a:urule)
+  call s:remove_a_same_rule(s:available_nrules, nrule)
+  call add(s:available_nrules, nrule)
+  call sort(s:available_nrules, 's:nrule_comparer_desc')
+endfunction
+
+function! s:nrule_comparer_desc(nrule1, nrule2)
+  return a:nrule2.priority - a:nrule1.priority
+endfunction
+
+
+
+
 "{{{2
 
 
