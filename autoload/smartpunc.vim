@@ -21,6 +21,27 @@
 "     TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 "     SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 " }}}
+" Naming guidelines  "{{{1
+" Rules  "{{{2
+"
+" "urule" stands for "Unnormalized RULE".
+" urules are rules written by users.
+" Optional items may be omitted from urules.
+"
+" "nrule" stands for "Normalized RULE".
+" nrules are rules completed with all optional items and internal items.
+"
+" "snrule" stands for "SemiNormalized RULE".
+" snrules are mostly same as nrules, the only one difference is that
+" "priority" items may be omitted from snrules.
+
+
+
+
+
+
+
+
 " Interface  "{{{1
 "{{{2
 
@@ -39,6 +60,16 @@ function! smartpunc#sid()  "{{{2
   return maparg('<SID>', 'n')
 endfunction
 nnoremap <SID>  <SID>
+
+
+
+
+function! s:calculate_rule_priority(snrule)  "{{{2
+  return
+  \ len(a:snrule.at)
+  \ + (a:snrule.filetype is 0 ? 0 : 100 / len(a:snrule.filetype))
+  \ + (a:snrule.syntax is 0 ? 0 : 100 / len(a:snrule.syntax))
+endfunction
 
 
 
