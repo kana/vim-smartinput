@@ -64,6 +64,19 @@ nnoremap <SID>  <SID>
 
 
 
+function! s:are_same_rules(nrule1, nrule2)  "{{{2
+  for key in filter(keys(a:nrule1), 'v:val !=# "input" && v:val !=# "_input"')
+    if type(a:nrule1[key]) !=# type(a:nrule2[key])
+    \  || a:nrule1[key] !=# a:nrule2[key]
+      return !!0
+    endif
+  endfor
+  return !0
+endfunction
+
+
+
+
 function! s:calculate_rule_priority(snrule)  "{{{2
   return
   \ len(a:snrule.at)

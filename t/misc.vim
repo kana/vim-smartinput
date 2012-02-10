@@ -1,5 +1,61 @@
 call vspec#hint({'scope': 'smartpunc#scope()', 'sid': 'smartpunc#sid()'})
 
+describe 's:are_same_rules'
+  before
+    new
+    let b:nruleA = Call('s:normalize_rule', {
+    \   'at': '\%#',
+    \   'char': '(',
+    \   'input': '()<Left>',
+    \ })
+    let b:nruleAd = Call('s:normalize_rule', {
+    \   'at': '\%#',
+    \   'char': '(',
+    \   'input': '(  )<Left><Left>',
+    \ })
+    let b:nruleB = Call('s:normalize_rule', {
+    \   'at': '\%#',
+    \   'char': '[',
+    \   'input': '[]<Left>',
+    \   'filetype': ['lisp', 'scheme'],
+    \ })
+    let b:nruleBd = Call('s:normalize_rule', {
+    \   'at': '\%#',
+    \   'char': '[',
+    \   'input': '[  ]<Left><Left>',
+    \   'filetype': ['scheme', 'lisp'],
+    \ })
+    let b:nruleC = Call('s:normalize_rule', {
+    \   'at': '\%#',
+    \   'char': '[',
+    \   'input': '[]<Left>',
+    \ })
+  end
+
+  after
+    close!
+  end
+
+  it 'should return true for rules with the same values'
+    Expect Call('s:are_same_rules', b:nruleA, b:nruleA) toBeTrue
+    Expect Call('s:are_same_rules', b:nruleAd, b:nruleAd) toBeTrue
+    Expect Call('s:are_same_rules', b:nruleBd, b:nruleBd) toBeTrue
+    Expect Call('s:are_same_rules', b:nruleB, b:nruleB) toBeTrue
+    Expect Call('s:are_same_rules', b:nruleC, b:nruleC) toBeTrue
+  end
+
+  it 'should return false for rules with different values'
+    Expect Call('s:are_same_rules', b:nruleA, b:nruleB) toBeFalse
+    Expect Call('s:are_same_rules', b:nruleAd, b:nruleBd) toBeFalse
+    Expect Call('s:are_same_rules', b:nruleB, b:nruleC) toBeFalse
+  end
+
+  it 'should compare all items but "input" in rules'
+    Expect Call('s:are_same_rules', b:nruleA, b:nruleAd) toBeTrue
+    Expect Call('s:are_same_rules', b:nruleB, b:nruleBd) toBeTrue
+  end
+end
+
 describe 's:calculate_rule_priority'
   it 'should use "at", "filetype" and "syntax"'
     let snrule1 = {
