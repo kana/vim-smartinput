@@ -45,6 +45,12 @@ describe 'smartpunc#clear_rules'
   end
 end
 
+describe 'smartpunc#define_default_rules'
+  it 'should ...'
+    TODO
+  end
+end
+
 describe 'smartpunc#define_rule'
   before
     SaveContext

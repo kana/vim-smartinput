@@ -62,6 +62,68 @@ endfunction
 
 
 
+function! smartpunc#define_default_rules()  "{{{2
+  let D = function('smartpunc#define_rule')
+
+  " Complete the corresponding character automatically:
+  call D({'at': '\%#', 'char': '(', 'input': '()<Left>'})
+  call D({'at': '\%#', 'char': '[', 'input': '[]<Left>'})
+  call D({'at': '\%#', 'char': '{', 'input': '{}<Left>'})
+  call D({'at': '\%#', 'char': '<LT>', 'input': '<LT>><Left>'})
+  call D({'at': '\%#', 'char': '''', 'input': '''''<Left>'})
+  call D({'at': '\%#', 'char': '"', 'input': '""<Left>'})
+  call D({'at': '\%#', 'char': '`', 'input': '``<Left>'})
+
+  " Leave from the current block easily:
+  call D({'at': '(\%#)', 'char': ')', 'input': '<Right>'})
+  call D({'at': '\[\%#\]', 'char': ']', 'input': '<Right>'})
+  call D({'at': '{\%#}', 'char': '}', 'input': '<Right>'})
+  call D({'at': '<\%#>', 'char': '>', 'input': '<Right>'})
+  call D({'at': '''\%#''', 'char': '''', 'input': '<Right>'})
+  call D({'at': '"\%#"', 'char': '"', 'input': '<Right>'})
+  call D({'at': '`\%#`', 'char': '`', 'input': '<Right>'})
+
+  " Undo the completion easily:
+  " FIXME: <BS> vs <C-h>
+  call D({'at': '(\%#)', 'char': '<BS>', 'input': '<BS><Del>'})
+  call D({'at': '\[\%#\]', 'char': '<BS>', 'input': '<BS><Del>'})
+  call D({'at': '{\%#}', 'char': '<BS>', 'input': '<BS><Del>'})
+  call D({'at': '<\%#>', 'char': '<BS>', 'input': '<BS><Del>'})
+  call D({'at': '''\%#''', 'char': '<BS>', 'input': '<BS><Del>'})
+  call D({'at': '"\%#"', 'char': '<BS>', 'input': '<BS><Del>'})
+  call D({'at': '`\%#`', 'char': '<BS>', 'input': '<BS><Del>'})
+
+  " Care to input strings and regular expressions:
+  call D({'at': '\\\%#', 'char': '(', 'input': '('})
+  call D({'at': '\\\%#', 'char': '[', 'input': '['})
+  call D({'at': '\\\%#', 'char': '{', 'input': '{'})
+  call D({'at': '\\\%#', 'char': '<LT>', 'input': '<LT>'})
+  call D({'at': '\\\%#', 'char': '''', 'input': ''''})
+  call D({'at': '\\\%#', 'char': '"', 'input': '"'})
+  call D({'at': '\\\%#', 'char': '`', 'input': '`'})
+
+  " Care to input English words:
+  call D({'at': '\w\%#', 'char': '''', 'input': ''''})
+
+  " Care to write Lisp/Scheme source code:
+  call D({'at': '\%#', 'char': '''', 'input': '''',
+  \       'filetype': ['lisp', 'scheme']})
+  call D({'at': '\%#', 'char': '''', 'input': '''''<Left>',
+  \       'filetype': ['lisp', 'scheme'],
+  \       'syntax': ['String']})
+
+  " Care to write C-like syntax source code:
+  " FIXME: <Return> vs <Enter> vs <CR> vs <C-m> vs <C-j>
+  call D({'at': '(\%#)', 'char': '<Return>',
+  \      'input': '<Return>X<Return>)<BS><Up><C-o>$<BS>'})
+  " FIXME: Add more rules.
+
+  " Add more useful rules?
+endfunction
+
+
+
+
 function! smartpunc#define_rule(urule)  "{{{2
   let nrule = s:normalize_rule(a:urule)
   call s:remove_a_same_rule(s:available_nrules, nrule)
