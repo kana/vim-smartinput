@@ -76,6 +76,36 @@ endfunction
 
 
 
+function! smartpunc#map_to_trigger(lhs, rhs_char)  "{{{2
+  " FIXME: Avoid beeping on fallback <Return>.
+  "        It seems to be caused by the last cursor adjustment (<Right>)
+  "        if the new line does not contain any character.
+  " FIXME: Keep automatic indentation for fallback <Return>.
+  let char_expr = s:_encode_for_map_char_expr(a:rhs_char)
+  let rule_expr = printf('<SID>_find_the_most_proper_rule(%s)', char_expr)
+  let script = printf('call <SID>do_smart_input_assistant(%s, %s)',
+  \                   rule_expr,
+  \                   char_expr)
+  execute printf('inoremap <silent> %s  <C-\><C-o>:%s<Return><Right>',
+  \              a:lhs,
+  \              script)
+endfunction
+
+function! s:_encode_for_map_char_expr(rhs_char)
+  let s = a:rhs_char
+  let s = substitute(s, '<', '<Bslash><LT>', 'g')
+  let s = escape(s, '"')
+  let s = '"' . s . '"'
+  return s
+endfunction
+
+function! s:_find_the_most_proper_rule(char)
+  return s:find_the_most_proper_rule(s:available_nrules, a:char)
+endfunction
+
+
+
+
 "{{{2
 
 
