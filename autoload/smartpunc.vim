@@ -74,6 +74,13 @@ endfunction
 
 
 
+function! s:decode_key_notation(s)  "{{{2
+  return eval('"' . escape(a:s, '<"\') . '"')
+endfunction
+
+
+
+
 "{{{2
 
 

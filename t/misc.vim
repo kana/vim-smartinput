@@ -32,3 +32,14 @@ describe 's:calculate_rule_priority'
     Expect Call('s:calculate_rule_priority', snrule) == 3 + 0 + 0
   end
 end
+
+describe 's:decode_key_notation'
+  it 'should decode a <Key> notation into an actual byte sequence'
+    Expect Call('s:decode_key_notation', 'foo') ==# "foo"
+    Expect Call('s:decode_key_notation', '"') ==# "\""
+    Expect Call('s:decode_key_notation', '\') ==# "\\"
+    Expect Call('s:decode_key_notation', '<C-h>') ==# "\<C-h>"
+    Expect Call('s:decode_key_notation', '<BS>') ==# "\<BS>"
+    Expect Call('s:decode_key_notation', '<LT><LT>') ==# "\<LT>\<LT>"
+  end
+end
