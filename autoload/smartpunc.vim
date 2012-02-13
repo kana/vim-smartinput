@@ -63,144 +63,243 @@ endfunction
 
 
 function! smartpunc#define_default_rules()  "{{{2
-  let D = function('smartpunc#define_rule')
+  let urules = {}
+  let urules.names = []
+  let urules.table = {}
+  function! urules.add(name, urules)
+    call add(self.names, a:name)
+    let self.table[a:name] = a:urules
+  endfunction
+  " urules.add... "{{{
+  call urules.add('()', [
+  \   {'at': '\%#', 'char': '(', 'input': '()<Left>'},
+  \   {'at': '(\%#)', 'char': ')', 'input': '<Right>'},
+  \   {'at': '(\%#)', 'char': '<BS>', 'input': '<BS><Del>'},
+  \   {'at': '\\\%#', 'char': '(', 'input': '('},
+  \ ])
+  call urules.add('[]', [
+  \   {'at': '\%#', 'char': '[', 'input': '[]<Left>'},
+  \   {'at': '\[\%#\]', 'char': ']', 'input': '<Right>'},
+  \   {'at': '\[\%#\]', 'char': '<BS>', 'input': '<BS><Del>'},
+  \   {'at': '\\\%#', 'char': '[', 'input': '['},
+  \ ])
+  call urules.add('{}', [
+  \   {'at': '\%#', 'char': '{', 'input': '{}<Left>'},
+  \   {'at': '{\%#}', 'char': '}', 'input': '<Right>'},
+  \   {'at': '{\%#}', 'char': '<BS>', 'input': '<BS><Del>'},
+  \   {'at': '\\\%#', 'char': '{', 'input': '{'},
+  \ ])
+  call urules.add('<>', [
+  \   {'at': '\%#', 'char': '<LT>', 'input': '<LT>><Left>'},
+  \   {'at': '<\%#>', 'char': '>', 'input': '<Right>'},
+  \   {'at': '<\%#>', 'char': '<BS>', 'input': '<BS><Del>'},
+  \   {'at': '\\\%#', 'char': '<LT>', 'input': '<LT>'},
+  \ ])
+  call urules.add('''''', [
+  \   {'at': '\%#', 'char': '''', 'input': '''''<Left>'},
+  \   {'at': '''\%#''', 'char': '''', 'input': '<Right>'},
+  \   {'at': '''\%#''', 'char': '<BS>', 'input': '<BS><Del>'},
+  \   {'at': '\\\%#', 'char': '''', 'input': ''''},
+  \ ])
+  call urules.add('""', [
+  \   {'at': '\%#', 'char': '"', 'input': '""<Left>'},
+  \   {'at': '"\%#"', 'char': '"', 'input': '<Right>'},
+  \   {'at': '"\%#"', 'char': '<BS>', 'input': '<BS><Del>'},
+  \   {'at': '\\\%#', 'char': '"', 'input': '"'},
+  \ ])
+  call urules.add('``', [
+  \   {'at': '\%#', 'char': '`', 'input': '``<Left>'},
+  \   {'at': '`\%#`', 'char': '`', 'input': '<Right>'},
+  \   {'at': '`\%#`', 'char': '<BS>', 'input': '<BS><Del>'},
+  \   {'at': '\\\%#', 'char': '`', 'input': '`'},
+  \ ])
+  call urules.add('English', [
+  \   {'at': '\w\%#', 'char': '''', 'input': ''''},
+  \ ])
+  call urules.add('Lisp/Scheme', [
+  \   {'at': '\%#', 'char': '''', 'input': '''',
+  \    'filetype': ['lisp', 'scheme']},
+  \   {'at': '\%#', 'char': '''', 'input': '''''<Left>',
+  \    'syntax': ['Constant'],
+  \    'filetype': ['lisp', 'scheme']},
+  \ ])
+  " FIXME: Add more rules like '(<Enter>)'
+  call urules.add('(<Enter>)', [
+  \   {'at': '(\%#)', 'char': '<Enter>', 'input': '<Enter>X<Enter>)<BS><Up><C-o>$<BS>'},
+  \ ])
+  call urules.add('=', [
+  \   {'at': '\%#', 'char': '=', 'input': ' = '},
+  \   {'at': ' = \%#', 'char': '<BS>', 'input': '<BS><BS><BS>'},
+  \ ])
+  call urules.add('==', [
+  \   {'at': ' = \%#', 'char': '=', 'input': '<BS><BS><BS> == '},
+  \   {'at': ' == \%#', 'char': '<BS>', 'input': '<BS><BS><BS><BS> = '},
+  \ ])
+  call urules.add('===', [
+  \   {'at': ' == \%#', 'char': '=', 'input': '<BS><BS><BS><BS> === '},
+  \   {'at': ' === \%#', 'char': '<BS>', 'input': '<BS><BS><BS><BS><BS> == '},
+  \ ])
+  call urules.add('=>', [
+  \   {'at': ' = \%#', 'char': '>', 'input': '<BS><BS><BS> => '},
+  \   {'at': ' => \%#', 'char': '<BS>', 'input': '<BS><BS><BS><BS> = '},
+  \ ])
+  call urules.add('=~', [
+  \   {'at': ' = \%#', 'char': '~', 'input': '<BS><BS><BS> =~ '},
+  \   {'at': ' =\~ \%#', 'char': '<BS>', 'input': '<BS><BS><BS><BS> = '},
+  \ ])
+  call urules.add('!=', [
+  \   {'at': '!\%#', 'char': '=', 'input': '<BS> != '},
+  \   {'at': ' != \%#', 'char': '<BS>', 'input': '<BS><BS><BS><BS>!'},
+  \ ])
+  call urules.add('!==', [
+  \   {'at': ' != \%#', 'char': '=', 'input': '<BS><BS><BS><BS> !== '},
+  \   {'at': ' !== \%#', 'char': '<BS>', 'input': '<BS><BS><BS><BS><BS> != '},
+  \ ])
+  call urules.add('!~', [
+  \   {'at': '!\%#', 'char': '~', 'input': '<BS> !~ '},
+  \   {'at': ' !\~ \%#', 'char': '<BS>', 'input': '<BS><BS><BS><BS>!'},
+  \ ])
+  call urules.add('+', [
+  \   {'at': '\%#', 'char': '+', 'input': ' + '},
+  \   {'at': ' + \%#', 'char': '<BS>', 'input': '<BS><BS><BS>'},
+  \ ])
+  call urules.add('+=', [
+  \   {'at': ' + \%#', 'char': '=', 'input': '<BS><BS><BS> += '},
+  \   {'at': ' += \%#', 'char': '<BS>', 'input': '<BS><BS><BS><BS> + '},
+  \ ])
+  call urules.add('++', [
+  \   {'at': ' + \%#', 'char': '+', 'input': '<BS><BS><BS>++'},
+  \   {'at': '++\%#', 'char': '<BS>', 'input': '<BS><BS> + '},
+  \ ])
+  call urules.add('-', [
+  \   {'at': '\%#', 'char': '-', 'input': ' - '},
+  \   {'at': ' - \%#', 'char': '<BS>', 'input': '<BS><BS><BS>'},
+  \ ])
+  call urules.add('-=', [
+  \   {'at': ' - \%#', 'char': '=', 'input': '<BS><BS><BS> -= '},
+  \   {'at': ' -= \%#', 'char': '<BS>', 'input': '<BS><BS><BS><BS> - '},
+  \ ])
+  call urules.add('--', [
+  \   {'at': ' - \%#', 'char': '-', 'input': '<BS><BS><BS>--'},
+  \   {'at': '--\%#', 'char': '<BS>', 'input': '<BS><BS> - '},
+  \ ])
+  call urules.add('*', [
+  \   {'at': '\%#', 'char': '*', 'input': ' * '},
+  \   {'at': ' \* \%#', 'char': '<BS>', 'input': '<BS><BS><BS>'},
+  \ ])
+  call urules.add('*=', [
+  \   {'at': ' \* \%#', 'char': '=', 'input': '<BS><BS><BS> *= '},
+  \   {'at': ' \*= \%#', 'char': '<BS>', 'input': '<BS><BS><BS><BS> * '},
+  \ ])
+  call urules.add('/', [
+  \   {'at': '\%#', 'char': '/', 'input': ' / '},
+  \   {'at': ' / \%#', 'char': '<BS>', 'input': '<BS><BS><BS>'},
+  \ ])
+  call urules.add('/=', [
+  \   {'at': ' / \%#', 'char': '=', 'input': '<BS><BS><BS> /= '},
+  \   {'at': ' /= \%#', 'char': '<BS>', 'input': '<BS><BS><BS><BS> / '},
+  \ ])
+  call urules.add('%', [
+  \   {'at': '\%#', 'char': '%', 'input': ' % '},
+  \   {'at': ' % \%#', 'char': '<BS>', 'input': '<BS><BS><BS>'},
+  \ ])
+  call urules.add('%=', [
+  \   {'at': ' % \%#', 'char': '=', 'input': '<BS><BS><BS> %= '},
+  \   {'at': ' %= \%#', 'char': '<BS>', 'input': '<BS><BS><BS><BS> % '},
+  \ ])
+  call urules.add('<', [
+  \   {'at': '\%#', 'char': '<LT>', 'input': ' <LT> '},
+  \   {'at': ' < \%#', 'char': '<BS>', 'input': '<BS><BS><BS>'},
+  \ ])
+  call urules.add('<=', [
+  \   {'at': ' < \%#', 'char': '=', 'input': '<BS><BS><BS> <LT>= '},
+  \   {'at': ' <= \%#', 'char': '<BS>', 'input': '<BS><BS><BS><BS> <LT> '},
+  \ ])
+  call urules.add('<=>', [
+  \   {'at': ' <= \%#', 'char': '>', 'input': '<BS><BS><BS><BS> <LT>=> '},
+  \   {'at': ' <=> \%#', 'char': '<BS>', 'input': '<BS><BS><BS><BS><BS> <LT>= '},
+  \ ])
+  call urules.add('<<', [
+  \   {'at': ' < \%#', 'char': '<LT>', 'input': '<BS><BS><BS> <LT><LT> '},
+  \   {'at': ' << \%#', 'char': '<BS>', 'input': '<BS><BS><BS><BS> <LT> '},
+  \ ])
+  call urules.add('<<=', [
+  \   {'at': ' << \%#', 'char': '=', 'input': '<BS><BS><BS><BS> <LT><LT>= '},
+  \   {'at': ' <<= \%#', 'char': '<BS>', 'input': '<BS><BS><BS><BS><BS> <LT><LT> '},
+  \ ])
+  call urules.add('>', [
+  \   {'at': '\%#', 'char': '>', 'input': ' > '},
+  \   {'at': ' > \%#', 'char': '<BS>', 'input': '<BS><BS><BS>'},
+  \ ])
+  call urules.add('>=', [
+  \   {'at': ' > \%#', 'char': '=', 'input': '<BS><BS><BS> >= '},
+  \   {'at': ' >= \%#', 'char': '<BS>', 'input': '<BS><BS><BS><BS> > '},
+  \ ])
+  call urules.add('>>', [
+  \   {'at': ' > \%#', 'char': '>', 'input': '<BS><BS><BS> >> '},
+  \   {'at': ' >> \%#', 'char': '<BS>', 'input': '<BS><BS><BS><BS> > '},
+  \ ])
+  call urules.add('>>=', [
+  \   {'at': ' >> \%#', 'char': '=', 'input': '<BS><BS><BS><BS> >>= '},
+  \   {'at': ' >>= \%#', 'char': '<BS>', 'input': '<BS><BS><BS><BS><BS> >> '},
+  \ ])
+  call urules.add('|', [
+  \   {'at': '\%#', 'char': '<Bar>', 'input': ' <Bar> '},
+  \   {'at': ' | \%#', 'char': '<BS>', 'input': '<BS><BS><BS>'},
+  \ ])
+  call urules.add('|=', [
+  \   {'at': ' | \%#', 'char': '=', 'input': '<BS><BS><BS> <Bar>= '},
+  \   {'at': ' |= \%#', 'char': '<BS>', 'input': '<BS><BS><BS><BS> <Bar> '},
+  \ ])
+  call urules.add('||', [
+  \   {'at': ' | \%#', 'char': '<Bar>', 'input': '<BS><BS><BS> <Bar><Bar> '},
+  \   {'at': ' || \%#', 'char': '<BS>', 'input': '<BS><BS><BS><BS> <Bar> '},
+  \ ])
+  call urules.add('&', [
+  \   {'at': '\%#', 'char': '&', 'input': ' & '},
+  \   {'at': ' & \%#', 'char': '<BS>', 'input': '<BS><BS><BS>'},
+  \ ])
+  call urules.add('&=', [
+  \   {'at': ' & \%#', 'char': '=', 'input': '<BS><BS><BS> &= '},
+  \   {'at': ' &= \%#', 'char': '<BS>', 'input': '<BS><BS><BS><BS> & '},
+  \ ])
+  call urules.add('&&', [
+  \   {'at': ' & \%#', 'char': '&', 'input': '<BS><BS><BS> && '},
+  \   {'at': ' && \%#', 'char': '<BS>', 'input': '<BS><BS><BS><BS> & '},
+  \ ])
+  call urules.add('^', [
+  \   {'at': '\%#', 'char': '^', 'input': ' ^ '},
+  \   {'at': ' ^ \%#', 'char': '<BS>', 'input': '<BS><BS><BS>'},
+  \ ])
+  call urules.add('^=', [
+  \   {'at': ' ^ \%#', 'char': '=', 'input': '<BS><BS><BS> ^= '},
+  \   {'at': ' ^= \%#', 'char': '<BS>', 'input': '<BS><BS><BS><BS> ^ '},
+  \ ])
+  call urules.add('?', [
+  \   {'at': '\%#', 'char': '?', 'input': ' ? '},
+  \   {'at': ' ? \%#', 'char': '<BS>', 'input': '<BS><BS><BS>'},
+  \ ])
+  call urules.add('??', [
+  \   {'at': ' ? \%#', 'char': '?', 'input': '<BS><BS><BS> ?? '},
+  \   {'at': ' ?? \%#', 'char': '<BS>', 'input': '<BS><BS><BS><BS> ? '},
+  \ ])
+  call urules.add(':', [
+  \   {'at': '\%#', 'char': ':', 'input': ' : '},
+  \   {'at': ' : \%#', 'char': '<BS>', 'input': '<BS><BS><BS>'},
+  \ ])
+  call urules.add('case:', [
+  \   {'at': '\C\<case\>.*\%#', 'char': ':', 'input': ':'},
+  \ ])
+  call urules.add('default:', [
+  \   {'at': '\C\<default\>.*\%#', 'char': ':', 'input': ':'},
+  \ ])
+  "}}}
 
-  " Complete the corresponding character automatically:
-  call D({'at': '\%#', 'char': '(', 'input': '()<Left>'})
-  call D({'at': '\%#', 'char': '[', 'input': '[]<Left>'})
-  call D({'at': '\%#', 'char': '{', 'input': '{}<Left>'})
-  " This completion is not defined by default,
-  " because it is depended on the current context.
-  " call D({'at': '\%#', 'char': '<LT>', 'input': '<LT>><Left>'})
-  call D({'at': '\%#', 'char': '''', 'input': '''''<Left>'})
-  call D({'at': '\%#', 'char': '"', 'input': '""<Left>'})
-  call D({'at': '\%#', 'char': '`', 'input': '``<Left>'})
-
-  " Leave from the current block easily:
-  call D({'at': '(\%#)', 'char': ')', 'input': '<Right>'})
-  call D({'at': '\[\%#\]', 'char': ']', 'input': '<Right>'})
-  call D({'at': '{\%#}', 'char': '}', 'input': '<Right>'})
-  call D({'at': '<\%#>', 'char': '>', 'input': '<Right>'})
-  call D({'at': '''\%#''', 'char': '''', 'input': '<Right>'})
-  call D({'at': '"\%#"', 'char': '"', 'input': '<Right>'})
-  call D({'at': '`\%#`', 'char': '`', 'input': '<Right>'})
-
-  " Undo the completion easily:
-  call D({'at': '(\%#)', 'char': '<BS>', 'input': '<BS><Del>'})
-  call D({'at': '\[\%#\]', 'char': '<BS>', 'input': '<BS><Del>'})
-  call D({'at': '{\%#}', 'char': '<BS>', 'input': '<BS><Del>'})
-  call D({'at': '<\%#>', 'char': '<BS>', 'input': '<BS><Del>'})
-  call D({'at': '''\%#''', 'char': '<BS>', 'input': '<BS><Del>'})
-  call D({'at': '"\%#"', 'char': '<BS>', 'input': '<BS><Del>'})
-  call D({'at': '`\%#`', 'char': '<BS>', 'input': '<BS><Del>'})
-
-  " Care to input strings and regular expressions:
-  call D({'at': '\\\%#', 'char': '(', 'input': '('})
-  call D({'at': '\\\%#', 'char': '[', 'input': '['})
-  call D({'at': '\\\%#', 'char': '{', 'input': '{'})
-  call D({'at': '\\\%#', 'char': '<LT>', 'input': '<LT>'})
-  call D({'at': '\\\%#', 'char': '''', 'input': ''''})
-  call D({'at': '\\\%#', 'char': '"', 'input': '"'})
-  call D({'at': '\\\%#', 'char': '`', 'input': '`'})
-
-  " Care to input English words:
-  call D({'at': '\w\%#', 'char': '''', 'input': ''''})
-
-  " Care to write Lisp/Scheme source code:
-  call D({'at': '\%#', 'char': '''', 'input': '''',
-  \       'filetype': ['lisp', 'scheme']})
-  call D({'at': '\%#', 'char': '''', 'input': '''''<Left>',
-  \       'filetype': ['lisp', 'scheme'],
-  \       'syntax': ['Constant']})
-
-  " Care to write C-like syntax source code:
-  call D({'at': '(\%#)', 'char': '<Enter>',
-  \      'input': '<Enter>X<Enter>)<BS><Up><C-o>$<BS>'})
-  " FIXME: Add more rules.
-
-  " Surround operators with spaces:
-  call D({'at': '\%#', 'char': '=', 'input': ' = '})
-  call D({'at': ' = \%#', 'char': '<BS>', 'input': '<BS><BS><BS>'})
-  call D({'at': ' = \%#', 'char': '=', 'input': '<BS><BS><BS> == '})
-  call D({'at': ' == \%#', 'char': '<BS>', 'input': '<BS><BS><BS><BS> = '})
-  call D({'at': ' == \%#', 'char': '=', 'input': '<BS><BS><BS><BS> === '})
-  call D({'at': ' === \%#', 'char': '<BS>', 'input': '<BS><BS><BS><BS><BS> == '})
-  call D({'at': ' = \%#', 'char': '>', 'input': '<BS><BS><BS> => '})
-  call D({'at': ' => \%#', 'char': '<BS>', 'input': '<BS><BS><BS><BS> = '})
-  call D({'at': ' = \%#', 'char': '~', 'input': '<BS><BS><BS> =~ '})
-  call D({'at': ' =\~ \%#', 'char': '<BS>', 'input': '<BS><BS><BS><BS> = '})
-  call D({'at': '!\%#', 'char': '=', 'input': '<BS> != '})
-  call D({'at': ' != \%#', 'char': '<BS>', 'input': '<BS><BS><BS><BS>!'})
-  call D({'at': ' != \%#', 'char': '=', 'input': '<BS><BS><BS><BS> !== '})
-  call D({'at': ' !== \%#', 'char': '<BS>', 'input': '<BS><BS><BS><BS><BS> != '})
-  call D({'at': '!\%#', 'char': '~', 'input': '<BS> !~ '})
-  call D({'at': ' !\~ \%#', 'char': '<BS>', 'input': '<BS><BS><BS><BS>!'})
-  call D({'at': '\%#', 'char': '+', 'input': ' + '})
-  call D({'at': ' + \%#', 'char': '<BS>', 'input': '<BS><BS><BS>'})
-  call D({'at': ' + \%#', 'char': '=', 'input': '<BS><BS><BS> += '})
-  call D({'at': ' += \%#', 'char': '<BS>', 'input': '<BS><BS><BS><BS> + '})
-  call D({'at': ' + \%#', 'char': '+', 'input': '<BS><BS><BS>++'})
-  call D({'at': '++\%#', 'char': '<BS>', 'input': '<BS><BS> + '})
-  call D({'at': '\%#', 'char': '-', 'input': ' - '})
-  call D({'at': ' - \%#', 'char': '<BS>', 'input': '<BS><BS><BS>'})
-  call D({'at': ' - \%#', 'char': '=', 'input': '<BS><BS><BS> -= '})
-  call D({'at': ' -= \%#', 'char': '<BS>', 'input': '<BS><BS><BS><BS> - '})
-  call D({'at': ' - \%#', 'char': '-', 'input': '<BS><BS><BS>--'})
-  call D({'at': '--\%#', 'char': '<BS>', 'input': '<BS><BS> - '})
-  call D({'at': '\%#', 'char': '*', 'input': ' * '})
-  call D({'at': ' \* \%#', 'char': '<BS>', 'input': '<BS><BS><BS>'})
-  call D({'at': ' \* \%#', 'char': '=', 'input': '<BS><BS><BS> *= '})
-  call D({'at': ' \*= \%#', 'char': '<BS>', 'input': '<BS><BS><BS><BS> * '})
-  call D({'at': '\%#', 'char': '/', 'input': ' / '})
-  call D({'at': ' / \%#', 'char': '<BS>', 'input': '<BS><BS><BS>'})
-  call D({'at': ' / \%#', 'char': '=', 'input': '<BS><BS><BS> /= '})
-  call D({'at': ' /= \%#', 'char': '<BS>', 'input': '<BS><BS><BS><BS> / '})
-  call D({'at': '\%#', 'char': '%', 'input': ' % '})
-  call D({'at': ' % \%#', 'char': '<BS>', 'input': '<BS><BS><BS>'})
-  call D({'at': ' % \%#', 'char': '=', 'input': '<BS><BS><BS> %= '})
-  call D({'at': ' %= \%#', 'char': '<BS>', 'input': '<BS><BS><BS><BS> % '})
-  call D({'at': '\%#', 'char': '<LT>', 'input': ' <LT> '})
-  call D({'at': ' < \%#', 'char': '<BS>', 'input': '<BS><BS><BS>'})
-  call D({'at': ' < \%#', 'char': '=', 'input': '<BS><BS><BS> <LT>= '})
-  call D({'at': ' <= \%#', 'char': '<BS>', 'input': '<BS><BS><BS><BS> <LT> '})
-  call D({'at': ' <= \%#', 'char': '>', 'input': '<BS><BS><BS><BS> <LT>=> '})
-  call D({'at': ' <=> \%#', 'char': '<BS>', 'input': '<BS><BS><BS><BS><BS> <LT>= '})
-  call D({'at': ' < \%#', 'char': '<LT>', 'input': '<BS><BS><BS> <LT><LT> '})
-  call D({'at': ' << \%#', 'char': '<BS>', 'input': '<BS><BS><BS><BS> <LT> '})
-  call D({'at': ' << \%#', 'char': '=', 'input': '<BS><BS><BS><BS> <LT><LT>= '})
-  call D({'at': ' <<= \%#', 'char': '<BS>', 'input': '<BS><BS><BS><BS><BS> <LT><LT> '})
-  call D({'at': '\%#', 'char': '>', 'input': ' > '})
-  call D({'at': ' > \%#', 'char': '<BS>', 'input': '<BS><BS><BS>'})
-  call D({'at': ' > \%#', 'char': '=', 'input': '<BS><BS><BS> >= '})
-  call D({'at': ' >= \%#', 'char': '<BS>', 'input': '<BS><BS><BS><BS> > '})
-  call D({'at': ' > \%#', 'char': '>', 'input': '<BS><BS><BS> >> '})
-  call D({'at': ' >> \%#', 'char': '<BS>', 'input': '<BS><BS><BS><BS> > '})
-  call D({'at': ' >> \%#', 'char': '=', 'input': '<BS><BS><BS><BS> >>= '})
-  call D({'at': ' >>= \%#', 'char': '<BS>', 'input': '<BS><BS><BS><BS><BS> >> '})
-  call D({'at': '\%#', 'char': '<Bar>', 'input': ' <Bar> '})
-  call D({'at': ' | \%#', 'char': '<BS>', 'input': '<BS><BS><BS>'})
-  call D({'at': ' | \%#', 'char': '=', 'input': '<BS><BS><BS> <Bar>= '})
-  call D({'at': ' |= \%#', 'char': '<BS>', 'input': '<BS><BS><BS><BS> <Bar> '})
-  call D({'at': ' | \%#', 'char': '<Bar>', 'input': '<BS><BS><BS> <Bar><Bar> '})
-  call D({'at': ' || \%#', 'char': '<BS>', 'input': '<BS><BS><BS><BS> <Bar> '})
-  call D({'at': '\%#', 'char': '&', 'input': ' & '})
-  call D({'at': ' & \%#', 'char': '<BS>', 'input': '<BS><BS><BS>'})
-  call D({'at': ' & \%#', 'char': '=', 'input': '<BS><BS><BS> &= '})
-  call D({'at': ' &= \%#', 'char': '<BS>', 'input': '<BS><BS><BS><BS> & '})
-  call D({'at': ' & \%#', 'char': '&', 'input': '<BS><BS><BS> && '})
-  call D({'at': ' && \%#', 'char': '<BS>', 'input': '<BS><BS><BS><BS> & '})
-  call D({'at': '\%#', 'char': '^', 'input': ' ^ '})
-  call D({'at': ' ^ \%#', 'char': '<BS>', 'input': '<BS><BS><BS>'})
-  call D({'at': ' ^ \%#', 'char': '=', 'input': '<BS><BS><BS> ^= '})
-  call D({'at': ' ^= \%#', 'char': '<BS>', 'input': '<BS><BS><BS><BS> ^ '})
-  call D({'at': '\%#', 'char': '?', 'input': ' ? '})
-  call D({'at': ' ? \%#', 'char': '<BS>', 'input': '<BS><BS><BS>'})
-  call D({'at': ' ? \%#', 'char': '?', 'input': '<BS><BS><BS> ?? '})
-  call D({'at': ' ?? \%#', 'char': '<BS>', 'input': '<BS><BS><BS><BS> ? '})
-  call D({'at': '\%#', 'char': ':', 'input': ' : '})
-  call D({'at': ' : \%#', 'char': '<BS>', 'input': '<BS><BS><BS>'})
-  call D({'at': '\C\<case\>.*\%#', 'char': ':', 'input': ':'})
-  call D({'at': '\C\<default\>.*\%#', 'char': ':', 'input': ':'})
+  for name in urules.names
+    for urule in urules.table[name]
+      call smartpunc#define_rule(urule)
+    endfor
+  endfor
 
   " Add more useful rules?
 endfunction
