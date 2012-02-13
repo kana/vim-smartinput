@@ -1,3 +1,10 @@
+" NB: MacVim defines several key mappings such as <D-v> by default.
+" The key mappings are defined from the core, not from any runtime file.
+" So that the key mappings are always defined even if Vim is invoked by
+" "vim -u NONE" etc.  Remove the kay mappings to ensure that there is no key
+" mappings, because some tests in this file assume such state.
+imapclear
+
 call vspec#hint({'scope': 'smartpunc#scope()', 'sid': 'smartpunc#sid()'})
 
 describe 'smartpunc#clear_rules'
@@ -305,5 +312,37 @@ describe 'smartpunc#map_to_trigger'
     execute 'normal' "i\\"
     Expect getline(1, line('$')) ==# ['let foo = [0, \\]']
     Expect [line('.'), col('.')] ==# [1, 16 - 1]
+  end
+end
+
+describe 'The default configuration'
+  it 'should define many rules by default'
+    TODO
+    " Write tests for each rules.
+  end
+
+  it 'should define necessary key mappings to trigger smart input assistants'
+    redir => s
+    0 verbose imap
+    redir END
+    let lhss = split(s, '\n')
+    call map(lhss, 'substitute(v:val, ''\v\S+\s+(\S+)\s+.*'', ''\1'', ''g'')')
+    call sort(lhss)
+
+    Expect lhss ==# [
+    \   '"',
+    \   '''',
+    \   '(',
+    \   ')',
+    \   '<',
+    \   '<BS>',
+    \   '<CR>',
+    \   '>',
+    \   '[',
+    \   ']',
+    \   '`',
+    \   '{',
+    \   '}',
+    \ ]
   end
 end

@@ -323,6 +323,37 @@ endfunction
 
 
 
+" Start-up  "{{{2
+
+function! smartpunc#require()
+  " To :source this file from plugin/smartpunc.vim.
+endfunction
+
+function! s:set_up_the_default_configuration()
+  if !exists('s:is_already_configured')
+    call smartpunc#define_default_rules()
+
+    let all_chars = map(copy(s:available_nrules), 'v:val.char')
+    let d = {}
+    for char in all_chars
+      let d[char] = char
+    endfor
+    let unique_chars = keys(d)
+
+    " FIXME: How to deal with conflicts with existing key mappings?
+    for char in unique_chars
+      call smartpunc#map_to_trigger(char, char)
+    endfor
+
+    let s:is_already_configured = !0
+  endif
+endfunction
+
+call s:set_up_the_default_configuration()
+
+
+
+
 "{{{2
 
 
