@@ -333,17 +333,19 @@ function! s:set_up_the_default_configuration()
   if !exists('s:is_already_configured')
     call smartpunc#define_default_rules()
 
-    let all_chars = map(copy(s:available_nrules), 'v:val.char')
-    let d = {}
-    for char in all_chars
-      let d[char] = char
-    endfor
-    let unique_chars = keys(d)
+    if !exists('g:smartpunc_no_default_key_mappings')
+      let all_chars = map(copy(s:available_nrules), 'v:val.char')
+      let d = {}
+      for char in all_chars
+        let d[char] = char
+      endfor
+      let unique_chars = keys(d)
 
-    " FIXME: How to deal with conflicts with existing key mappings?
-    for char in unique_chars
-      call smartpunc#map_to_trigger(char, char)
-    endfor
+      " FIXME: How to deal with conflicts with existing key mappings?
+      for char in unique_chars
+        call smartpunc#map_to_trigger(char, char)
+      endfor
+    endif
 
     let s:is_already_configured = !0
   endif

@@ -146,7 +146,8 @@ Several characters in Insert mode are mapped by default with
 |smartpunc#map_to_trigger()| to trigger the smart input assistant.
 See |smartpunc-default-rules| for the details.
 
-FIXME: Provide the way not to define the default key mappings.
+Set any value to *g:smartpunc_no_default_key_mappings*
+if you don't want to define the default key mappings.
 
 FIXME: Provide the way not to override existing ones with the default ones.
 
