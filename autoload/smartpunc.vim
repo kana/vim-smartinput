@@ -341,9 +341,9 @@ function! s:set_up_the_default_configuration()
       endfor
       let unique_chars = keys(d)
 
-      " FIXME: How to deal with conflicts with existing key mappings?
       for char in unique_chars
-        call smartpunc#map_to_trigger(char, char)
+        " Do not override existing key mappings.
+        silent! call smartpunc#map_to_trigger('<unique> ' . char, char)
       endfor
     endif
 

@@ -149,7 +149,9 @@ See |smartpunc-default-rules| for the details.
 Set any value to *g:smartpunc_no_default_key_mappings*
 if you don't want to define the default key mappings.
 
-FIXME: Provide the way not to override existing ones with the default ones.
+Each default key mapping will not be defined if the {lhs} is already mapped to
+something.  For example, the default key mapping on "(" will not be defined if
+you map "(" to something in your vimrc.
 
 
 
