@@ -283,9 +283,9 @@ CUSTOMIZATION					*smartpunc-customization*
     use |smartpunc#define_rule()|.  See also |smartpunc-default-rules| for the
     real world examples.
 
-(B) FIXME: Write a note on |smartpunc#define_rule()| and
-    |smartpunc#map_to_trigger()| for a key which is not a trigger key by
-    default.
+(B) If you define your own |smartpunc-rules| which "char" values are different
+    from ones of |smartpunc-default-rules|, you have to define trigger keys
+    for your own rules with |smartpunc#map_to_trigger()|.
 
 
 
