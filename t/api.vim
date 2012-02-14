@@ -427,6 +427,20 @@ end
 describe 'The default configuration'
   before
     new
+
+    function! b:._test(test_sets)
+      " NB: See [WHAT_MAP_EXPR_CAN_SEE] why :normal is used many times.
+      for test_set in a:test_sets
+        % delete _
+        let i = 0  " For debugging.
+        for [input, text, linenr, colnr] in test_set
+          let i += 1
+          execute 'normal' 'A'.input
+          Expect [i, getline(1, line('$'))] ==# [i, [text]]
+          Expect [i, [line('.'), col('.')]] ==# [i, [linenr, colnr]]
+        endfor
+      endfor
+    endfunction
   end
 
   after
@@ -629,10 +643,9 @@ describe 'The default configuration'
   end
 
   it 'should have rules to input operators easily'
-    " NB: See [WHAT_MAP_EXPR_CAN_SEE] why :normal is used many times.
     setfiletype for_test_transition
 
-    for test_set in [
+    call b:._test([
     \   [
     \     ["foo", 'foo', 1, 4 - 1],
     \     ["=", 'foo = ', 1, 7 - 1],
@@ -804,15 +817,6 @@ describe 'The default configuration'
     \     ["default", 'default', 1, 8 - 1],
     \     [":", 'default:', 1, 9 - 1],
     \   ],
-    \ ]
-      normal S
-      let i = 0  " For debugging.
-      for [input, text, linenr, colnr] in test_set
-        let i += 1
-        execute 'normal' 'A'.input
-        Expect [i, getline(1, line('$'))] ==# [i, [text]]
-        Expect [i, [line('.'), col('.')]] ==# [i, [linenr, colnr]]
-      endfor
-    endfor
+    \ ])
   end
 end
