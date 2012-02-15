@@ -14,8 +14,15 @@ describe 'g:smartpunc_no_default_key_mappings'
     redir => s
     0 verbose imap
     redir END
+    let lhss = split(s, '\n')
+    call map(lhss, 'substitute(v:val, ''\v\S+\s+(\S+)\s+.*'', ''\1'', ''g'')')
+    call sort(lhss)
 
-    Expect substitute(s, '[\r\n]', '', 'g') ==# 'No mapping found'
+    " Though the default key mappings are not defined,
+    " internal key mappings must be defined.
+    Expect lhss ==# [
+    \   printf('%s(adjust-the-cursor)', smartpunc#sid()),
+    \ ]
     Expect Ref('s:available_nrules') !=# []
   end
 end

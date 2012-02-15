@@ -148,9 +148,11 @@ function! smartpunc#map_to_trigger(lhs, rhs_char)  "{{{2
   let script = printf('call <SID>do_smart_input_assistant(%s, %s)',
   \                   rule_expr,
   \                   char_expr)
-  execute printf('inoremap <silent> %s  <C-\><C-o>:%s<Return><Right>',
+  execute printf('inoremap %s %s  <C-\><C-o>:%s<Return>%s',
+  \              '<script> <silent>',
   \              a:lhs,
-  \              script)
+  \              script,
+  \              '<SID>(adjust-the-cursor)')
 endfunction
 
 function! s:_encode_for_map_char_expr(rhs_char)
@@ -163,6 +165,12 @@ endfunction
 
 function! s:_find_the_most_proper_rule(char)
   return s:find_the_most_proper_rule(s:available_nrules, a:char)
+endfunction
+
+inoremap <expr> <SID>(adjust-the-cursor)  <SID>_adjust_the_cursor()
+
+function! s:_adjust_the_cursor()
+  return "\<Right>"
 endfunction
 
 
@@ -221,7 +229,9 @@ endfunction
 
 function! s:do_smart_input_assistant(nrule, fallback_char)  "{{{2
   " This function MUST be called in Insert mode with the following step:
-  " <C-\><C-o>:call s:do_smart_input_assistant(...)<Return><Right>
+  " 1. <C-\><C-o>
+  " 2. :call s:do_smart_input_assistant(...)<Return>
+  " 3. <SID>(adjust-the-cursor)
   "
   " Because the treatment of the cursor position to do smart input assistant
   " is very complex:
@@ -236,10 +246,10 @@ function! s:do_smart_input_assistant(nrule, fallback_char)  "{{{2
   "   otherwise ":normal! i" must be used.
   " - <Esc> from Insert mode has a side effect; the cursor is moved to left by
   "   1 character.  Though this side effect must be countered, it is not
-  "   possible in this function.  Because the counter must be done after the
-  "   alternate "input".  If the cursor is at the last character of the line,
-  "   it is not possible to adjust its position to the end of the line unless
-  "   'virtualedit' is configured.
+  "   possible in this function.  If the cursor is at the last character of
+  "   the line, it is not possible to adjust its position to the end of the
+  "   line unless 'virtualedit' is configured.  That's why
+  "   <SID>(adjust-the-cursor) is done after after the alternate "input".
 
   execute 'normal!'
   \       (col('.') == col('$') ? 'a' : 'i')

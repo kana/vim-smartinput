@@ -334,6 +334,7 @@ describe 'The default configuration'
     \   '<',
     \   '<BS>',
     \   '<CR>',
+    \   printf('%s(adjust-the-cursor)', smartpunc#sid()),
     \   '>',
     \   '[',
     \   ']',
