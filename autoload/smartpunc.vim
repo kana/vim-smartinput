@@ -327,6 +327,10 @@ function! smartpunc#define_default_rules()  "{{{2
   \   {'at': '// \%#', 'char': '/', 'input': '<BS><BS><BS>/// '},
   \   {'at': '/// \%#', 'char': '<BS>', 'input': '<BS><BS><BS><BS>// '},
   \ ])
+  call urules.add('/* comment */', [
+  \   {'at': ' / \%#', 'char': '*', 'input': '<BS><BS><BS>/*  */<Left><Left><Left>'},
+  \   {'at': '/\* \%# \*/', 'char': '<BS>', 'input': '<BS><BS><BS><Del><Del><Del> / '},
+  \ ])
   "}}}
 
   " ft_urule_sets_table... "{{{
@@ -415,6 +419,7 @@ function! smartpunc#define_default_rules()  "{{{2
   \     urules.table['T<T>'],
   \     urules.table['// comment'],
   \     urules.table['/// comment'],
+  \     urules.table['/* comment */'],
   \   ],
   \   'javascript': [
   \     urules.table['='],
