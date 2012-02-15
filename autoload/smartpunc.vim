@@ -139,9 +139,6 @@ endfunction
 
 
 function! smartpunc#map_to_trigger(lhs, rhs_char)  "{{{2
-  " FIXME: Avoid beeping on fallback <Return>.
-  "        It seems to be caused by the last cursor adjustment (<Right>)
-  "        if the new line does not contain any character.
   " FIXME: Keep automatic indentation for fallback <Return>.
   let char_expr = s:_encode_for_map_char_expr(a:rhs_char)
   let rule_expr = printf('<SID>_find_the_most_proper_rule(%s)', char_expr)
@@ -170,7 +167,11 @@ endfunction
 inoremap <expr> <SID>(adjust-the-cursor)  <SID>_adjust_the_cursor()
 
 function! s:_adjust_the_cursor()
-  return "\<Right>"
+  " See also s:do_smart_input_assistant.  <Right> is usually enough to adjust
+  " the cursor.  But the cursor may be moved to an empty line.  It often
+  " happens for rules triggered by <Return>.  In this case, there is no room
+  " to <Right>, so that the cursor should not be adjusted to avoid beep.
+  return col('.') == col('$') ? '' : "\<Right>"
 endfunction
 
 
