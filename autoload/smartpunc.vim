@@ -319,6 +319,10 @@ function! smartpunc#define_default_rules()  "{{{2
   \   {'at': ' < \%#', 'char': '>', 'input': '<BS><BS><BS><LT>><Left>'},
   \   {'at': '<\%#>', 'char': '<BS>', 'input': '<BS><Del>'},
   \ ])
+  call urules.add('// comment', [
+  \   {'at': ' / \%#', 'char': '/', 'input': '<BS><BS><BS>// '},
+  \   {'at': '// \%#', 'char': '<BS>', 'input': '<BS><BS><BS> / '},
+  \ ])
   "}}}
 
   " ft_urule_sets_table... "{{{
@@ -405,6 +409,7 @@ function! smartpunc#define_default_rules()  "{{{2
   \     urules.table['=>'],
   \
   \     urules.table['T<T>'],
+  \     urules.table['// comment'],
   \   ],
   \   'javascript': [
   \     urules.table['='],
