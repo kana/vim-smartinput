@@ -6,6 +6,7 @@
 imapclear
 
 call vspec#hint({'scope': 'smartpunc#scope()', 'sid': 'smartpunc#sid()'})
+set backspace=indent,eol,start
 
 describe 'smartpunc#clear_rules'
   before
@@ -267,10 +268,6 @@ describe 'smartpunc#map_to_trigger'
   end
 
   it 'should do smart input assistant with a special "char" properly'
-    " For some reason, this example is failed.
-    " But the same stuff works well interactively.
-    TODO
-
     " "let foo = (0#)"
     call setline(1, 'let foo = (0)')
     normal! gg$
@@ -282,10 +279,10 @@ describe 'smartpunc#map_to_trigger'
     Expect getline(1, line('$')) ==# ['let foo = ()']
     Expect [line('.'), col('.')] ==# [1, 12 - 1]
 
-    " "let foox# = #"
+    " "let foo = #"
     execute 'normal' "a\<BS>"
     Expect getline(1, line('$')) ==# ['let foo = ']
-    Expect [line('.'), col('.')] ==# [1, 10 - 1]
+    Expect [line('.'), col('.')] ==# [1, 11 - 1]
   end
 
   it 'should do smart input assistant with a problematic "char" - ``"'''''
