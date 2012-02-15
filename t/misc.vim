@@ -1,5 +1,6 @@
 call vspec#hint({'scope': 'smartpunc#scope()', 'sid': 'smartpunc#sid()'})
 syntax enable
+set backspace=indent,eol,start
 
 describe 's:are_same_rules'
   before
@@ -203,10 +204,6 @@ describe 's:do_smart_input_assistant'
   end
 
   it 'should do smart input assistant with a special "char" properly'
-    " For some reason, this example is failed.
-    " But the same stuff works well interactively.
-    TODO
-
     " "let foo = (0#)"
     call setline(1, 'let foo = (0)')
     normal! gg$
