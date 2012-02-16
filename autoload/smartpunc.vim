@@ -43,8 +43,31 @@
 
 
 " Variables  "{{{1
+let s:EXPIRED_NRULES = []  "{{{2
+" :: [NRule]
+"
+" A special value for the deferred regularization.
+
+
+
+
 let s:available_nrules = []  "{{{2
 " :: [NRule] -- sorted by priority in descending order.
+"
+" * Only low-level utilities MAY use s:available_nrules directly.
+" * Anything else MUST refer s:available_nrules via s:get_available_nrules().
+"
+" Because this variable should be "regularized" before actual use.
+" But the regularization is somewhat expensive to run for each update.
+" So that the regularization is deferred until this variable is really used.
+
+
+
+
+let s:previously_available_nrules = s:EXPIRED_NRULES  "{{{2
+" :: [NRule]
+"
+" A memo variable for the deferred regularization.
 
 
 
@@ -57,6 +80,7 @@ let s:available_nrules = []  "{{{2
 " Interface  "{{{1
 function! smartpunc#clear_rules()  "{{{2
   let s:available_nrules = []
+  let s:previously_available_nrules = s:EXPIRED_NRULES
 endfunction
 
 
@@ -462,18 +486,7 @@ function! smartpunc#define_rule(urule)  "{{{2
   let nrule = s:normalize_rule(a:urule)
   call s:remove_a_same_rule(s:available_nrules, nrule)
   call add(s:available_nrules, nrule)
-  call
-  \ map(
-  \   reverse(
-  \     sort(
-  \       map(
-  \         s:available_nrules,
-  \         '[printf("%06d:%s", v:val.priority, v:val.at), v:val]'
-  \       )
-  \     )
-  \   ),
-  \   'v:val[1]'
-  \ )
+  let s:previously_available_nrules = s:EXPIRED_NRULES
 endfunction
 
 
@@ -508,7 +521,7 @@ function! s:_encode_for_map_char_expr(rhs_char)
 endfunction
 
 function! s:_trigger_or_fallback(char, fallback)
-  let nrule = s:find_the_most_proper_rule(s:available_nrules, a:char)
+  let nrule = s:find_the_most_proper_rule(s:get_available_nrules(), a:char)
   if nrule is 0
     return a:fallback
   else
@@ -600,6 +613,30 @@ function! s:find_the_most_proper_rule(nrules, char)  "{{{2
   endfor
 
   return 0
+endfunction
+
+
+
+
+function! s:get_available_nrules()  "{{{2
+  if s:previously_available_nrules is s:EXPIRED_NRULES
+    call
+    \ map(
+    \   reverse(
+    \     sort(
+    \       map(
+    \         s:available_nrules,
+    \         '[printf("%06d:%s", v:val.priority, v:val.at), v:val]'
+    \       )
+    \     )
+    \   ),
+    \   'v:val[1]'
+    \ )
+
+    let s:previously_available_nrules = s:available_nrules
+  endif
+
+  return s:available_nrules
 endfunction
 
 
