@@ -114,7 +114,7 @@ describe 's:do_smart_input_assistant'
     \ })
     inoremap <silent> <buffer> (
     \        <C-\><C-o>
-            \:call Call('s:do_smart_input_assistant', b:nrule1, '(')
+            \:call Call('s:do_smart_input_assistant', b:nrule1)
             \<Return>
             \<Right>
 
@@ -126,21 +126,7 @@ describe 's:do_smart_input_assistant'
     \ })
     inoremap <silent> <buffer> 1
     \        <C-\><C-o>
-            \:call Call('s:do_smart_input_assistant', b:nrule2, '1')
-            \<Return>
-            \<Right>
-
-    " Failure case.
-    inoremap <silent> <buffer> 0
-    \        <C-\><C-o>
-            \:call Call('s:do_smart_input_assistant', 0, 'x')
-            \<Return>
-            \<Right>
-
-    " Use a special key as a falback char.
-    inoremap <silent> <buffer> <BS>
-    \        <C-\><C-o>
-            \:call Call('s:do_smart_input_assistant', 0, "<Bslash><LT>BS>")
+            \:call Call('s:do_smart_input_assistant', b:nrule2)
             \<Return>
             \<Right>
   end
@@ -183,42 +169,6 @@ describe 's:do_smart_input_assistant'
     execute 'normal' "i1"
     Expect getline(1, line('$')) ==# ['let foo = 121233']
     Expect [line('.'), col('.')] ==# [1, 16 - 1]
-  end
-
-  it 'should insert a fallback char if a given rule is 0'
-    " "let foo =# "
-    call setline(1, 'let foo = ')
-    normal! gg$
-    Expect getline(1, line('$')) ==# ['let foo = ']
-    Expect [line('.'), col('.')] ==# [1, 10]
-
-    " "let foo = x#" -- invoke at the end of the line.
-    execute 'normal' "a0"
-    Expect getline(1, line('$')) ==# ['let foo = x']
-    Expect [line('.'), col('.')] ==# [1, 12 - 1]
-
-    " "let foox# = x" -- invoke at a middle of the line.
-    execute 'normal' "Foa0"
-    Expect getline(1, line('$')) ==# ['let foox = x']
-    Expect [line('.'), col('.')] ==# [1, 9 - 1]
-  end
-
-  it 'should do smart input assistant with a special "char" properly'
-    " "let foo = (0#)"
-    call setline(1, 'let foo = (0)')
-    normal! gg$
-    Expect getline(1, line('$')) ==# ['let foo = (0)']
-    Expect [line('.'), col('.')] ==# [1, 13]
-
-    " "let foo = (#)"
-    execute 'normal' "i\<BS>"
-    Expect getline(1, line('$')) ==# ['let foo = ()']
-    Expect [line('.'), col('.')] ==# [1, 12 - 1]
-
-    " "let foox# = #)"
-    execute 'normal' "a\<BS>"
-    Expect getline(1, line('$')) ==# ['let foo = )']
-    Expect [line('.'), col('.')] ==# [1, 11 - 1]
   end
 end
 

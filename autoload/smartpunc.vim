@@ -183,7 +183,7 @@ function! s:_trigger_or_fallback(char, fallback)
 endfunction
 
 function! s:_do_smart_input_assistant()
-  call s:do_smart_input_assistant(s:_the_last_found_nrule, 0)
+  call s:do_smart_input_assistant(s:_the_last_found_nrule)
 endfunction
 
 inoremap <expr> <SID>(adjust-the-cursor)  <SID>_adjust_the_cursor()
@@ -250,8 +250,7 @@ endfunction
 
 
 
-function! s:do_smart_input_assistant(nrule, fallback_char)  "{{{2
-  " FIXME: Now a:nrule will never be 0, so a:fallback_char will never be used.
+function! s:do_smart_input_assistant(nrule)  "{{{2
   " This function MUST be called in Insert mode with the following step:
   " 1. <C-\><C-o>
   " 2. :call s:do_smart_input_assistant(...)<Return>
@@ -277,7 +276,7 @@ function! s:do_smart_input_assistant(nrule, fallback_char)  "{{{2
 
   execute 'normal!'
   \       (col('.') == col('$') ? 'a' : 'i')
-  \       . (a:nrule is 0 ? a:fallback_char : a:nrule._input)
+  \       . a:nrule._input
 endfunction
 
 
