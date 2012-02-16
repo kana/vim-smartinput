@@ -139,18 +139,23 @@ endfunction
 
 
 function! smartpunc#map_to_trigger(lhs, rhs_char, rhs_fallback)  "{{{2
-  " FIXME: Keep automatic indentation for fallback <Return>.
+  " According to :help 'autoindent' --
+  "
+  " > Copy indent from current line when starting a new line
+  " > (typing <CR> in Insert mode or when using the "o" or "O" command).
+  " > If you do not type anything on the new line except <BS> or CTRL-D
+  " > and then type <Esc>, CTRL-O or <CR>, the indent is deleted again.
+  "
+  " So that a:rhs_fallback MUST be mapped from a:lhs without leaving from
+  " Insert mode to keep the behavior on automatic indentation when
+  " a:rhs_fallback == '<Return>',
   let char_expr = s:_encode_for_map_char_expr(a:rhs_char)
   let fallback_expr = s:_encode_for_map_char_expr(a:rhs_fallback)
-  let rule_expr = printf('<SID>_find_the_most_proper_rule(%s)', char_expr)
-  let script = printf('call <SID>do_smart_input_assistant(%s, %s)',
-  \                   rule_expr,
-  \                   fallback_expr)
-  execute printf('inoremap %s %s  <C-\><C-o>:%s<Return>%s',
-  \              '<script> <silent>',
+  execute printf('inoremap %s %s  <SID>_trigger_or_fallback(%s, %s)',
+  \              '<script> <expr> <silent>',
   \              a:lhs,
-  \              script,
-  \              '<SID>(adjust-the-cursor)')
+  \              char_expr,
+  \              fallback_expr)
 endfunction
 
 function! s:_encode_for_map_char_expr(rhs_char)
@@ -161,8 +166,24 @@ function! s:_encode_for_map_char_expr(rhs_char)
   return s
 endfunction
 
-function! s:_find_the_most_proper_rule(char)
-  return s:find_the_most_proper_rule(s:available_nrules, a:char)
+" let s:_the_last_found_nrule = ...
+
+function! s:_trigger_or_fallback(char, fallback)
+  let nrule = s:find_the_most_proper_rule(s:available_nrules, a:char)
+  if nrule is 0
+    return a:fallback
+  else
+    let s:_the_last_found_nrule = nrule
+    let script = 'call ' . s:sid_value() . '_do_smart_input_assistant()'
+    let adjuster = s:sid_value() . '(adjust-the-cursor)'
+    return printf("\<C-\>\<C-o>:%s\<Return>%s",
+    \             script,
+    \             adjuster)
+  endif
+endfunction
+
+function! s:_do_smart_input_assistant()
+  call s:do_smart_input_assistant(s:_the_last_found_nrule, 0)
 endfunction
 
 inoremap <expr> <SID>(adjust-the-cursor)  <SID>_adjust_the_cursor()
@@ -230,6 +251,7 @@ endfunction
 
 
 function! s:do_smart_input_assistant(nrule, fallback_char)  "{{{2
+  " FIXME: Now a:nrule will never be 0, so a:fallback_char will never be used.
   " This function MUST be called in Insert mode with the following step:
   " 1. <C-\><C-o>
   " 2. :call s:do_smart_input_assistant(...)<Return>
@@ -330,6 +352,13 @@ function! s:remove_a_same_rule(nrules, nrule)  "{{{2
       return
     endif
   endfor
+endfunction
+
+
+
+
+function! s:sid_value()  "{{{2
+  return substitute(smartpunc#sid(), '<SNR>', "\<SNR>", 'g')
 endfunction
 
 

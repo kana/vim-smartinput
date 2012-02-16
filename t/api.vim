@@ -210,6 +210,14 @@ describe 'smartpunc#map_to_trigger'
     \   'input': '<Bslash><Bslash><Left>',
     \ })
     call smartpunc#map_to_trigger('<buffer> <Bslash>', '<Bslash>', '<Bslash>')
+
+    " With automatic indentation.
+    call smartpunc#define_rule({
+    \   'at': '{\%#}',
+    \   'char': '<Return>',
+    \   'input': '<Return>*<Return>}<BS><Up><C-o>$<BS>',
+    \ })
+    call smartpunc#map_to_trigger('<buffer> <Return>', '<Return>', '<Return>')
   end
 
   after
@@ -331,6 +339,52 @@ describe 'smartpunc#map_to_trigger'
     execute 'normal' "i\\"
     Expect getline(1, line('$')) ==# ['let foo = [0, \\]']
     Expect [line('.'), col('.')] ==# [1, 16 - 1]
+  end
+
+  it 'should keep automatic indentation'
+    setlocal expandtab
+    setlocal smartindent
+
+    " 'if (foo) {#}'
+    call setline(1, 'if (foo) {}')
+    normal! gg$
+    Expect getline(1, line('$')) ==# ['if (foo) {}']
+    Expect [line('.'), col('.')] ==# [1, 11]
+
+    " 'if (foo) {'
+    " '        X#'
+    " '}'
+    execute 'normal' "i\<Return>X"
+    Expect getline(1, line('$')) ==# ['if (foo) {',
+    \                                 '        X',
+    \                                 '}']
+    Expect [line('.'), col('.')] ==# [2, 10 - 1]
+
+    " 'if (foo) {'
+    " '        X'
+    " '        Y#'
+    " '}'
+    execute 'normal' "a\<Return>Y"
+    Expect getline(1, line('$')) ==# ['if (foo) {',
+    \                                 '        X',
+    \                                 '        Y',
+    \                                 '}']
+    Expect [line('.'), col('.')] ==# [3, 10 - 1]
+
+    " 'if (foo) {'
+    " '        X'
+    " '        Y'
+    " ''
+    " '        Z#'
+    " '}'
+    execute 'normal' "a\<Return>\<Return>Z"
+    Expect getline(1, line('$')) ==# ['if (foo) {',
+    \                                 '        X',
+    \                                 '        Y',
+    \                                 '',
+    \                                 '        Z',
+    \                                 '}']
+    Expect [line('.'), col('.')] ==# [5, 10 - 1]
   end
 end
 
