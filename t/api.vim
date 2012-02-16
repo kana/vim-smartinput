@@ -169,7 +169,7 @@ describe 'smartpunc#map_to_trigger'
     \   'char': '(',
     \   'input': '()<Left>',
     \ })
-    call smartpunc#map_to_trigger('<buffer> (', '(')
+    call smartpunc#map_to_trigger('<buffer> (', '(', '(')
 
     " Without any cursor adjustment.
     call smartpunc#define_rule({
@@ -177,11 +177,15 @@ describe 'smartpunc#map_to_trigger'
     \   'char': '1',
     \   'input': '123',
     \ })
-    call smartpunc#map_to_trigger('<buffer> 1', '1')
+    call smartpunc#map_to_trigger('<buffer> 1', '1', '1')
 
-    " Failure case.
+    " Failure case - 1.
     " ... no rule is defined for 'x' for intentional failure.
-    call smartpunc#map_to_trigger('<buffer> 0', 'x')
+    call smartpunc#map_to_trigger('<buffer> F1', 'x', 'x')
+
+    " Failure case - 2.
+    " ... no rule is defined for 'y' for intentional failure.
+    call smartpunc#map_to_trigger('<buffer> F2', 'x', 'y')
 
     " With a special "char".
     call smartpunc#define_rule({
@@ -189,7 +193,7 @@ describe 'smartpunc#map_to_trigger'
     \   'char': '<BS>',
     \   'input': '<BS><Del>',
     \ })
-    call smartpunc#map_to_trigger('<buffer> <BS>', '<BS>')
+    call smartpunc#map_to_trigger('<buffer> <BS>', '<BS>', '<BS>')
 
     " With a problematic "char" - ``"''.
     call smartpunc#define_rule({
@@ -197,7 +201,7 @@ describe 'smartpunc#map_to_trigger'
     \   'char': '"',
     \   'input': '""<Left>',
     \ })
-    call smartpunc#map_to_trigger('<buffer> "', '"')
+    call smartpunc#map_to_trigger('<buffer> "', '"', '"')
 
     " With a problematic "char" - ``\''.
     call smartpunc#define_rule({
@@ -205,7 +209,7 @@ describe 'smartpunc#map_to_trigger'
     \   'char': '<Bslash>',
     \   'input': '<Bslash><Bslash><Left>',
     \ })
-    call smartpunc#map_to_trigger('<buffer> <Bslash>', '<Bslash>')
+    call smartpunc#map_to_trigger('<buffer> <Bslash>', '<Bslash>', '<Bslash>')
   end
 
   after
@@ -249,7 +253,7 @@ describe 'smartpunc#map_to_trigger'
     Expect [line('.'), col('.')] ==# [1, 16 - 1]
   end
 
-  it 'should insert a fallback char if there is no proper rule'
+  it 'should insert a fallback char if there is no proper rule (1)'
     " "let foo =# "
     call setline(1, 'let foo = ')
     normal! gg$
@@ -257,13 +261,31 @@ describe 'smartpunc#map_to_trigger'
     Expect [line('.'), col('.')] ==# [1, 10]
 
     " "let foo = x#" -- invoke at the end of the line.
-    execute 'normal' "a0"
+    execute 'normal' "aF1"
     Expect getline(1, line('$')) ==# ['let foo = x']
     Expect [line('.'), col('.')] ==# [1, 12 - 1]
 
     " "let foox# = x" -- invoke at a middle of the line.
-    execute 'normal' "Foa0"
+    execute 'normal' "FoaF1"
     Expect getline(1, line('$')) ==# ['let foox = x']
+    Expect [line('.'), col('.')] ==# [1, 9 - 1]
+  end
+
+  it 'should insert a fallback char if there is no proper rule (2)'
+    " "let foo =# "
+    call setline(1, 'let foo = ')
+    normal! gg$
+    Expect getline(1, line('$')) ==# ['let foo = ']
+    Expect [line('.'), col('.')] ==# [1, 10]
+
+    " "let foo = x#" -- invoke at the end of the line.
+    execute 'normal' "aF2"
+    Expect getline(1, line('$')) ==# ['let foo = y']
+    Expect [line('.'), col('.')] ==# [1, 12 - 1]
+
+    " "let foox# = x" -- invoke at a middle of the line.
+    execute 'normal' "FoaF2"
+    Expect getline(1, line('$')) ==# ['let fooy = y']
     Expect [line('.'), col('.')] ==# [1, 9 - 1]
   end
 

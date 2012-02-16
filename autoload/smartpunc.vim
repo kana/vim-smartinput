@@ -138,13 +138,14 @@ endfunction
 
 
 
-function! smartpunc#map_to_trigger(lhs, rhs_char)  "{{{2
+function! smartpunc#map_to_trigger(lhs, rhs_char, rhs_fallback)  "{{{2
   " FIXME: Keep automatic indentation for fallback <Return>.
   let char_expr = s:_encode_for_map_char_expr(a:rhs_char)
+  let fallback_expr = s:_encode_for_map_char_expr(a:rhs_fallback)
   let rule_expr = printf('<SID>_find_the_most_proper_rule(%s)', char_expr)
   let script = printf('call <SID>do_smart_input_assistant(%s, %s)',
   \                   rule_expr,
-  \                   char_expr)
+  \                   fallback_expr)
   execute printf('inoremap %s %s  <C-\><C-o>:%s<Return>%s',
   \              '<script> <silent>',
   \              a:lhs,
@@ -354,7 +355,7 @@ function! s:set_up_the_default_configuration()
 
       for char in unique_chars
         " Do not override existing key mappings.
-        silent! call smartpunc#map_to_trigger('<unique> ' . char, char)
+        silent! call smartpunc#map_to_trigger('<unique> ' . char, char, char)
       endfor
     endif
 

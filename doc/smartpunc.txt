@@ -131,11 +131,13 @@ smartpunc#define_default_rules()	    *smartpunc#define_default_rules()*
 smartpunc#define_rule({rule})			*smartpunc#define_rule()*
 			Define a rule for the smart input assistant.
 			See |smartpunc-rules| for the details of {rule}.
-
-smartpunc#map_to_trigger({lhs}, {char})		*smartpunc#map_to_trigger()*
+						*smartpunc#map_to_trigger()*
+smartpunc#map_to_trigger({lhs}, {rhs-char}, {rhs-fallback})
 			Map {lhs} to trigger the smart input assistant for
-			{char} in Insert mode.  {lhs} is a string to denote
-			a key sequence.  {char} is a single-character string.
+			{rhs-char} in Insert mode.  If there is no proper rule
+			for the current context, {rhs-fallback} will be
+			inserted instead of {lhs}.  {lhs}, {rhs-char} and
+			{rhs-fallback} are strings to denote key sequences.
 			See also |smartpunc-exampels| for the details.
 
 
