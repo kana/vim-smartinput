@@ -166,24 +166,13 @@ function! s:_encode_for_map_char_expr(rhs_char)
   return s
 endfunction
 
-" let s:_the_last_found_nrule = ...
-
 function! s:_trigger_or_fallback(char, fallback)
   let nrule = s:find_the_most_proper_rule(s:available_nrules, a:char)
   if nrule is 0
     return a:fallback
   else
-    let s:_the_last_found_nrule = nrule
-    let script = 'call ' . s:sid_value() . '_do_smart_input_assistant()'
-    let adjuster = s:sid_value() . '(adjust-the-cursor)'
-    return printf("\<C-\>\<C-o>:%s\<Return>%s",
-    \             script,
-    \             adjuster)
+    return nrule._input
   endif
-endfunction
-
-function! s:_do_smart_input_assistant()
-  call s:do_smart_input_assistant(s:_the_last_found_nrule)
 endfunction
 
 inoremap <expr> <SID>(adjust-the-cursor)  <SID>_adjust_the_cursor()
