@@ -26,7 +26,6 @@ describe 'Start-up'
     \   '<',
     \   '<BS>',
     \   '<CR>',
-    \   printf('%s(adjust-the-cursor)', smartpunc#sid()),
     \   '>',
     \   '[',
     \   ']',

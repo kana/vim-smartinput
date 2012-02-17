@@ -175,16 +175,6 @@ function! s:_trigger_or_fallback(char, fallback)
   endif
 endfunction
 
-inoremap <expr> <SID>(adjust-the-cursor)  <SID>_adjust_the_cursor()
-
-function! s:_adjust_the_cursor()
-  " See also s:do_smart_input_assistant.  <Right> is usually enough to adjust
-  " the cursor.  But the cursor may be moved to an empty line.  It often
-  " happens for rules triggered by <Return>.  In this case, there is no room
-  " to <Right>, so that the cursor should not be adjusted to avoid beep.
-  return col('.') == col('$') ? '' : "\<Right>"
-endfunction
-
 
 
 
