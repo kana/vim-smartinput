@@ -7,6 +7,8 @@ imapclear
 
 call vspec#hint({'scope': 'smartpunc#scope()', 'sid': 'smartpunc#sid()'})
 set backspace=indent,eol,start
+filetype plugin indent on
+syntax enable
 
 describe 'smartpunc#clear_rules'
   before
@@ -527,8 +529,56 @@ describe 'The default configuration'
   end
 
   it 'should have rules to write Lisp/Scheme source code'
-    TODO
-    " Write tests for each rules.
+    " NB: For some reason, :setfiletype doesn't work as I expected.
+
+    function! b:getSynNames(line, col)
+      return map(synstack(a:line, a:col),
+      \          'synIDattr(synIDtrans(v:val), "name")')
+    endfunction
+
+    setlocal filetype=foo
+    Expect &l:filetype ==# 'foo'
+    normal S(define filetype 'foo
+    Expect getline(1, line('$')) ==# ['(define filetype ''foo'')']
+    Expect [line('.'), col('.')] ==# [1, 22 - 1]
+    Expect b:getSynNames(line('.'), col('.')) ==# []
+    normal S(define filetype "'foo
+    Expect getline(1, line('$')) ==# ['(define filetype "''foo''")']
+    Expect [line('.'), col('.')] ==# [1, 23 - 1]
+    Expect b:getSynNames(line('.'), col('.')) ==# []
+    normal S; (define filetype 'foo
+    Expect getline(1, line('$')) ==# ['; (define filetype ''foo'')']
+    Expect [line('.'), col('.')] ==# [1, 24 - 1]
+    Expect b:getSynNames(line('.'), col('.')) ==# []
+
+    setlocal filetype=lisp
+    Expect &l:filetype ==# 'lisp'
+    normal S(define filetype 'lisp
+    Expect getline(1, line('$')) ==# ['(define filetype ''lisp)']
+    Expect [line('.'), col('.')] ==# [1, 23 - 1]
+    Expect b:getSynNames(line('.'), col('.')) ==# ['lispList', 'Identifier']
+    normal S(define filetype "'lisp
+    Expect getline(1, line('$')) ==# ['(define filetype "''lisp''")']
+    Expect [line('.'), col('.')] ==# [1, 24 - 1]
+    Expect b:getSynNames(line('.'), col('.')) ==# ['lispList', 'Constant']
+    normal S; (define filetype 'lisp
+    Expect getline(1, line('$')) ==# ['; (define filetype ''lisp)']
+    Expect [line('.'), col('.')] ==# [1, 25 - 1]
+    Expect b:getSynNames(line('.'), col('.')) ==# ['Comment']
+
+    setlocal filetype=scheme
+    Expect &l:filetype ==# 'scheme'
+    normal S(define filetype 'scheme
+    Expect getline(1, line('$')) ==# ['(define filetype ''scheme)']
+    Expect [line('.'), col('.')] ==# [1, 25 - 1]
+    normal S(define filetype "'scheme
+    Expect getline(1, line('$')) ==# ['(define filetype "''scheme''")']
+    Expect [line('.'), col('.')] ==# [1, 26 - 1]
+    Expect b:getSynNames(line('.'), col('.')) ==# ['schemeStruc', 'Constant']
+    normal S; (define filetype 'scheme
+    Expect getline(1, line('$')) ==# ['; (define filetype ''scheme)']
+    Expect [line('.'), col('.')] ==# [1, 27 - 1]
+    Expect b:getSynNames(line('.'), col('.')) ==# ['Comment']
   end
 
   it 'should have rules to write C-like syntax source code'
