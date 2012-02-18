@@ -496,8 +496,34 @@ describe 'The default configuration'
   end
 
   it 'should have rules to input English words'
-    TODO
-    " Write tests for each rules.
+    " NB: [WHAT_MAP_EXPR_CAN_SEE] For some reason, ":normal SLet's" doesn't
+    " work as I expected.  When "'" is being inserted with the command,
+    " s:_trigger_or_fallback is called with the following context:
+    "
+    " * getline('.') ==# ''
+    " * [line('.'), col('.')] == [1, 1]
+    "
+    " So that the expected rule ("at" ==# '\w\%#') is NOT selected.
+    "
+    " But when "'" is being inserted with interactively typed "Let's",
+    " s:_trigger_or_fallback is called with the following context:
+    "
+    " * getline('.') ==# 'Let'
+    " * [line('.'), col('.')] == [1, 4]
+    "
+    " So that the expected rule ("at" ==# '\w\%#') is selected.
+    "
+    " To avoid the problem, split :normal at the trigger character.
+
+    normal SLet
+    normal A's
+    Expect getline(1, line('$')) ==# ["Let's"]
+    Expect [line('.'), col('.')] ==# [1, 6 - 1]
+
+    execute 'normal' "A quote words "
+    execute 'normal' "A'like this"
+    Expect getline(1, line('$')) ==# ["Let's quote words 'like this'"]
+    Expect [line('.'), col('.')] ==# [1, 29 - 1]
   end
 
   it 'should have rules to write Lisp/Scheme source code'
