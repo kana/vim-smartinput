@@ -285,6 +285,32 @@ Note that the behavior is not defined if two or more rules have the highest
 priority at the step (2).
 
 
+------------------------------------------------------------------------------
+RULE CONVENTIONS				*smartpunc-rule-conventions*
+
+Like |i_<BS>| and |i_CTRL-H|, there are several keys which does the same
+effects.  If you want to define rules for such keys,
+
+* Use the most descriptive keys for "char"s of rules.
+* Map other keys to trigger rules for the descriptive keys.
+
+For example, if you want to define rules on both |i_<BS>| and |i_CTRL-H|,
+
+* Define rules only for <BS>.
+* Map <C-h> to trigger rules for <BS>, with the following command:
+>
+	smartpunc#map_to_trigger('<C-h>', '<BS>', '<C-h>')
+<
+This convention is to avoid rule duplication.  See also the following table:
+
+"char" keys | Mapped keys                    ~
+------------+------------------------------- ~
+<BS>        | <C-h>
+<Enter>     | <C-m> <C-j> <CR> <NL> <Return>
+<Esc>       | <C-[>
+<Tab>       | <C-i>
+
+
 
 
 ==============================================================================
