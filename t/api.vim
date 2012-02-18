@@ -476,8 +476,23 @@ describe 'The default configuration'
   end
 
   it 'should have rules to input metacharacter in strings/regexp'
-    TODO
-    " Write tests for each rules.
+    " NB: See [WHAT_MAP_EXPR_CAN_SEE] why :normal is used many times.
+    normal A\
+    normal A(b
+    normal A\
+    normal A[r
+    normal A\
+    normal A{B
+    normal A\
+    normal A<a
+    normal A\
+    normal A'sq
+    normal A\
+    normal A"dq
+    normal A\
+    normal A`bq
+    Expect getline(1, line('$')) ==# ['\(b\[r\{B\<a\''sq\"dq\`bq']
+    Expect [line('.'), col('.')] ==# [1, 25 - 1]
   end
 
   it 'should have rules to input English words'
