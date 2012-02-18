@@ -469,8 +469,10 @@ describe 'The default configuration'
   end
 
   it 'should have rules to undo the completion easily'
-    TODO
-    " Write tests for each rules.
+    execute 'normal'
+    \       "i(\<BS>b [\<BS>r {\<BS>B <\<BS>a '\<BS>sq \"\<BS>dq `\<BS>bq"
+    Expect getline(1, line('$')) ==# ['b r B a sq dq bq']
+    Expect [line('.'), col('.')] ==# [1, 17 - 1]
   end
 
   it 'should have rules to input metacharacter in strings/regexp'
