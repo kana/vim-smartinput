@@ -110,7 +110,7 @@ function! smartpunc#define_default_rules()  "{{{2
   \       'filetype': ['lisp', 'scheme']})
   call D({'at': '\%#', 'char': '''', 'input': '''''<Left>',
   \       'filetype': ['lisp', 'scheme'],
-  \       'syntax': ['String']})
+  \       'syntax': ['Constant']})
 
   " Care to write C-like syntax source code:
   " FIXME: <Return> vs <Enter> vs <CR> vs <C-m> vs <C-j>
