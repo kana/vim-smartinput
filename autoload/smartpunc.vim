@@ -112,9 +112,8 @@ function! smartpunc#define_default_rules()  "{{{2
   \       'syntax': ['Constant']})
 
   " Care to write C-like syntax source code:
-  " FIXME: <Return> vs <Enter> vs <CR> vs <C-m> vs <C-j>
-  call D({'at': '(\%#)', 'char': '<Return>',
-  \      'input': '<Return>X<Return>)<BS><Up><C-o>$<BS>'})
+  call D({'at': '(\%#)', 'char': '<Enter>',
+  \      'input': '<Enter>X<Enter>)<BS><Up><C-o>$<BS>'})
   " FIXME: Add more rules.
 
   " Add more useful rules?
@@ -147,7 +146,7 @@ function! smartpunc#map_to_trigger(lhs, rhs_char, rhs_fallback)  "{{{2
   "
   " So that a:rhs_fallback MUST be mapped from a:lhs without leaving from
   " Insert mode to keep the behavior on automatic indentation when
-  " a:rhs_fallback == '<Return>',
+  " a:rhs_fallback == '<Enter>',
   let char_expr = s:_encode_for_map_char_expr(a:rhs_char)
   let fallback_expr = s:_encode_for_map_char_expr(a:rhs_fallback)
   execute printf('inoremap %s %s  <SID>_trigger_or_fallback(%s, %s)',
@@ -333,6 +332,11 @@ function! s:set_up_the_default_configuration()
         silent! call M('<unique> ' . char, char, char)
       endfor
       silent! call M('<unique> <C-h>', '<BS>', '<C-h>')
+      silent! call M('<unique> <Return>', '<Enter>', '<Return>')
+      silent! call M('<unique> <C-m>', '<Enter>', '<C-m>')
+      silent! call M('<unique> <CR>', '<Enter>', '<CR>')
+      silent! call M('<unique> <C-j>', '<Enter>', '<C-j>')
+      silent! call M('<unique> <NL>', '<Enter>', '<NL>')
     endif
 
     let s:is_already_configured = !0

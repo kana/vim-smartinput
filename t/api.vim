@@ -450,6 +450,7 @@ describe 'The default configuration'
     \   '<BS>',
     \   '<C-H>',
     \   '<CR>',
+    \   '<NL>',
     \   '>',
     \   '[',
     \   ']',
@@ -594,11 +595,13 @@ describe 'The default configuration'
     setlocal expandtab
     Expect &l:filetype ==# 'c'
 
-    execute 'normal' "ifoo(\<Return>bar,\<Return>baz"
-    Expect getline(1, line('$')) ==# ['foo(',
-    \                                 '                bar,',
-    \                                 '                baz',
-    \                                 '   )']
-    Expect [line('.'), col('.')] ==# [3, 20 - 1]
+    for key in ["\<Enter>", "\<Return>", "\<C-m>", "\<CR>", "\<C-j>", "\<C-j>"]
+      execute 'normal' printf('ggcGfoo(%sbar,%sbaz', key, key)
+      Expect getline(1, line('$')) ==# ['foo(',
+      \                                 '                bar,',
+      \                                 '                baz',
+      \                                 '   )']
+      Expect [line('.'), col('.')] ==# [3, 20 - 1]
+    endfor
   end
 end
