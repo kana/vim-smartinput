@@ -54,9 +54,43 @@ describe 'smartpunc#clear_rules'
 end
 
 describe 'smartpunc#define_default_rules'
-  it 'should ...'
-    TODO
+  before
+    SaveContext
   end
+
+  after
+    ResetContext
+  end
+
+  it 'should define many rules'
+    call smartpunc#clear_rules()
+    Expect Ref('s:available_nrules') ==# []
+
+    call smartpunc#define_default_rules()
+    Expect Ref('s:available_nrules') !=# []
+  end
+
+  it 'should override existing rules if conflicted'
+    call smartpunc#clear_rules()
+    Expect Ref('s:available_nrules') ==# []
+
+    call smartpunc#define_rule({'at': 'x\%#', 'char': '(', 'input': '---'})
+    call smartpunc#define_rule({'at': '\%#', 'char': '(', 'input': '---'})
+    Expect len(Ref('s:available_nrules')) == 2
+
+    let unconflicted_nrule = Ref('s:available_nrules')[0]
+    let conflicted_nrule = Ref('s:available_nrules')[1]
+    Expect unconflicted_nrule.at ==# 'x\%#'
+    Expect conflicted_nrule.at ==# '\%#'
+
+    call smartpunc#define_default_rules()
+    Expect Ref('s:available_nrules') !=# []
+    Expect index(Ref('s:available_nrules'), unconflicted_nrule) != -1
+    Expect index(Ref('s:available_nrules'), conflicted_nrule) == -1
+  end
+
+  " The behavior of each rules are tested
+  " in 'The default configuration' block.
 end
 
 describe 'smartpunc#define_rule'
