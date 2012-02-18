@@ -116,6 +116,10 @@ function! smartpunc#define_default_rules()  "{{{2
   \      'input': '<Enter>X<Enter>)<BS><Up><C-o>$<BS>'})
   " FIXME: Add more rules.
 
+  " Surround operators with spaces:
+  call D({'at': '\%#', 'char': '=', 'input': ' = '})
+  call D({'at': ' = \%#', 'char': '<BS>', 'input': '<BS><BS><BS>'})
+
   " Add more useful rules?
 endfunction
 

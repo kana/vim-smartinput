@@ -451,6 +451,7 @@ describe 'The default configuration'
     \   '<C-H>',
     \   '<CR>',
     \   '<NL>',
+    \   '=',
     \   '>',
     \   '[',
     \   ']',
@@ -602,6 +603,29 @@ describe 'The default configuration'
       \                                 '                baz',
       \                                 '   )']
       Expect [line('.'), col('.')] ==# [3, 20 - 1]
+    endfor
+  end
+
+  it 'should have rules to surround operators with spaces'
+    " NB: See [WHAT_MAP_EXPR_CAN_SEE] why :normal is used many times.
+
+    for test_set in [
+    \   [
+    \     ["foo", 'foo', 1, 4 - 1],
+    \     ["=", 'foo = ', 1, 7 - 1],
+    \     ["\<BS>", 'foo', 1, 4 - 1],
+    \     ["=", 'foo = ', 1, 7 - 1],
+    \     ["bar", 'foo = bar', 1, 10 - 1],
+    \   ],
+    \ ]
+      normal S
+      let i = 0  " For debugging.
+      for [input, text, linenr, colnr] in test_set
+        let i += 1
+        execute 'normal' 'A'.input
+        Expect [i, getline(1, line('$'))] ==# [i, [text]]
+        Expect [i, [line('.'), col('.')]] ==# [i, [linenr, colnr]]
+      endfor
     endfor
   end
 end
