@@ -582,7 +582,15 @@ describe 'The default configuration'
   end
 
   it 'should have rules to write C-like syntax source code'
-    TODO
-    " Write tests for each rules.
+    setfiletype c
+    setlocal expandtab
+    Expect &l:filetype ==# 'c'
+
+    execute 'normal' "ifoo(\<Return>bar,\<Return>baz"
+    Expect getline(1, line('$')) ==# ['foo(',
+    \                                 '                bar,',
+    \                                 '                baz',
+    \                                 '   )']
+    Expect [line('.'), col('.')] ==# [3, 20 - 1]
   end
 end
