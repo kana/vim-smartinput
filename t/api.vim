@@ -423,9 +423,12 @@ describe 'smartpunc#map_to_trigger'
 end
 
 describe 'The default configuration'
-  it 'should define many rules by default'
-    TODO
-    " Write tests for each rules.
+  before
+    new
+  end
+
+  after
+    close!
   end
 
   it 'should define necessary key mappings to trigger smart input assistants'
@@ -451,5 +454,40 @@ describe 'The default configuration'
     \   '{',
     \   '}',
     \ ]
+  end
+
+  it 'should have rules to complete corresponding characters'
+    TODO
+    " Write tests for each rules.
+  end
+
+  it 'should have rules to leave the current block easily'
+    TODO
+    " Write tests for each rules.
+  end
+
+  it 'should have rules to undo the completion easily'
+    TODO
+    " Write tests for each rules.
+  end
+
+  it 'should have rules to input metacharacter in strings/regexp'
+    TODO
+    " Write tests for each rules.
+  end
+
+  it 'should have rules to input English words'
+    TODO
+    " Write tests for each rules.
+  end
+
+  it 'should have rules to write Lisp/Scheme source code'
+    TODO
+    " Write tests for each rules.
+  end
+
+  it 'should have rules to write C-like syntax source code'
+    TODO
+    " Write tests for each rules.
   end
 end
