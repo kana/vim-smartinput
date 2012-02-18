@@ -457,8 +457,9 @@ describe 'The default configuration'
   end
 
   it 'should have rules to complete corresponding characters'
-    TODO
-    " Write tests for each rules.
+    normal i(b[r{B<a'sq"dq`bq
+    Expect getline(1, line('$')) ==# ['(b[r{B<a''sq"dq`bq`"''>}])']
+    Expect [line('.'), col('.')] ==# [1, 18 - 1]
   end
 
   it 'should have rules to leave the current block easily'
