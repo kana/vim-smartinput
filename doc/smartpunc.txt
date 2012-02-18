@@ -195,11 +195,20 @@ a |Dictionary| which contains the following items:
 
 "syntax" (list of strings) (optional)
 	Specifies the context to use the smart input assistant.
-	This value is a list of syntax names like "Comment", "String" etc.
+	This value is a list of syntax names like "Comment", "Constant" etc.
 	The smart input assistant will be used if:
 	
 	- This item is not given, or
 	- The cursor position is highlighted as one of this value.
+
+	See also |group-name| for examples of available values.
+	Note that only "wide" syntax items are effective.  In other words,
+	syntax items which is linked to another is not effective, and they
+	will never be matched.  For example:
+
+	* "Constant" is effective because it is not linked to anything.
+	* "String" is not effective because it is linked to "Constant".
+	* "lispString" is not effective because it is linked to "String".
 
 
 ------------------------------------------------------------------------------
@@ -247,7 +256,7 @@ For example:
 
 	{'at': '\%#', 'char': "'", 'input': "'", ~
 	 'filetype': ['lisp', 'scheme'], ~
-	 'syntax': ['Comment', 'String']} ~
+	 'syntax': ['Comment', 'Constant']} ~
 		(a) 3
 		(b) 100 / 2 = 50
 		(c) 100 / 2 = 50
