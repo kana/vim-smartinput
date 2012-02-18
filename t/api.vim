@@ -463,8 +463,9 @@ describe 'The default configuration'
   end
 
   it 'should have rules to leave the current block easily'
-    TODO
-    " Write tests for each rules.
+    normal i()b[]r{}B<>a''sq""dq``bq
+    Expect getline(1, line('$')) ==# ['()b[]r{}B<>a''''sq""dq``bq']
+    Expect [line('.'), col('.')] ==# [1, 25 - 1]
   end
 
   it 'should have rules to undo the completion easily'
