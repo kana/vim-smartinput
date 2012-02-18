@@ -84,7 +84,6 @@ function! smartpunc#define_default_rules()  "{{{2
   call D({'at': '`\%#`', 'char': '`', 'input': '<Right>'})
 
   " Undo the completion easily:
-  " FIXME: <BS> vs <C-h>
   call D({'at': '(\%#)', 'char': '<BS>', 'input': '<BS><Del>'})
   call D({'at': '\[\%#\]', 'char': '<BS>', 'input': '<BS><Del>'})
   call D({'at': '{\%#}', 'char': '<BS>', 'input': '<BS><Del>'})
@@ -328,10 +327,12 @@ function! s:set_up_the_default_configuration()
       endfor
       let unique_chars = keys(d)
 
+      let M = function('smartpunc#map_to_trigger')
       for char in unique_chars
         " Do not override existing key mappings.
-        silent! call smartpunc#map_to_trigger('<unique> ' . char, char, char)
+        silent! call M('<unique> ' . char, char, char)
       endfor
+      silent! call M('<unique> <C-h>', '<BS>', '<C-h>')
     endif
 
     let s:is_already_configured = !0

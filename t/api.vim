@@ -448,6 +448,7 @@ describe 'The default configuration'
     \   ')',
     \   '<',
     \   '<BS>',
+    \   '<C-H>',
     \   '<CR>',
     \   '>',
     \   '[',
@@ -472,7 +473,14 @@ describe 'The default configuration'
 
   it 'should have rules to undo the completion easily'
     execute 'normal'
-    \       "i(\<BS>b [\<BS>r {\<BS>B <\<BS>a '\<BS>sq \"\<BS>dq `\<BS>bq"
+    \       "S(\<BS>b [\<BS>r {\<BS>B <\<BS>a"
+    \       "'\<BS>sq \"\<BS>dq `\<BS>bq"
+    Expect getline(1, line('$')) ==# ['b r B a sq dq bq']
+    Expect [line('.'), col('.')] ==# [1, 17 - 1]
+
+    execute 'normal'
+    \       "S(\<C-h>b [\<C-h>r {\<C-h>B <\<C-h>a"
+    \       "'\<C-h>sq \"\<C-h>dq `\<C-h>bq"
     Expect getline(1, line('$')) ==# ['b r B a sq dq bq']
     Expect [line('.'), col('.')] ==# [1, 17 - 1]
   end
