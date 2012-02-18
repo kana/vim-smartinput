@@ -619,6 +619,18 @@ describe 'The default configuration'
     \     ["\<BS>", 'foo = ', 1, 7 - 1],
     \     ["bar", 'foo = bar', 1, 10 - 1],
     \   ],
+    \   [
+    \     ["!", '!', 1, 2 - 1],
+    \     ["foo", '!foo', 1, 5 - 1],
+    \   ],
+    \   [
+    \     ["foo", 'foo', 1, 4 - 1],
+    \     ["!", 'foo!', 1, 5 - 1],
+    \     ["=", 'foo != ', 1, 8 - 1],
+    \     ["\<BS>", 'foo!', 1, 5 - 1],
+    \     ["=", 'foo != ', 1, 8 - 1],
+    \     ["bar", 'foo != bar', 1, 11 - 1],
+    \   ],
     \ ]
       normal S
       let i = 0  " For debugging.
