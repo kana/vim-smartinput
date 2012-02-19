@@ -467,9 +467,13 @@ describe 'The default configuration'
   end
 
   it 'should have rules to complete corresponding characters'
-    normal i(b[r{B<a'sq"dq`bq
-    Expect getline(1, line('$')) ==# ['(b[r{B<a''sq"dq`bq`"''>}])']
-    Expect [line('.'), col('.')] ==# [1, 18 - 1]
+    normal S(b[r{B'sq"dq`bq
+    Expect getline(1, line('$')) ==# ['(b[r{B''sq"dq`bq`"''}])']
+    Expect [line('.'), col('.')] ==# [1, 16 - 1]
+
+    normal S<a
+    Expect getline(1, line('$')) ==# ['<a']
+    Expect [line('.'), col('.')] ==# [1, 3 - 1]
   end
 
   it 'should have rules to leave the current block easily'

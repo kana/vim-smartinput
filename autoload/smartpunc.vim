@@ -69,7 +69,9 @@ function! smartpunc#define_default_rules()  "{{{2
   call D({'at': '\%#', 'char': '(', 'input': '()<Left>'})
   call D({'at': '\%#', 'char': '[', 'input': '[]<Left>'})
   call D({'at': '\%#', 'char': '{', 'input': '{}<Left>'})
-  call D({'at': '\%#', 'char': '<LT>', 'input': '<LT>><Left>'})
+  " This completion is not defined by default,
+  " because it is depended on the current context.
+  " call D({'at': '\%#', 'char': '<LT>', 'input': '<LT>><Left>'})
   call D({'at': '\%#', 'char': '''', 'input': '''''<Left>'})
   call D({'at': '\%#', 'char': '"', 'input': '""<Left>'})
   call D({'at': '\%#', 'char': '`', 'input': '``<Left>'})
