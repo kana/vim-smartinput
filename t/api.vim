@@ -471,26 +471,33 @@ describe 'The default configuration'
     Expect getline(1, line('$')) ==# ['(b[r{B''sq"dq`bq`"''}])']
     Expect [line('.'), col('.')] ==# [1, 16 - 1]
 
-    normal S<a
+    execute 'normal' "S\<C-v><a"
     Expect getline(1, line('$')) ==# ['<a']
     Expect [line('.'), col('.')] ==# [1, 3 - 1]
   end
 
   it 'should have rules to leave the current block easily'
-    normal i()b[]r{}B<>a''sq""dq``bq
+    execute 'normal' 'S'
+    execute 'normal' 'A()b'
+    execute 'normal' 'A[]r'
+    execute 'normal' 'A{}B'
+    execute 'normal' "A\<C-v><>a"
+    execute 'normal' "A''sq"
+    execute 'normal' 'A""dq'
+    execute 'normal' 'A``bq'
     Expect getline(1, line('$')) ==# ['()b[]r{}B<>a''''sq""dq``bq']
     Expect [line('.'), col('.')] ==# [1, 25 - 1]
   end
 
   it 'should have rules to undo the completion easily'
     execute 'normal'
-    \       "S(\<BS>b [\<BS>r {\<BS>B <\<BS>a"
+    \       "S(\<BS>b [\<BS>r {\<BS>B \<C-v><\<BS>a"
     \       "'\<BS>sq \"\<BS>dq `\<BS>bq"
     Expect getline(1, line('$')) ==# ['b r B a sq dq bq']
     Expect [line('.'), col('.')] ==# [1, 17 - 1]
 
     execute 'normal'
-    \       "S(\<C-h>b [\<C-h>r {\<C-h>B <\<C-h>a"
+    \       "S(\<C-h>b [\<C-h>r {\<C-h>B \<C-v><\<C-h>a"
     \       "'\<C-h>sq \"\<C-h>dq `\<C-h>bq"
     Expect getline(1, line('$')) ==# ['b r B a sq dq bq']
     Expect [line('.'), col('.')] ==# [1, 17 - 1]
@@ -505,7 +512,7 @@ describe 'The default configuration'
     normal A\
     normal A{B
     normal A\
-    normal A<a
+    execute 'normal' "A\<C-v><a"
     normal A\
     normal A'sq
     normal A\
@@ -684,6 +691,13 @@ describe 'The default configuration'
     \     ["=", 'foo %= ', 1, 8 - 1],
     \     ["\<BS>", 'foo % ', 1, 7 - 1],
     \     ["bar", 'foo % bar', 1, 10 - 1],
+    \   ],
+    \   [
+    \     ["foo", 'foo', 1, 4 - 1],
+    \     ["<", 'foo < ', 1, 7 - 1],
+    \     ["\<BS>", 'foo', 1, 4 - 1],
+    \     ["<", 'foo < ', 1, 7 - 1],
+    \     ["bar", 'foo < bar', 1, 10 - 1],
     \   ],
     \ ]
       normal S
