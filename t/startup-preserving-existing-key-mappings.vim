@@ -20,6 +20,7 @@ describe 'Start-up'
 
     Expect lhss ==# [
     \   '"',
+    \   '%',
     \   '''',
     \   '(',
     \   ')',
