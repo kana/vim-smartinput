@@ -459,6 +459,7 @@ describe 'The default configuration'
     \   '<NL>',
     \   '=',
     \   '>',
+    \   '?',
     \   '[',
     \   ']',
     \   '^',
@@ -772,6 +773,11 @@ describe 'The default configuration'
     \     ["=", 'foo = ', 1, 7 - 1],
     \     [">", 'foo => ', 1, 8 - 1],
     \     ["\<BS>", 'foo = ', 1, 7 - 1],
+    \   ],
+    \   [
+    \     ["foo", 'foo', 1, 4 - 1],
+    \     ["?", 'foo ? ', 1, 7 - 1],
+    \     ["\<BS>", 'foo', 1, 4 - 1],
     \   ],
     \ ]
       normal S
