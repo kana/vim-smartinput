@@ -39,6 +39,7 @@ describe 'Start-up'
     \   ']',
     \   '`',
     \   '{',
+    \   '|',
     \   '}',
     \ ]
     Expect maparg('(', 'i') ==# '((('
