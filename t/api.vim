@@ -786,6 +786,14 @@ describe 'The default configuration'
     \     ["\<C-w>", 'foo ? ', 1, 7 - 1],
     \     ["\<BS>", 'foo', 1, 4 - 1],
     \   ],
+    \   [
+    \     ["case foo", 'case foo', 1, 9 - 1],
+    \     [":", 'case foo:', 1, 10 - 1],
+    \   ],
+    \   [
+    \     ["default", 'default', 1, 8 - 1],
+    \     [":", 'default:', 1, 9 - 1],
+    \   ],
     \ ]
       normal S
       let i = 0  " For debugging.

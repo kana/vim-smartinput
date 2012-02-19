@@ -197,6 +197,8 @@ function! smartpunc#define_default_rules()  "{{{2
   call D({'at': ' ?? \%#', 'char': '<BS>', 'input': '<BS><BS><BS><BS> ? '})
   call D({'at': '\%#', 'char': ':', 'input': ' : '})
   call D({'at': ' : \%#', 'char': '<BS>', 'input': '<BS><BS><BS>'})
+  call D({'at': '\C\<case\>.*\%#', 'char': ':', 'input': ':'})
+  call D({'at': '\C\<default\>.*\%#', 'char': ':', 'input': ':'})
 
   " Add more useful rules?
 endfunction
