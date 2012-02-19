@@ -127,6 +127,8 @@ function! smartpunc#define_default_rules()  "{{{2
   call D({'at': ' + \%#', 'char': '<BS>', 'input': '<BS><BS><BS>'})
   call D({'at': '\%#', 'char': '-', 'input': ' - '})
   call D({'at': ' - \%#', 'char': '<BS>', 'input': '<BS><BS><BS>'})
+  call D({'at': '\%#', 'char': '*', 'input': ' * '})
+  call D({'at': ' \* \%#', 'char': '<BS>', 'input': '<BS><BS><BS>'})
 
   " Add more useful rules?
 endfunction
