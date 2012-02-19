@@ -778,6 +778,8 @@ describe 'The default configuration'
     \   [
     \     ["foo", 'foo', 1, 4 - 1],
     \     ["?", 'foo ? ', 1, 7 - 1],
+    \     ["?", 'foo ?? ', 1, 8 - 1],
+    \     ["\<BS>", 'foo ? ', 1, 7 - 1],
     \     ["bar", 'foo ? bar', 1, 10 - 1],
     \     [":", 'foo ? bar : ', 1, 13 - 1],
     \     ["\<BS>", 'foo ? bar', 1, 10 - 1],
