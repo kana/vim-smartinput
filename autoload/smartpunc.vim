@@ -116,12 +116,10 @@ function! smartpunc#define_default_rules()  "{{{2
   call urules.add('English', [
   \   {'at': '\w\%#', 'char': '''', 'input': ''''},
   \ ])
-  call urules.add('Lisp/Scheme', [
-  \   {'at': '\%#', 'char': '''', 'input': '''',
-  \    'filetype': ['lisp', 'scheme']},
+  call urules.add('Lisp quote', [
+  \   {'at': '\%#', 'char': '''', 'input': ''''},
   \   {'at': '\%#', 'char': '''', 'input': '''''<Left>',
-  \    'syntax': ['Constant'],
-  \    'filetype': ['lisp', 'scheme']},
+  \    'syntax': ['Constant']},
   \ ])
   " FIXME: Add more rules like '(<Enter>)'
   call urules.add('(<Enter>)', [
@@ -295,10 +293,98 @@ function! smartpunc#define_default_rules()  "{{{2
   \ ])
   "}}}
 
-  for name in urules.names
-    for urule in urules.table[name]
+  " ft_urule_sets_table... "{{{
+  let ft_urule_sets_table = {
+  \   '*': [
+  \     urules.table['()'],
+  \     urules.table['[]'],
+  \     urules.table['{}'],
+  \     urules.table['<>'],
+  \     urules.table[''''''],
+  \     urules.table['""'],
+  \     urules.table['``'],
+  \     urules.table['English'],
+  \     urules.table['(<Enter>)'],
+  \     urules.table['='],
+  \     urules.table['=='],
+  \     urules.table['==='],
+  \     urules.table['=>'],
+  \     urules.table['=~'],
+  \     urules.table['!='],
+  \     urules.table['!=='],
+  \     urules.table['!~'],
+  \     urules.table['+'],
+  \     urules.table['+='],
+  \     urules.table['++'],
+  \     urules.table['-'],
+  \     urules.table['-='],
+  \     urules.table['--'],
+  \     urules.table['*'],
+  \     urules.table['*='],
+  \     urules.table['/'],
+  \     urules.table['/='],
+  \     urules.table['%'],
+  \     urules.table['%='],
+  \     urules.table['<'],
+  \     urules.table['<='],
+  \     urules.table['<=>'],
+  \     urules.table['<<'],
+  \     urules.table['<<='],
+  \     urules.table['>'],
+  \     urules.table['>='],
+  \     urules.table['>>'],
+  \     urules.table['>>='],
+  \     urules.table['|'],
+  \     urules.table['|='],
+  \     urules.table['||'],
+  \     urules.table['&'],
+  \     urules.table['&='],
+  \     urules.table['&&'],
+  \     urules.table['^'],
+  \     urules.table['^='],
+  \     urules.table['?'],
+  \     urules.table['??'],
+  \     urules.table[':'],
+  \     urules.table['case:'],
+  \     urules.table['default:'],
+  \   ],
+  \   'lisp': [
+  \     urules.table['Lisp quote'],
+  \   ],
+  \   'scheme': [
+  \     urules.table['Lisp quote'],
+  \   ],
+  \ }
+  "}}}
+
+  for urule_set in ft_urule_sets_table['*']
+    for urule in urule_set
       call smartpunc#define_rule(urule)
     endfor
+  endfor
+
+  let overlaied_urules = {}
+  let overlaied_urules.pairs = []  " [(URule, [FileType])]
+  function! overlaied_urules.add(urule, ft)
+    for [urule, fts] in self.pairs
+      if urule is a:urule
+        call add(fts, a:ft)
+        return
+      endif
+    endfor
+    call add(self.pairs, [a:urule, [a:ft]])
+  endfunction
+  for ft in filter(keys(ft_urule_sets_table), 'v:val != "*"')
+    for urule_set in ft_urule_sets_table[ft]
+      for urule in urule_set
+        call overlaied_urules.add(urule, ft)
+      endfor
+    endfor
+  endfor
+  for [urule, fts] in overlaied_urules.pairs
+    let completed_urule = copy(urule)
+    let completed_urule.filetype = fts
+    call smartpunc#define_rule(completed_urule)
   endfor
 
   " Add more useful rules?
