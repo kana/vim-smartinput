@@ -291,6 +291,34 @@ function! smartpunc#define_default_rules()  "{{{2
   call urules.add('default:', [
   \   {'at': '\C\<default\>.*\%#', 'char': ':', 'input': ':'},
   \ ])
+  call urules.add('x.y', [])
+  call urules.add('f(x)', [])
+  call urules.add('a[x]', [])
+  call urules.add('new', [])
+  call urules.add('typeof', [])
+  call urules.add('checked', [])
+  call urules.add('unchecked', [])
+  call urules.add('default(T)', [])
+  call urules.add('delegate', [])
+  call urules.add('->', [
+  \   {'at': ' - \%#', 'char': '>', 'input': '<BS><BS><BS>->'},
+  \   {'at': '->\%#', 'char': '<BS>', 'input': '<BS><BS> - '},
+  \ ])
+  call urules.add('+ (unary)', [])
+  call urules.add('- (unary)', [])
+  call urules.add('!', [])
+  call urules.add('~', [])
+  call urules.add('(T)x', [])
+  call urules.add('true', [])
+  call urules.add('false', [])
+  call urules.add('& (dereference)', [])
+  call urules.add('sizeof', [])
+  call urules.add('is', [])
+  call urules.add('as', [])
+  call urules.add('T<T>', [
+  \   {'at': ' < \%#', 'char': '>', 'input': '<BS><BS><BS><LT>><Left>'},
+  \   {'at': '<\%#>', 'char': '<BS>', 'input': '<BS><Del>'},
+  \ ])
   "}}}
 
   " ft_urule_sets_table... "{{{
@@ -349,6 +377,78 @@ function! smartpunc#define_default_rules()  "{{{2
   \     urules.table[':'],
   \     urules.table['case:'],
   \     urules.table['default:'],
+  \   ],
+  \   'cs': [
+  \     urules.table['x.y'],
+  \     urules.table['f(x)'],
+  \     urules.table['a[x]'],
+  \     urules.table['++'],
+  \     urules.table['--'],
+  \     urules.table['new'],
+  \     urules.table['typeof'],
+  \     urules.table['checked'],
+  \     urules.table['unchecked'],
+  \     urules.table['default(T)'],
+  \     urules.table['delegate'],
+  \     urules.table['->'],
+  \
+  \     urules.table['+ (unary)'],
+  \     urules.table['- (unary)'],
+  \     urules.table['!'],
+  \     urules.table['~'],
+  \     urules.table['(T)x'],
+  \     urules.table['true'],
+  \     urules.table['false'],
+  \     urules.table['& (dereference)'],
+  \     urules.table['sizeof'],
+  \
+  \     urules.table['*'],
+  \     urules.table['/'],
+  \     urules.table['%'],
+  \
+  \     urules.table['+'],
+  \     urules.table['-'],
+  \
+  \     urules.table['<<'],
+  \     urules.table['>>'],
+  \
+  \     urules.table['<'],
+  \     urules.table['>'],
+  \     urules.table['<='],
+  \     urules.table['>='],
+  \     urules.table['is'],
+  \     urules.table['as'],
+  \     urules.table['=='],
+  \     urules.table['!='],
+  \
+  \     urules.table['&'],
+  \     urules.table['^'],
+  \     urules.table['|'],
+  \
+  \     urules.table['&&'],
+  \     urules.table['||'],
+  \
+  \     urules.table['??'],
+  \     urules.table['?'],
+  \     urules.table[':'],
+  \     urules.table['case:'],
+  \     urules.table['default:'],
+  \
+  \     urules.table['='],
+  \     urules.table['+='],
+  \     urules.table['-='],
+  \     urules.table['*='],
+  \     urules.table['/='],
+  \     urules.table['%='],
+  \     urules.table['&='],
+  \     urules.table['|='],
+  \     urules.table['^='],
+  \     urules.table['<<='],
+  \     urules.table['>>='],
+  \
+  \     urules.table['=>'],
+  \
+  \     urules.table['T<T>'],
   \   ],
   \   'lisp': [
   \     urules.table['Lisp quote'],
