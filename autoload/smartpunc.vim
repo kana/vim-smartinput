@@ -305,6 +305,8 @@ function! smartpunc#define_default_rules()  "{{{2
   \     urules.table['``'],
   \     urules.table['English'],
   \     urules.table['(<Enter>)'],
+  \   ],
+  \   'for_test_transition': [
   \     urules.table['='],
   \     urules.table['=='],
   \     urules.table['==='],

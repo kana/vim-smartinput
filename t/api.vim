@@ -628,8 +628,9 @@ describe 'The default configuration'
     endfor
   end
 
-  it 'should have rules to surround operators with spaces'
+  it 'should have rules to input operators easily'
     " NB: See [WHAT_MAP_EXPR_CAN_SEE] why :normal is used many times.
+    setfiletype for_test_transition
 
     for test_set in [
     \   [
