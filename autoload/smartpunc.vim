@@ -450,6 +450,13 @@ function! smartpunc#define_default_rules()  "{{{2
   \
   \     urules.table['T<T>'],
   \   ],
+  \   'javascript': [
+  \     urules.table['='],
+  \     urules.table['=='],
+  \     urules.table['==='],
+  \     urules.table['!='],
+  \     urules.table['!=='],
+  \   ],
   \   'lisp': [
   \     urules.table['Lisp quote'],
   \   ],
