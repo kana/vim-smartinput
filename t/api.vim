@@ -474,6 +474,13 @@ describe 'The default configuration'
     \     ["\<BS>", ['x!'], 1, 3 - 1],
     \     ["\<BS>", ['x'], 1, 2 - 1],
     \   ],
+    \   '!~': [
+    \     ["x", ['x'], 1, 2 - 1],
+    \     ["!", ['x!'], 1, 3 - 1],
+    \     ["~", ['x !~ '], 1, 6 - 1],
+    \     ["\<BS>", ['x!'], 1, 3 - 1],
+    \     ["\<BS>", ['x'], 1, 2 - 1],
+    \   ],
     \   '%': [
     \     ["x", ['x'], 1, 2 - 1],
     \     ["%", ['x % '], 1, 5 - 1],
@@ -636,6 +643,13 @@ describe 'The default configuration'
     \     ["x", ['x'], 1, 2 - 1],
     \     ["=", ['x = '], 1, 5 - 1],
     \     [">", ['x => '], 1, 6 - 1],
+    \     ["\<BS>", ['x = '], 1, 5 - 1],
+    \     ["\<BS>", ['x'], 1, 2 - 1],
+    \   ],
+    \   '=~': [
+    \     ["x", ['x'], 1, 2 - 1],
+    \     ["=", ['x = '], 1, 5 - 1],
+    \     ["~", ['x =~ '], 1, 6 - 1],
     \     ["\<BS>", ['x = '], 1, 5 - 1],
     \     ["\<BS>", ['x'], 1, 2 - 1],
     \   ],
@@ -1208,6 +1222,17 @@ describe 'The default configuration'
     \   '===',
     \   '!=',
     \   '!==',
+    \ ])
+  end
+
+  it 'should have rules to input operators easily in Vim script'
+    setfiletype vim
+
+    " FIXME: Add more rules and tests.
+    call b:.test_rules([
+    \   '=',
+    \   '=~',
+    \   '!~',
     \ ])
   end
 end

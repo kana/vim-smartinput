@@ -463,6 +463,11 @@ function! smartpunc#define_default_rules()  "{{{2
   \   'scheme': [
   \     urules.table['Lisp quote'],
   \   ],
+  \   'vim': [
+  \     urules.table['='],
+  \     urules.table['=~'],
+  \     urules.table['!~'],
+  \   ],
   \ }
   "}}}
 
