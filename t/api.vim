@@ -429,7 +429,24 @@ describe 'The default configuration'
     new
 
     function! b:.test_rules(test_set_names)
-      " NB: See [WHAT_MAP_EXPR_CAN_SEE] why :normal is used many times.
+      " NB: [WHAT_MAP_EXPR_CAN_SEE] For some reason, ":normal SLet's" doesn't
+      " work as I expected.  When "'" is being inserted with the command,
+      " s:_trigger_or_fallback is called with the following context:
+      "
+      " * getline('.') ==# ''
+      " * [line('.'), col('.')] == [1, 1]
+      "
+      " So that the expected rule ("at" ==# '\w\%#') is NOT selected.
+      "
+      " But when "'" is being inserted with interactively typed "Let's",
+      " s:_trigger_or_fallback is called with the following context:
+      "
+      " * getline('.') ==# 'Let'
+      " * [line('.'), col('.')] == [1, 4]
+      "
+      " So that the expected rule ("at" ==# '\w\%#') is selected.
+      "
+      " To avoid the problem, split :normal at the trigger character.
       for test_set in map(copy(a:test_set_names), 'b:test_set_table[v:val]')
         % delete _
         let i = 0  " For debugging.
@@ -467,6 +484,14 @@ describe 'The default configuration'
     \     ["\<BS>", ['x!'], 1, 3 - 1],
     \     ["\<BS>", ['x'], 1, 2 - 1],
     \   ],
+    \   '""': [
+    \     ["\"", ['""'], 1, 2 - 1],
+    \     ["\"", ['""'], 1, 3 - 1],
+    \     ["\<Left>", ['""'], 1, 2 - 1],
+    \     ["\<BS>", [''], 1, 2 - 1],
+    \     ["\\", ['\'], 1, 2 - 1],
+    \     ["\"", ['\"'], 1, 3 - 1],
+    \   ],
     \   '%': [
     \     ["x", ['x'], 1, 2 - 1],
     \     ["%", ['x % '], 1, 5 - 1],
@@ -498,6 +523,22 @@ describe 'The default configuration'
     \     ["=", ['x &= '], 1, 6 - 1],
     \     ["\<BS>", ['x & '], 1, 5 - 1],
     \     ["\<BS>", ['x'], 1, 2 - 1],
+    \   ],
+    \   '''''': [
+    \     ["'", [''''''], 1, 2 - 1],
+    \     ["'", [''''''], 1, 3 - 1],
+    \     ["\<Left>", [''''''], 1, 2 - 1],
+    \     ["\<BS>", [''], 1, 2 - 1],
+    \     ["\\", ['\'], 1, 2 - 1],
+    \     ["'", ['\'''], 1, 3 - 1],
+    \   ],
+    \   '()': [
+    \     ["(", ['()'], 1, 2 - 1],
+    \     [")", ['()'], 1, 3 - 1],
+    \     ["\<Left>", ['()'], 1, 2 - 1],
+    \     ["\<BS>", [''], 1, 2 - 1],
+    \     ["\\", ['\'], 1, 2 - 1],
+    \     ["(", ['\('], 1, 3 - 1],
     \   ],
     \   '(T)x': [],
     \   '*': [
@@ -613,6 +654,14 @@ describe 'The default configuration'
     \     ["\<BS>", ['x < '], 1, 5 - 1],
     \     ["\<BS>", ['x'], 1, 2 - 1],
     \   ],
+    \   '<>': [
+    \     ["<", ['<>'], 1, 2 - 1],
+    \     [">", ['<>'], 1, 3 - 1],
+    \     ["\<Left>", ['<>'], 1, 2 - 1],
+    \     ["\<BS>", [''], 1, 2 - 1],
+    \     ["\\", ['\'], 1, 2 - 1],
+    \     ["<", ['\<'], 1, 3 - 1],
+    \   ],
     \   '=': [
     \     ["x", ['x'], 1, 2 - 1],
     \     ["=", ['x = '], 1, 5 - 1],
@@ -700,11 +749,35 @@ describe 'The default configuration'
     \     ["\<BS>", ['x ^ '], 1, 5 - 1],
     \     ["\<BS>", ['x'], 1, 2 - 1],
     \   ],
+    \   'English': [
+    \     ["Let", ['Let'], 1, 4 - 1],
+    \     ["'", ['Let'''], 1, 5 - 1],
+    \     ["s", ['Let''s'], 1, 6 - 1],
+    \     [" ", ['Let''s '], 1, 7 - 1],
+    \     ["'", ['Let''s '''''], 1, 8 - 1],
+    \     ["quote", ['Let''s ''quote'''], 1, 13 - 1],
+    \   ],
     \   'T<T>': [
     \     ["Enumerable.Empty", ['Enumerable.Empty'], 1, 17 - 1],
     \     ["<", ['Enumerable.Empty < '], 1, 20 - 1],
     \     [">", ['Enumerable.Empty<>'], 1, 18 - 1],
     \     ["\<BS>", ['Enumerable.Empty'], 1, 17 - 1],
+    \   ],
+    \   '[]': [
+    \     ["[", ['[]'], 1, 2 - 1],
+    \     ["]", ['[]'], 1, 3 - 1],
+    \     ["\<Left>", ['[]'], 1, 2 - 1],
+    \     ["\<BS>", [''], 1, 2 - 1],
+    \     ["\\", ['\'], 1, 2 - 1],
+    \     ["[", ['\['], 1, 3 - 1],
+    \   ],
+    \   '``': [
+    \     ["`", ['``'], 1, 2 - 1],
+    \     ["`", ['``'], 1, 3 - 1],
+    \     ["\<Left>", ['``'], 1, 2 - 1],
+    \     ["\<BS>", [''], 1, 2 - 1],
+    \     ["\\", ['\'], 1, 2 - 1],
+    \     ["`", ['\`'], 1, 3 - 1],
     \   ],
     \   'a[x]': [],
     \   'as': [],
@@ -730,6 +803,14 @@ describe 'The default configuration'
     \   'typeof': [],
     \   'unchecked': [],
     \   'x.y': [],
+    \   '{}': [
+    \     ["{", ['{}'], 1, 2 - 1],
+    \     ["}", ['{}'], 1, 3 - 1],
+    \     ["\<Left>", ['{}'], 1, 2 - 1],
+    \     ["\<BS>", [''], 1, 2 - 1],
+    \     ["\\", ['\'], 1, 2 - 1],
+    \     ["{", ['\{'], 1, 3 - 1],
+    \   ],
     \   '|': [
     \     ["x", ['x'], 1, 2 - 1],
     \     ["|", ['x | '], 1, 5 - 1],
@@ -796,92 +877,17 @@ describe 'The default configuration'
     \ ]
   end
 
-  it 'should have rules to complete corresponding characters'
-    normal S(b[r{B'sq"dq`bq
-    Expect getline(1, line('$')) ==# ['(b[r{B''sq"dq`bq`"''}])']
-    Expect [line('.'), col('.')] ==# [1, 16 - 1]
-
-    execute 'normal' "S\<C-v><a"
-    Expect getline(1, line('$')) ==# ['<a']
-    Expect [line('.'), col('.')] ==# [1, 3 - 1]
-  end
-
-  it 'should have rules to leave the current block easily'
-    execute 'normal' 'S'
-    execute 'normal' 'A()b'
-    execute 'normal' 'A[]r'
-    execute 'normal' 'A{}B'
-    execute 'normal' "A\<C-v><\<C-v>>a"
-    execute 'normal' "A''sq"
-    execute 'normal' 'A""dq'
-    execute 'normal' 'A``bq'
-    Expect getline(1, line('$')) ==# ['()b[]r{}B<>a''''sq""dq``bq']
-    Expect [line('.'), col('.')] ==# [1, 25 - 1]
-  end
-
-  it 'should have rules to undo the completion easily'
-    execute 'normal'
-    \       "S(\<BS>b [\<BS>r {\<BS>B \<C-v><\<BS>a"
-    \       "'\<BS>sq \"\<BS>dq `\<BS>bq"
-    Expect getline(1, line('$')) ==# ['b r B a sq dq bq']
-    Expect [line('.'), col('.')] ==# [1, 17 - 1]
-
-    execute 'normal'
-    \       "S(\<C-h>b [\<C-h>r {\<C-h>B \<C-v><\<C-h>a"
-    \       "'\<C-h>sq \"\<C-h>dq `\<C-h>bq"
-    Expect getline(1, line('$')) ==# ['b r B a sq dq bq']
-    Expect [line('.'), col('.')] ==# [1, 17 - 1]
-  end
-
-  it 'should have rules to input metacharacter in strings/regexp'
-    " NB: See [WHAT_MAP_EXPR_CAN_SEE] why :normal is used many times.
-    normal A\
-    normal A(b
-    normal A\
-    normal A[r
-    normal A\
-    normal A{B
-    normal A\
-    execute 'normal' "A\<C-v><a"
-    normal A\
-    normal A'sq
-    normal A\
-    normal A"dq
-    normal A\
-    normal A`bq
-    Expect getline(1, line('$')) ==# ['\(b\[r\{B\<a\''sq\"dq\`bq']
-    Expect [line('.'), col('.')] ==# [1, 25 - 1]
-  end
-
-  it 'should have rules to input English words'
-    " NB: [WHAT_MAP_EXPR_CAN_SEE] For some reason, ":normal SLet's" doesn't
-    " work as I expected.  When "'" is being inserted with the command,
-    " s:_trigger_or_fallback is called with the following context:
-    "
-    " * getline('.') ==# ''
-    " * [line('.'), col('.')] == [1, 1]
-    "
-    " So that the expected rule ("at" ==# '\w\%#') is NOT selected.
-    "
-    " But when "'" is being inserted with interactively typed "Let's",
-    " s:_trigger_or_fallback is called with the following context:
-    "
-    " * getline('.') ==# 'Let'
-    " * [line('.'), col('.')] == [1, 4]
-    "
-    " So that the expected rule ("at" ==# '\w\%#') is selected.
-    "
-    " To avoid the problem, split :normal at the trigger character.
-
-    normal SLet
-    normal A's
-    Expect getline(1, line('$')) ==# ["Let's"]
-    Expect [line('.'), col('.')] ==# [1, 6 - 1]
-
-    execute 'normal' "A quote words "
-    execute 'normal' "A'like this"
-    Expect getline(1, line('$')) ==# ["Let's quote words 'like this'"]
-    Expect [line('.'), col('.')] ==# [1, 29 - 1]
+  it 'should have generic rules for all filetypes'
+    call b:.test_rules([
+    \   '()',
+    \   '[]',
+    \   '{}',
+    \   '<>',
+    \   '''''',
+    \   '""',
+    \   '``',
+    \   'English',
+    \ ])
   end
 
   it 'should have rules to write Lisp/Scheme source code'
