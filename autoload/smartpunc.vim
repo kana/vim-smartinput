@@ -460,6 +460,11 @@ function! smartpunc#define_default_rules()  "{{{2
   \   'lisp': [
   \     urules.table['Lisp quote'],
   \   ],
+  \   'ruby': [
+  \     urules.table['<'],
+  \     urules.table['<='],
+  \     urules.table['<=>'],
+  \   ],
   \   'scheme': [
   \     urules.table['Lisp quote'],
   \   ],

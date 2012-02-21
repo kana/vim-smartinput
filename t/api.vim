@@ -618,6 +618,15 @@ describe 'The default configuration'
     \     ["\<BS>", ['x < '], 1, 5 - 1],
     \     ["\<BS>", ['x'], 1, 2 - 1],
     \   ],
+    \   '<=>': [
+    \     ["x", ['x'], 1, 2 - 1],
+    \     ["<", ['x < '], 1, 5 - 1],
+    \     ["=", ['x <= '], 1, 6 - 1],
+    \     [">", ['x <=> '], 1, 7 - 1],
+    \     ["\<BS>", ['x <= '], 1, 6 - 1],
+    \     ["\<BS>", ['x < '], 1, 5 - 1],
+    \     ["\<BS>", ['x'], 1, 2 - 1],
+    \   ],
     \   '=': [
     \     ["x", ['x'], 1, 2 - 1],
     \     ["=", ['x = '], 1, 5 - 1],
@@ -1222,6 +1231,17 @@ describe 'The default configuration'
     \   '===',
     \   '!=',
     \   '!==',
+    \ ])
+  end
+
+  it 'should have rules to input operators easily in Ruby'
+    setfiletype ruby
+
+    " FIXME: Add more rules and tests.
+    call b:.test_rules([
+    \   '<',
+    \   '<=',
+    \   '<=>',
     \ ])
   end
 
