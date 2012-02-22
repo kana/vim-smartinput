@@ -7,6 +7,8 @@ imapclear
 
 let g:smartpunc_no_default_key_mappings = !0
 
+runtime! plugin/smartpunc.vim
+
 call vspec#hint({'scope': 'smartpunc#scope()', 'sid': 'smartpunc#sid()'})
 
 describe 'g:smartpunc_no_default_key_mappings'

@@ -7,6 +7,8 @@ imapclear
 
 inoremap (  (((
 
+runtime! plugin/smartpunc.vim
+
 call vspec#hint({'scope': 'smartpunc#scope()', 'sid': 'smartpunc#sid()'})
 
 describe 'Start-up'

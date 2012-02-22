@@ -5,6 +5,8 @@
 " mappings, because some tests in this file assume such state.
 imapclear
 
+runtime! plugin/smartpunc.vim
+
 call vspec#hint({'scope': 'smartpunc#scope()', 'sid': 'smartpunc#sid()'})
 set backspace=indent,eol,start
 filetype plugin indent on

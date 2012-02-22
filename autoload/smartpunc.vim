@@ -654,46 +654,6 @@ endfunction
 
 
 
-" Start-up  "{{{2
-
-function! smartpunc#require()
-  " To :source this file from plugin/smartpunc.vim.
-endfunction
-
-function! s:set_up_the_default_configuration()
-  if !exists('s:is_already_configured')
-    call smartpunc#define_default_rules()
-
-    if !exists('g:smartpunc_no_default_key_mappings')
-      let all_chars = map(copy(s:available_nrules), 'v:val.char')
-      let d = {}
-      for char in all_chars
-        let d[char] = char
-      endfor
-      let unique_chars = keys(d)
-
-      let M = function('smartpunc#map_to_trigger')
-      for char in unique_chars
-        " Do not override existing key mappings.
-        silent! call M('<unique> ' . char, char, char)
-      endfor
-      silent! call M('<unique> <C-h>', '<BS>', '<C-h>')
-      silent! call M('<unique> <Return>', '<Enter>', '<Return>')
-      silent! call M('<unique> <C-m>', '<Enter>', '<C-m>')
-      silent! call M('<unique> <CR>', '<Enter>', '<CR>')
-      silent! call M('<unique> <C-j>', '<Enter>', '<C-j>')
-      silent! call M('<unique> <NL>', '<Enter>', '<NL>')
-    endif
-
-    let s:is_already_configured = !0
-  endif
-endfunction
-
-call s:set_up_the_default_configuration()
-
-
-
-
 "{{{2
 
 
