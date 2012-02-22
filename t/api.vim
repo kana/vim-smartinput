@@ -123,6 +123,18 @@ describe 'smartpunc#define_rule'
     \   'syntax': ['String', 'Comment'],
     \ }
     let b:nruleBd = Call('s:normalize_rule', b:uruleBd)
+    let b:uruleC1 = {
+    \   'at': ' + \%#',
+    \   'char': '+',
+    \   'input': '<BS><BS><BS>++',
+    \ }
+    let b:nruleC1 = Call('s:normalize_rule', b:uruleC1)
+    let b:uruleC2 = {
+    \   'at': '\S \%#',
+    \   'char': '+',
+    \   'input': '+ ',
+    \ }
+    let b:nruleC2 = Call('s:normalize_rule', b:uruleC2)
   end
 
   after
@@ -191,6 +203,36 @@ describe 'smartpunc#define_rule'
     call smartpunc#define_rule(b:uruleB)
     call smartpunc#define_rule(b:uruleA)
     Expect Ref('s:available_nrules') ==# [b:nruleB, b:nruleA]
+  end
+
+  it 'should sort defined rules by "priority" and "at" in descending order (1)'
+    Expect b:nruleC1.priority == b:nruleC2.priority
+    Expect b:nruleC1.at <# b:nruleC2.at
+
+    " Because of the default configuration.
+    Expect Ref('s:available_nrules') !=# []
+
+    call Set('s:available_nrules', [])
+    Expect Ref('s:available_nrules') ==# []
+
+    call smartpunc#define_rule(b:uruleC1)
+    call smartpunc#define_rule(b:uruleC2)
+    Expect Ref('s:available_nrules') ==# [b:nruleC2, b:nruleC1]
+  end
+
+  it 'should sort defined rules by "priority" and "at" in descending order (2)'
+    Expect b:nruleC1.priority == b:nruleC2.priority
+    Expect b:nruleC1.at <# b:nruleC2.at
+
+    " Because of the default configuration.
+    Expect Ref('s:available_nrules') !=# []
+
+    call Set('s:available_nrules', [])
+    Expect Ref('s:available_nrules') ==# []
+
+    call smartpunc#define_rule(b:uruleC2)
+    call smartpunc#define_rule(b:uruleC1)
+    Expect Ref('s:available_nrules') ==# [b:nruleC2, b:nruleC1]
   end
 end
 

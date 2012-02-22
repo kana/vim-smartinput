@@ -281,8 +281,9 @@ the current context with the following steps:
 (2) If two or more rules are selected at the step (1),
     select the rule with the highest |smartpunc-rule-priority|.
 
-Note that the behavior is not defined if two or more rules have the highest
-priority at the step (2).
+(3) If two or more rules are selected at the step (2),
+    select the rule with the greatest "at".
+    Note that this step is just to avoid unstable selection.
 
 
 ------------------------------------------------------------------------------

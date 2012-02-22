@@ -461,7 +461,17 @@ function! smartpunc#define_rule(urule)  "{{{2
 endfunction
 
 function! s:nrule_comparer_desc(nrule1, nrule2)
-  return a:nrule2.priority - a:nrule1.priority
+  let c = a:nrule2.priority - a:nrule1.priority
+  if c != 0
+    return c
+  endif
+
+  let c = a:nrule2.at <# a:nrule1.at
+  if c != 0
+    return -1
+  endif
+
+  return a:nrule2.at ==# a:nrule1.at ? 0 : 1
 endfunction
 
 
