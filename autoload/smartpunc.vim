@@ -125,26 +125,6 @@ function! smartpunc#define_default_rules()  "{{{2
   call urules.add('(<Enter>)', [
   \   {'at': '(\%#)', 'char': '<Enter>', 'input': '<Enter>X<Enter>)<BS><Up><C-o>$<BS>'},
   \ ])
-  call urules.add('===', [
-  \   {'at': ' == \%#', 'char': '=', 'input': '<BS><BS><BS><BS> === '},
-  \   {'at': ' === \%#', 'char': '<BS>', 'input': '<BS><BS><BS><BS><BS> == '},
-  \ ])
-  call urules.add('!==', [
-  \   {'at': ' != \%#', 'char': '=', 'input': '<BS><BS><BS><BS> !== '},
-  \   {'at': ' !== \%#', 'char': '<BS>', 'input': '<BS><BS><BS><BS><BS> != '},
-  \ ])
-  call urules.add('<=>', [
-  \   {'at': ' <= \%#', 'char': '>', 'input': '<BS><BS><BS><BS> <LT>=> '},
-  \   {'at': ' <=> \%#', 'char': '<BS>', 'input': '<BS><BS><BS><BS><BS> <LT>= '},
-  \ ])
-  call urules.add('<<=', [
-  \   {'at': ' << \%#', 'char': '=', 'input': '<BS><BS><BS><BS> <LT><LT>= '},
-  \   {'at': ' <<= \%#', 'char': '<BS>', 'input': '<BS><BS><BS><BS><BS> <LT><LT> '},
-  \ ])
-  call urules.add('>>=', [
-  \   {'at': ' >> \%#', 'char': '=', 'input': '<BS><BS><BS><BS> >>= '},
-  \   {'at': ' >>= \%#', 'char': '<BS>', 'input': '<BS><BS><BS><BS><BS> >> '},
-  \ ])
   call urules.add('case:', [
   \   {'at': '\C\<case\>.*\%#', 'char': ':', 'input': ':'},
   \ ])
@@ -285,6 +265,28 @@ function! smartpunc#define_default_rules()  "{{{2
     call urules.add(rule_set_name, [
     \   {'at': '\V '.p1.' \%#', 'char': kt, 'input': bs3.k2},
     \   {'at': '\V'.p2.'\%#', 'char': '<BS>', 'input': bs2.' '.k1.' '},
+    \ ])
+  endfor
+  "}}}
+  " Triple-character operator rules  "{{{
+  for operator_name in [
+  \   '===',
+  \   '!==',
+  \   '<=>',
+  \   '<<=',
+  \   '>>=',
+  \ ]
+    let rule_set_name = operator_name
+    let kt = s:_operator_key_from(operator_name[2])
+    let k2 = s:_operator_key_from(operator_name[:1])
+    let k3 = s:_operator_key_from(operator_name)
+    let p2 = s:_operator_pattern_from(operator_name[:1])
+    let p3 = s:_operator_pattern_from(operator_name)
+    let bs4 = repeat('<BS>', 4)
+    let bs5 = repeat('<BS>', 5)
+    call urules.add(rule_set_name, [
+    \   {'at': '\V '.p2.' \%#', 'char': kt, 'input': bs4.' '.k3.' '},
+    \   {'at': '\V '.p3.' \%#', 'char': '<BS>', 'input': bs5.' '.k2.' '},
     \ ])
   endfor
   "}}}
