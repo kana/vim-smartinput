@@ -291,6 +291,7 @@ function! smartpunc#define_default_rules()  "{{{2
     call urules.add(rule_set_name, [
     \   {'at': '\V '.p2.' \%#', 'char': kt, 'input': bs4.' '.k3.' '},
     \   {'at': '\V '.p3.' \%#', 'char': '<BS>', 'input': bs5.' '.k2.' '},
+    \   {'at': '\V '.p3.' \%#', 'char': '<Space>', 'input': ''},
     \ ])
   endfor
   "}}}
