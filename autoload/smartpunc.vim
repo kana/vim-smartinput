@@ -152,19 +152,19 @@ function! smartpunc#define_default_rules()  "{{{2
   call urules.add('is', [])
   call urules.add('as', [])
   call urules.add('T<T>', [
-  \   {'at': ' < \%#', 'char': '>', 'input': '<BS><BS><BS><LT>><Left>'},
+  \   {'at': '\V\V < \%#', 'char': '>', 'input': '<BS><BS><BS><LT>><Left>'},
   \   {'at': '<\%#>', 'char': '<BS>', 'input': '<BS><Del>'},
   \ ])
   call urules.add('// comment', [
-  \   {'at': ' / \%#', 'char': '/', 'input': '<BS><BS><BS>// '},
+  \   {'at': '\V\V / \%#', 'char': '/', 'input': '<BS><BS><BS>// '},
   \   {'at': '// \%#', 'char': '<BS>', 'input': '<BS><BS><BS> / '},
   \ ])
   call urules.add('/// comment', [
-  \   {'at': '// \%#', 'char': '/', 'input': '<BS><BS><BS>/// '},
+  \   {'at': '\V\V// \%#', 'char': '/', 'input': '<BS><BS><BS>/// '},
   \   {'at': '/// \%#', 'char': '<BS>', 'input': '<BS><BS><BS><BS>// '},
   \ ])
   call urules.add('/* comment */', [
-  \   {'at': ' / \%#', 'char': '*', 'input': '<BS><BS><BS>/*  */<Left><Left><Left>'},
+  \   {'at': '\V\V / \%#', 'char': '*', 'input': '<BS><BS><BS>/*  */<Left><Left><Left>'},
   \   {'at': '/\* \%# \*/', 'char': '<BS>', 'input': '<BS><BS><BS><Del><Del><Del> / '},
   \ ])
   "}}}
@@ -191,6 +191,8 @@ function! smartpunc#define_default_rules()  "{{{2
     call urules.add(rule_set_name, [
     \   {'at': '\%#', 'char': k, 'input': ' '.k.' '},
     \   {'at': '\V '.p.' \%#', 'char': '<BS>', 'input': bs3},
+    \   {'at': '\S \%#', 'char': k, 'input': k.' '},
+    \   {'at': '\V '.p.' \%#', 'char': '<Space>', 'input': ''},
     \ ])
   endfor
   "}}}

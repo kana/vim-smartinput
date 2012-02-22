@@ -35,6 +35,7 @@ describe 'Start-up'
     \   '<C-H>',
     \   '<CR>',
     \   '<NL>',
+    \   '<Space>',
     \   '=',
     \   '>',
     \   '?',
