@@ -462,21 +462,18 @@ function! smartpunc#define_rule(urule)  "{{{2
   let nrule = s:normalize_rule(a:urule)
   call s:remove_a_same_rule(s:available_nrules, nrule)
   call add(s:available_nrules, nrule)
-  call sort(s:available_nrules, 's:nrule_comparer_desc')
-endfunction
-
-function! s:nrule_comparer_desc(nrule1, nrule2)
-  let c = a:nrule2.priority - a:nrule1.priority
-  if c != 0
-    return c
-  endif
-
-  let c = a:nrule2.at <# a:nrule1.at
-  if c != 0
-    return -1
-  endif
-
-  return a:nrule2.at ==# a:nrule1.at ? 0 : 1
+  call
+  \ map(
+  \   reverse(
+  \     sort(
+  \       map(
+  \         s:available_nrules,
+  \         '[printf("%06d:%s", v:val.priority, v:val.at), v:val]'
+  \       )
+  \     )
+  \   ),
+  \   'v:val[1]'
+  \ )
 endfunction
 
 
