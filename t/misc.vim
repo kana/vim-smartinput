@@ -4,62 +4,6 @@ call vspec#hint({'scope': 'smartpunc#scope()', 'sid': 'smartpunc#sid()'})
 syntax enable
 set backspace=indent,eol,start
 
-describe 's:are_same_rules'
-  before
-    new
-    let b:nruleA = Call('s:normalize_rule', {
-    \   'at': '\%#',
-    \   'char': '(',
-    \   'input': '()<Left>',
-    \ })
-    let b:nruleAd = Call('s:normalize_rule', {
-    \   'at': '\%#',
-    \   'char': '(',
-    \   'input': '(  )<Left><Left>',
-    \ })
-    let b:nruleB = Call('s:normalize_rule', {
-    \   'at': '\%#',
-    \   'char': '[',
-    \   'input': '[]<Left>',
-    \   'filetype': ['lisp', 'scheme'],
-    \ })
-    let b:nruleBd = Call('s:normalize_rule', {
-    \   'at': '\%#',
-    \   'char': '[',
-    \   'input': '[  ]<Left><Left>',
-    \   'filetype': ['scheme', 'lisp'],
-    \ })
-    let b:nruleC = Call('s:normalize_rule', {
-    \   'at': '\%#',
-    \   'char': '[',
-    \   'input': '[]<Left>',
-    \ })
-  end
-
-  after
-    close!
-  end
-
-  it 'should return true for rules with the same values'
-    Expect Call('s:are_same_rules', b:nruleA, b:nruleA) toBeTrue
-    Expect Call('s:are_same_rules', b:nruleAd, b:nruleAd) toBeTrue
-    Expect Call('s:are_same_rules', b:nruleBd, b:nruleBd) toBeTrue
-    Expect Call('s:are_same_rules', b:nruleB, b:nruleB) toBeTrue
-    Expect Call('s:are_same_rules', b:nruleC, b:nruleC) toBeTrue
-  end
-
-  it 'should return false for rules with different values'
-    Expect Call('s:are_same_rules', b:nruleA, b:nruleB) toBeFalse
-    Expect Call('s:are_same_rules', b:nruleAd, b:nruleBd) toBeFalse
-    Expect Call('s:are_same_rules', b:nruleB, b:nruleC) toBeFalse
-  end
-
-  it 'should compare all items but "input" in rules'
-    Expect Call('s:are_same_rules', b:nruleA, b:nruleAd) toBeTrue
-    Expect Call('s:are_same_rules', b:nruleB, b:nruleBd) toBeTrue
-  end
-end
-
 describe 's:calculate_rule_priority'
   it 'should use "at", "filetype" and "syntax"'
     let snrule1 = {
@@ -190,6 +134,237 @@ describe 's:find_the_most_proper_rule'
   end
 end
 
+describe 's:insert_or_replace_a_rule'
+  before
+    new
+
+    let b:nrule_table = {}
+    for char in ['A', 'B', 'C', 'D', 'E', 'F']
+      let b:nrule_table[char] = Call('s:normalize_rule', {
+      \   'at': '---',
+      \   'char': char,
+      \   'input': '---',
+      \ })
+    endfor
+
+    let b:sorted_nrules =
+    \ map(
+    \   reverse(sort(map(values(b:nrule_table), '[v:val.hash, v:val]'))),
+    \   'v:val[1]'
+    \ )
+  end
+
+  after
+    close
+  end
+
+  it 'should replace an existing value which is equivalent to the given one'
+    let nrule_table = {}
+    for char in ['A', 'B', 'C', 'D', 'E', 'F']
+      let nrule_table[char] = Call('s:normalize_rule', {
+      \   'at': '---',
+      \   'char': char,
+      \   'input': '===',
+      \ })
+    endfor
+
+    Expect b:sorted_nrules ==# [
+    \   b:nrule_table['F'],
+    \   b:nrule_table['E'],
+    \   b:nrule_table['D'],
+    \   b:nrule_table['C'],
+    \   b:nrule_table['B'],
+    \   b:nrule_table['A'],
+    \ ]
+
+    call Call('s:insert_or_replace_a_rule', b:sorted_nrules, nrule_table['A'])
+    Expect b:sorted_nrules ==# [
+    \   b:nrule_table['F'],
+    \   b:nrule_table['E'],
+    \   b:nrule_table['D'],
+    \   b:nrule_table['C'],
+    \   b:nrule_table['B'],
+    \   nrule_table['A'],
+    \ ]
+
+    call Call('s:insert_or_replace_a_rule', b:sorted_nrules, nrule_table['B'])
+    Expect b:sorted_nrules ==# [
+    \   b:nrule_table['F'],
+    \   b:nrule_table['E'],
+    \   b:nrule_table['D'],
+    \   b:nrule_table['C'],
+    \   nrule_table['B'],
+    \   nrule_table['A'],
+    \ ]
+
+    call Call('s:insert_or_replace_a_rule', b:sorted_nrules, nrule_table['C'])
+    Expect b:sorted_nrules ==# [
+    \   b:nrule_table['F'],
+    \   b:nrule_table['E'],
+    \   b:nrule_table['D'],
+    \   nrule_table['C'],
+    \   nrule_table['B'],
+    \   nrule_table['A'],
+    \ ]
+
+    call Call('s:insert_or_replace_a_rule', b:sorted_nrules, nrule_table['D'])
+    Expect b:sorted_nrules ==# [
+    \   b:nrule_table['F'],
+    \   b:nrule_table['E'],
+    \   nrule_table['D'],
+    \   nrule_table['C'],
+    \   nrule_table['B'],
+    \   nrule_table['A'],
+    \ ]
+
+    call Call('s:insert_or_replace_a_rule', b:sorted_nrules, nrule_table['E'])
+    Expect b:sorted_nrules ==# [
+    \   b:nrule_table['F'],
+    \   nrule_table['E'],
+    \   nrule_table['D'],
+    \   nrule_table['C'],
+    \   nrule_table['B'],
+    \   nrule_table['A'],
+    \ ]
+
+    call Call('s:insert_or_replace_a_rule', b:sorted_nrules, nrule_table['F'])
+    Expect b:sorted_nrules ==# [
+    \   nrule_table['F'],
+    \   nrule_table['E'],
+    \   nrule_table['D'],
+    \   nrule_table['C'],
+    \   nrule_table['B'],
+    \   nrule_table['A'],
+    \ ]
+  end
+
+  it 'should insert a given rule into the "sorted" position'
+    let nrule_table = {}
+    for char in ['00', 'AA', 'BB', 'CC', 'DD', 'EE', 'FF']
+      let nrule_table[char] = Call('s:normalize_rule', {
+      \   'at': '---',
+      \   'char': char,
+      \   'input': '===',
+      \ })
+    endfor
+
+    Expect b:sorted_nrules ==# [
+    \   b:nrule_table['F'],
+    \   b:nrule_table['E'],
+    \   b:nrule_table['D'],
+    \   b:nrule_table['C'],
+    \   b:nrule_table['B'],
+    \   b:nrule_table['A'],
+    \ ]
+
+    call Call('s:insert_or_replace_a_rule', b:sorted_nrules, nrule_table['00'])
+    Expect b:sorted_nrules ==# [
+    \   b:nrule_table['F'],
+    \   b:nrule_table['E'],
+    \   b:nrule_table['D'],
+    \   b:nrule_table['C'],
+    \   b:nrule_table['B'],
+    \   b:nrule_table['A'],
+    \   nrule_table['00'],
+    \ ]
+
+    call Call('s:insert_or_replace_a_rule', b:sorted_nrules, nrule_table['AA'])
+    Expect b:sorted_nrules ==# [
+    \   b:nrule_table['F'],
+    \   b:nrule_table['E'],
+    \   b:nrule_table['D'],
+    \   b:nrule_table['C'],
+    \   b:nrule_table['B'],
+    \   nrule_table['AA'],
+    \   b:nrule_table['A'],
+    \   nrule_table['00'],
+    \ ]
+
+    call Call('s:insert_or_replace_a_rule', b:sorted_nrules, nrule_table['BB'])
+    Expect b:sorted_nrules ==# [
+    \   b:nrule_table['F'],
+    \   b:nrule_table['E'],
+    \   b:nrule_table['D'],
+    \   b:nrule_table['C'],
+    \   nrule_table['BB'],
+    \   b:nrule_table['B'],
+    \   nrule_table['AA'],
+    \   b:nrule_table['A'],
+    \   nrule_table['00'],
+    \ ]
+
+    call Call('s:insert_or_replace_a_rule', b:sorted_nrules, nrule_table['CC'])
+    Expect b:sorted_nrules ==# [
+    \   b:nrule_table['F'],
+    \   b:nrule_table['E'],
+    \   b:nrule_table['D'],
+    \   nrule_table['CC'],
+    \   b:nrule_table['C'],
+    \   nrule_table['BB'],
+    \   b:nrule_table['B'],
+    \   nrule_table['AA'],
+    \   b:nrule_table['A'],
+    \   nrule_table['00'],
+    \ ]
+
+    call Call('s:insert_or_replace_a_rule', b:sorted_nrules, nrule_table['DD'])
+    Expect b:sorted_nrules ==# [
+    \   b:nrule_table['F'],
+    \   b:nrule_table['E'],
+    \   nrule_table['DD'],
+    \   b:nrule_table['D'],
+    \   nrule_table['CC'],
+    \   b:nrule_table['C'],
+    \   nrule_table['BB'],
+    \   b:nrule_table['B'],
+    \   nrule_table['AA'],
+    \   b:nrule_table['A'],
+    \   nrule_table['00'],
+    \ ]
+
+    call Call('s:insert_or_replace_a_rule', b:sorted_nrules, nrule_table['EE'])
+    Expect b:sorted_nrules ==# [
+    \   b:nrule_table['F'],
+    \   nrule_table['EE'],
+    \   b:nrule_table['E'],
+    \   nrule_table['DD'],
+    \   b:nrule_table['D'],
+    \   nrule_table['CC'],
+    \   b:nrule_table['C'],
+    \   nrule_table['BB'],
+    \   b:nrule_table['B'],
+    \   nrule_table['AA'],
+    \   b:nrule_table['A'],
+    \   nrule_table['00'],
+    \ ]
+
+    call Call('s:insert_or_replace_a_rule', b:sorted_nrules, nrule_table['FF'])
+    Expect b:sorted_nrules ==# [
+    \   nrule_table['FF'],
+    \   b:nrule_table['F'],
+    \   nrule_table['EE'],
+    \   b:nrule_table['E'],
+    \   nrule_table['DD'],
+    \   b:nrule_table['D'],
+    \   nrule_table['CC'],
+    \   b:nrule_table['C'],
+    \   nrule_table['BB'],
+    \   b:nrule_table['B'],
+    \   nrule_table['AA'],
+    \   b:nrule_table['A'],
+    \   nrule_table['00'],
+    \ ]
+  end
+
+  it 'should insert a given rule as the 0th element of an empty list'
+    let nrules = []
+    Expect nrules ==# []
+
+    call Call('s:insert_or_replace_a_rule', nrules, b:nrule_table['A'])
+    Expect nrules ==# [b:nrule_table['A']]
+  end
+end
+
 describe 's:normalize_rule'
   it 'should copy a given rule recursively'
     let urule = {
@@ -239,26 +414,5 @@ describe 's:normalize_rule'
     \   'priority': 3 + 0 + 0,
     \   'hash': string([printf('%06d', 3), urule.at, urule.char, 0, 0]),
     \ }
-  end
-end
-
-describe 's:remove_a_same_rule'
-  it 'should remove a same rule by equivalence and in place'
-    let _nruleA = {
-    \   'at': '\%#',
-    \   'char': '(',
-    \   'input': '()<Left>',
-    \ }
-    let nruleA = Call('s:normalize_rule', _nruleA)
-    let _nruleB = {
-    \   'at': '\%#',
-    \   'char': '[',
-    \   'input': '[]<Left>',
-    \ }
-    let nruleB = Call('s:normalize_rule', _nruleB)
-    let nrules = [nruleA, nruleB, nruleA, nruleA]
-
-    call Call('s:remove_a_same_rule', nrules, deepcopy(nruleA))
-    Expect nrules ==# [nruleB, nruleA, nruleA]
   end
 end

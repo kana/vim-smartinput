@@ -41,19 +41,19 @@ describe 'smartpunc#clear_rules'
 
   it 'should clear all defined rules'
     " Because of the default configuration.
-    Expect Call('s:get_available_nrules') !=# []
+    Expect Ref('s:available_nrules') !=# []
 
     call smartpunc#clear_rules()
-    Expect Call('s:get_available_nrules') ==# []
+    Expect Ref('s:available_nrules') ==# []
 
     call smartpunc#define_rule(b:uruleA)
-    Expect Call('s:get_available_nrules') ==# [b:nruleA]
+    Expect Ref('s:available_nrules') ==# [b:nruleA]
 
     call smartpunc#define_rule(b:uruleB)
-    Expect Call('s:get_available_nrules') ==# [b:nruleB, b:nruleA]
+    Expect Ref('s:available_nrules') ==# [b:nruleB, b:nruleA]
 
     call smartpunc#clear_rules()
-    Expect Call('s:get_available_nrules') ==# []
+    Expect Ref('s:available_nrules') ==# []
   end
 end
 
@@ -68,29 +68,29 @@ describe 'smartpunc#define_default_rules'
 
   it 'should define many rules'
     call smartpunc#clear_rules()
-    Expect Call('s:get_available_nrules') ==# []
+    Expect Ref('s:available_nrules') ==# []
 
     call smartpunc#define_default_rules()
-    Expect Call('s:get_available_nrules') !=# []
+    Expect Ref('s:available_nrules') !=# []
   end
 
   it 'should override existing rules if conflicted'
     call smartpunc#clear_rules()
-    Expect Call('s:get_available_nrules') ==# []
+    Expect Ref('s:available_nrules') ==# []
 
     call smartpunc#define_rule({'at': 'x\%#', 'char': '(', 'input': '---'})
     call smartpunc#define_rule({'at': '\%#', 'char': '(', 'input': '---'})
-    Expect len(Call('s:get_available_nrules')) == 2
+    Expect len(Ref('s:available_nrules')) == 2
 
-    let unconflicted_nrule = Call('s:get_available_nrules')[0]
-    let conflicted_nrule = Call('s:get_available_nrules')[1]
+    let unconflicted_nrule = Ref('s:available_nrules')[0]
+    let conflicted_nrule = Ref('s:available_nrules')[1]
     Expect unconflicted_nrule.at ==# 'x\%#'
     Expect conflicted_nrule.at ==# '\%#'
 
     call smartpunc#define_default_rules()
-    Expect Call('s:get_available_nrules') !=# []
-    Expect index(Call('s:get_available_nrules'), unconflicted_nrule) != -1
-    Expect index(Call('s:get_available_nrules'), conflicted_nrule) == -1
+    Expect Ref('s:available_nrules') !=# []
+    Expect index(Ref('s:available_nrules'), unconflicted_nrule) != -1
+    Expect index(Ref('s:available_nrules'), conflicted_nrule) == -1
   end
 
   " The behavior of each rules are tested
@@ -146,50 +146,50 @@ describe 'smartpunc#define_rule'
 
   it 'should define a new rule in the global state'
     " Because of the default configuration.
-    Expect Call('s:get_available_nrules') !=# []
+    Expect Ref('s:available_nrules') !=# []
 
     call Set('s:available_nrules', [])
-    Expect Call('s:get_available_nrules') ==# []
+    Expect Ref('s:available_nrules') ==# []
 
     call smartpunc#define_rule(b:uruleA)
-    Expect Call('s:get_available_nrules') ==# [b:nruleA]
+    Expect Ref('s:available_nrules') ==# [b:nruleA]
 
     call smartpunc#define_rule(b:uruleB)
-    Expect Call('s:get_available_nrules') ==# [b:nruleB, b:nruleA]
+    Expect Ref('s:available_nrules') ==# [b:nruleB, b:nruleA]
   end
 
   it 'should not define two or more "same" rules'
     " Because of the default configuration.
-    Expect Call('s:get_available_nrules') !=# []
+    Expect Ref('s:available_nrules') !=# []
 
     call Set('s:available_nrules', [])
-    Expect Call('s:get_available_nrules') ==# []
+    Expect Ref('s:available_nrules') ==# []
 
     call smartpunc#define_rule(b:uruleA)
-    Expect Call('s:get_available_nrules') ==# [b:nruleA]
+    Expect Ref('s:available_nrules') ==# [b:nruleA]
 
     call smartpunc#define_rule(b:uruleA)
-    Expect Call('s:get_available_nrules') ==# [b:nruleA]
+    Expect Ref('s:available_nrules') ==# [b:nruleA]
 
     call smartpunc#define_rule(b:uruleB)
-    Expect Call('s:get_available_nrules') ==# [b:nruleB, b:nruleA]
+    Expect Ref('s:available_nrules') ==# [b:nruleB, b:nruleA]
 
     call smartpunc#define_rule(b:uruleBd)
-    Expect Call('s:get_available_nrules') ==# [b:nruleBd, b:nruleA]
+    Expect Ref('s:available_nrules') ==# [b:nruleBd, b:nruleA]
   end
 
   it 'should sort defined rules by priority in descending order (1)'
     Expect b:nruleA.priority < b:nruleB.priority
 
     " Because of the default configuration.
-    Expect Call('s:get_available_nrules') !=# []
+    Expect Ref('s:available_nrules') !=# []
 
     call Set('s:available_nrules', [])
-    Expect Call('s:get_available_nrules') ==# []
+    Expect Ref('s:available_nrules') ==# []
 
     call smartpunc#define_rule(b:uruleA)
     call smartpunc#define_rule(b:uruleB)
-    Expect Call('s:get_available_nrules') ==# [b:nruleB, b:nruleA]
+    Expect Ref('s:available_nrules') ==# [b:nruleB, b:nruleA]
 
   end
 
@@ -197,14 +197,14 @@ describe 'smartpunc#define_rule'
     Expect b:nruleA.priority < b:nruleB.priority
 
     " Because of the default configuration.
-    Expect Call('s:get_available_nrules') !=# []
+    Expect Ref('s:available_nrules') !=# []
 
     call Set('s:available_nrules', [])
-    Expect Call('s:get_available_nrules') ==# []
+    Expect Ref('s:available_nrules') ==# []
 
     call smartpunc#define_rule(b:uruleB)
     call smartpunc#define_rule(b:uruleA)
-    Expect Call('s:get_available_nrules') ==# [b:nruleB, b:nruleA]
+    Expect Ref('s:available_nrules') ==# [b:nruleB, b:nruleA]
   end
 
   it 'should sort defined rules by "priority" and "at" in descending order (1)'
@@ -212,14 +212,14 @@ describe 'smartpunc#define_rule'
     Expect b:nruleC1.at <# b:nruleC2.at
 
     " Because of the default configuration.
-    Expect Call('s:get_available_nrules') !=# []
+    Expect Ref('s:available_nrules') !=# []
 
     call Set('s:available_nrules', [])
-    Expect Call('s:get_available_nrules') ==# []
+    Expect Ref('s:available_nrules') ==# []
 
     call smartpunc#define_rule(b:uruleC1)
     call smartpunc#define_rule(b:uruleC2)
-    Expect Call('s:get_available_nrules') ==# [b:nruleC2, b:nruleC1]
+    Expect Ref('s:available_nrules') ==# [b:nruleC2, b:nruleC1]
   end
 
   it 'should sort defined rules by "priority" and "at" in descending order (2)'
@@ -227,14 +227,14 @@ describe 'smartpunc#define_rule'
     Expect b:nruleC1.at <# b:nruleC2.at
 
     " Because of the default configuration.
-    Expect Call('s:get_available_nrules') !=# []
+    Expect Ref('s:available_nrules') !=# []
 
     call Set('s:available_nrules', [])
-    Expect Call('s:get_available_nrules') ==# []
+    Expect Ref('s:available_nrules') ==# []
 
     call smartpunc#define_rule(b:uruleC2)
     call smartpunc#define_rule(b:uruleC1)
-    Expect Call('s:get_available_nrules') ==# [b:nruleC2, b:nruleC1]
+    Expect Ref('s:available_nrules') ==# [b:nruleC2, b:nruleC1]
   end
 end
 

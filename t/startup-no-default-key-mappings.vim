@@ -18,6 +18,6 @@ describe 'g:smartpunc_no_default_key_mappings'
     redir END
 
     Expect substitute(s, '[\r\n]', '', 'g') ==# 'No mapping found'
-    Expect Call('s:get_available_nrules') !=# []
+    Expect Ref('s:available_nrules') !=# []
   end
 end

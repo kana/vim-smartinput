@@ -43,31 +43,8 @@
 
 
 " Variables  "{{{1
-let s:EXPIRED_NRULES = []  "{{{2
-" :: [NRule]
-"
-" A special value for the deferred regularization.
-
-
-
-
 let s:available_nrules = []  "{{{2
-" :: [NRule] -- sorted by priority in descending order.
-"
-" * Only low-level utilities MAY use s:available_nrules directly.
-" * Anything else MUST refer s:available_nrules via s:get_available_nrules().
-"
-" Because this variable should be "regularized" before actual use.
-" But the regularization is somewhat expensive to run for each update.
-" So that the regularization is deferred until this variable is really used.
-
-
-
-
-let s:previously_available_nrules = s:EXPIRED_NRULES  "{{{2
-" :: [NRule]
-"
-" A memo variable for the deferred regularization.
+" :: [NRule] -- it is ALWAYS sorted by priority in descending order.
 
 
 
@@ -80,7 +57,6 @@ let s:previously_available_nrules = s:EXPIRED_NRULES  "{{{2
 " Interface  "{{{1
 function! smartpunc#clear_rules()  "{{{2
   let s:available_nrules = []
-  let s:previously_available_nrules = s:EXPIRED_NRULES
 endfunction
 
 
@@ -484,9 +460,7 @@ endfunction
 
 function! smartpunc#define_rule(urule)  "{{{2
   let nrule = s:normalize_rule(a:urule)
-  call s:remove_a_same_rule(s:available_nrules, nrule)
-  call add(s:available_nrules, nrule)
-  let s:previously_available_nrules = s:EXPIRED_NRULES
+  call s:insert_or_replace_a_rule(s:available_nrules, nrule)
 endfunction
 
 
@@ -521,7 +495,7 @@ function! s:_encode_for_map_char_expr(rhs_char)
 endfunction
 
 function! s:_trigger_or_fallback(char, fallback)
-  let nrule = s:find_the_most_proper_rule(s:get_available_nrules(), a:char)
+  let nrule = s:find_the_most_proper_rule(s:available_nrules, a:char)
   if nrule is 0
     return a:fallback
   else
@@ -549,13 +523,6 @@ function! smartpunc#sid()  "{{{2
   return maparg('<SID>', 'n')
 endfunction
 nnoremap <SID>  <SID>
-
-
-
-
-function! s:are_same_rules(nrule1, nrule2)  "{{{2
-  return a:nrule1.hash ==# a:nrule2.hash
-endfunction
 
 
 
@@ -612,25 +579,42 @@ endfunction
 
 
 
-function! s:get_available_nrules()  "{{{2
-  if s:previously_available_nrules is s:EXPIRED_NRULES
-    call
-    \ map(
-    \   reverse(
-    \     sort(
-    \       map(
-    \         s:available_nrules,
-    \         '[v:val.hash, v:val]'
-    \       )
-    \     )
-    \   ),
-    \   'v:val[1]'
-    \ )
+function! s:insert_or_replace_a_rule(sorted_nrules, nrule)  "{{{2
+  " a:sorted_nrules MUST be sorted by "hash" in descending order.
+  " So that binary search can be applied
+  "
+  " * To replace an existing rule which is equivalent to a:nrule, and
+  " * To insert a:nrule at the proper position to make the resulting
+  "   a:sorted_nrules sorted.
 
-    let s:previously_available_nrules = s:available_nrules
+  let i_min = 0
+  let i_max = len(a:sorted_nrules) - 1
+  let i_med = 0
+
+  while i_min <= i_max
+    let i_med = (i_min + i_max) / 2
+
+    if a:nrule.hash ==# a:sorted_nrules[i_med].hash
+      break
+    elseif !(a:nrule.hash <# a:sorted_nrules[i_med].hash)
+      let i_max = i_med - 1
+    else
+      let i_min = i_med + 1
+    endif
+  endwhile
+
+  if i_min <= i_max
+    " The same rule is found at i_med.
+    let a:sorted_nrules[i_med] = a:nrule
+  elseif i_max < i_med
+    " The same rule is not found,
+    " but it should be located between i_max and i_med.
+    call insert(a:sorted_nrules, a:nrule, i_med + 0)
+  else  " i_med < i_min
+    " The same rule is not found,
+    " but it should be located between i_med and i_min.
+    call insert(a:sorted_nrules, a:nrule, i_med + 1)
   endif
-
-  return s:available_nrules
 endfunction
 
 
@@ -666,18 +650,6 @@ function! s:normalize_rule(urule)  "{{{2
   \ ])
 
   return nrule
-endfunction
-
-
-
-
-function! s:remove_a_same_rule(nrules, nrule)  "{{{2
-  for i in range(len(a:nrules))
-    if s:are_same_rules(a:nrule, a:nrules[i])
-      call remove(a:nrules, i)
-      return
-    endif
-  endfor
 endfunction
 
 
