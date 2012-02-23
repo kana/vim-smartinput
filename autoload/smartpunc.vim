@@ -657,7 +657,13 @@ function! s:normalize_rule(urule)  "{{{2
 
   let nrule.priority =  s:calculate_rule_priority(nrule)
 
-  let nrule.hash = [nrule.at, nrule.char, nrule.filetype, nrule.syntax]
+  let nrule.hash = string([
+  \   printf('%06d', nrule.priority),
+  \   nrule.at,
+  \   nrule.char,
+  \   nrule.filetype,
+  \   nrule.syntax
+  \ ])
 
   return nrule
 endfunction
