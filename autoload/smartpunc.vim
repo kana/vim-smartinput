@@ -554,13 +554,7 @@ nnoremap <SID>  <SID>
 
 
 function! s:are_same_rules(nrule1, nrule2)  "{{{2
-  return
-  \ a:nrule1.at ==# a:nrule2.at
-  \ && a:nrule1.char ==# a:nrule2.char
-  \ && type(a:nrule1.filetype) ==# type(a:nrule2.filetype)
-  \ && a:nrule1.filetype ==# a:nrule2.filetype
-  \ && type(a:nrule1.syntax) ==# type(a:nrule2.syntax)
-  \ && a:nrule1.syntax ==# a:nrule2.syntax
+  return a:nrule1.hash ==# a:nrule2.hash
 endfunction
 
 
@@ -662,6 +656,8 @@ function! s:normalize_rule(urule)  "{{{2
   endif
 
   let nrule.priority =  s:calculate_rule_priority(nrule)
+
+  let nrule.hash = [nrule.at, nrule.char, nrule.filetype, nrule.syntax]
 
   return nrule
 endfunction

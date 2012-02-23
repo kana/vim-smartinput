@@ -237,6 +237,7 @@ describe 's:normalize_rule'
     \   'filetype': 0,
     \   'syntax': 0,
     \   'priority': 3 + 0 + 0,
+    \   'hash': [urule.at, urule.char, 0, 0],
     \ }
   end
 end
