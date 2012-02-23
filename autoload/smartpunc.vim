@@ -620,7 +620,7 @@ function! s:get_available_nrules()  "{{{2
     \     sort(
     \       map(
     \         s:available_nrules,
-    \         '[printf("%06d:%s", v:val.priority, v:val.at), v:val]'
+    \         '[v:val.hash, v:val]'
     \       )
     \     )
     \   ),
