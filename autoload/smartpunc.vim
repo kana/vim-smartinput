@@ -554,13 +554,13 @@ nnoremap <SID>  <SID>
 
 
 function! s:are_same_rules(nrule1, nrule2)  "{{{2
-  for key in filter(keys(a:nrule1), 'v:val !=# "input" && v:val !=# "_input"')
-    if type(a:nrule1[key]) !=# type(a:nrule2[key])
-    \  || a:nrule1[key] !=# a:nrule2[key]
-      return !!0
-    endif
-  endfor
-  return !0
+  return
+  \ a:nrule1.at ==# a:nrule2.at
+  \ && a:nrule1.char ==# a:nrule2.char
+  \ && type(a:nrule1.filetype) ==# type(a:nrule2.filetype)
+  \ && a:nrule1.filetype ==# a:nrule2.filetype
+  \ && type(a:nrule1.syntax) ==# type(a:nrule2.syntax)
+  \ && a:nrule1.syntax ==# a:nrule2.syntax
 endfunction
 
 
