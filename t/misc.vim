@@ -91,7 +91,13 @@ describe 's:find_the_most_proper_rule_in_insert_mode'
     \   'filetype': ['lisp', 'scheme'],
     \   'syntax': ['Comment', 'String'],
     \ })
-    let b:nrules = [b:nrule4, b:nrule3, b:nrule2, b:nrule1]
+    let b:nrule5 = Call('s:normalize_rule', {
+    \   'at': '\%#',
+    \   'char': '<LT>',
+    \   'input': 'This rule MUST NOT be selected.',
+    \   'mode': ':',
+    \ })
+    let b:nrules = [b:nrule5, b:nrule4, b:nrule3, b:nrule2, b:nrule1]
   end
 
   after

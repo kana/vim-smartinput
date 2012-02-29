@@ -329,6 +329,10 @@ function! s:find_the_most_proper_rule_in_insert_mode(nrules, char)  "{{{2
   \                      'synIDattr(synIDtrans(v:val), "name")')
 
   for nrule in a:nrules
+    if stridx(nrule.mode, 'i') == -1
+      continue
+    endif
+
     if !(a:char ==# nrule._char)
       continue
     endif
