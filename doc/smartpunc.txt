@@ -182,6 +182,10 @@ a |Dictionary| which contains the following items:
 	The smart input assistant will be used if the regular exprssion
 	matches to the cursor position.
 
+	Tips: You can use |/\%#| to indicate the cursor position.
+	For example, '(\%#)' means that the smart input assistant will be used
+	if the cursor is located between parentheses.
+
 "char" (string) (required)
 	Specifies a character to trigger the smart input assistant.
 
