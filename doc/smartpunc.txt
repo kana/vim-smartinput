@@ -133,12 +133,18 @@ smartpunc#define_rule({rule})			*smartpunc#define_rule()*
 			See |smartpunc-rules| for the details of {rule}.
 
 						*smartpunc#map_to_trigger()*
-smartpunc#map_to_trigger({lhs}, {rhs-char}, {rhs-fallback})
+smartpunc#map_to_trigger({mode}, {lhs}, {rhs-char}, {rhs-fallback})
 			Map {lhs} to trigger the smart input assistant for
-			{rhs-char} in Insert mode.  If there is no proper rule
+			{rhs-char} in {mode}.  If there is no proper rule
 			for the current context, {rhs-fallback} will be
-			inserted instead of {lhs}.  {lhs}, {rhs-char} and
-			{rhs-fallback} are strings to denote key sequences.
+			inserted instead of {lhs}.
+
+			{lhs}, {rhs-char} and {rhs-fallback} are strings to
+			denote key sequences.
+
+			{lhs} is mapped in Insert mode if {mode} is 'i'.
+			{lhs} is mapped in Command-line mode if {mode} is 'c'.
+
 			See also |smartpunc-exampels| for the details.
 
 smartpunc#map_trigger_keys([{overridep}])	*smartpunc#map_trigger_keys()*
@@ -153,8 +159,8 @@ smartpunc#map_trigger_keys([{overridep}])	*smartpunc#map_trigger_keys()*
 ------------------------------------------------------------------------------
 KEY MAPPINGS					*smartpunc-key-mappings*
 
-Several characters in Insert mode are mapped by default with
-|smartpunc#map_to_trigger()| to trigger the smart input assistant.
+Several characters in Insert mode and Command-line mode are mapped by default
+with |smartpunc#map_to_trigger()| to trigger the smart input assistant.
 See |smartpunc-default-rules| for the details.
 
 Set any value to *g:smartpunc_no_default_key_mappings*
@@ -186,6 +192,10 @@ a |Dictionary| which contains the following items:
 	For example, '(\%#)' means that the smart input assistant will be used
 	if the cursor is located between parentheses.
 
+	Though |/\%#| works only for matching with the current buffer,
+	you can still use it for "at" to specify the cursor position in
+	Command-line mode.
+
 "char" (string) (required)
 	Specifies a character to trigger the smart input assistant.
 
@@ -193,6 +203,24 @@ a |Dictionary| which contains the following items:
 	Specifies a result of the smart input assistant.
 	This value is used like {rhs} for |:map| commands.
 	This value is inputted instead of the "char" value.
+
+"mode" (string) (optional)
+	Specifies the context to use the smart input assistant.
+	This value is a string of characters to represent modes in which the
+	smart input assistant will be used.  Valid characters and
+	corresponding modes are as follows:
+
+	Character	Mode			~
+	---------	-----------------	~
+	i		Insert mode
+	:		Command-line mode for normal Ex commands
+	>		Command-line mode for |debug-mode| commands
+	/		Command-line mode for serching with |/|
+	?		Command-line mode for serching with |?|
+	@		Command-line mode for |input()|
+	-		Command-line mode for |:insert| or |:append|
+
+	The default value is 'i'.
 
 "filetype" (list of strings) (optional)
 	Specifies the context to use the smart input assistant.
@@ -205,6 +233,8 @@ a |Dictionary| which contains the following items:
 	If 'filetype' is a compound one which has two or more names
 	concatenated by ".", each name will be tested instead of the whole
 	value of 'filetype'.
+
+	This specification works only for Insert mode.
 
 "syntax" (list of strings) (optional)
 	Specifies the context to use the smart input assistant.
@@ -222,6 +252,8 @@ a |Dictionary| which contains the following items:
 	* "Constant" is effective because it is not linked to anything.
 	* "String" is not effective because it is linked to "Constant".
 	* "lispString" is not effective because it is linked to "String".
+
+	This specification works only for Insert mode.
 
 
 ------------------------------------------------------------------------------
@@ -249,8 +281,9 @@ Rule priorities are calculated as follows:
     0 if "filetype" is not given.
 (c) 100 / {the number of elements} if "syntax" is given.
     0 if "syntax" is not given.
+(d) 100 / {the length of "mode"}.
 
-Rule priority = (a) + (b) + (c)
+Rule priority = (a) + (b) + (c) + (d)
 
 For example:
 
@@ -258,14 +291,16 @@ For example:
 		(a) 3
 		(b) 0
 		(c) 0
-		Priority = 3 + 0 + 0 = 3
+		(d) 100 / 1 = 100
+		Priority = 3 + 0 + 0 + 100 = 103
 
 	{'at': '\%#', 'char': "'", 'input': "'", ~
 	 'filetype': ['lisp', 'scheme']} ~
 		(a) 3
 		(b) 100 / 2 = 50
 		(c) 0
-		Priority = 3 + 50 + 0 = 53
+		(d) 100 / 1 = 100
+		Priority = 3 + 50 + 0 + 100 = 153
 
 	{'at': '\%#', 'char': "'", 'input': "'", ~
 	 'filetype': ['lisp', 'scheme'], ~
@@ -273,23 +308,27 @@ For example:
 		(a) 3
 		(b) 100 / 2 = 50
 		(c) 100 / 2 = 50
-		Priority = 3 + 50 + 50 = 103
+		(d) 100 / 1 = 100
+		Priority = 3 + 50 + 50 + 100 = 203
 
 
 ------------------------------------------------------------------------------
 RULE SELECTION ALGORITHM		  *smartpunc-rule-selection-algorithm*
 
-Whenever you type a key in Insert mode, smartpunc selects the best rule for
-the current context with the following steps:
+Whenever you type a key in Insert mode or Command-line mode, smartpunc selects
+the best rule for the current context with the following steps:
 
 (1) Select available rules which satisfy all the following conditions:
 
     (c) "char" value is equal to the typed key.
     (a) The text under the cursor is matched to "at" pattern.
-    (f) "filetype" list is omitted, or the 'filetype' of the current buffer is
-        contained in "filetype" list.
-    (s) "syntax" names is omitted, or the character under the cursor is syntax
-        highlighted as one of "syntax" names.
+    (f) The 'filetype' of the current buffer is contained in "filetype" list,
+        or "filetype" list is omitted,
+	or the current mode is not Insert mode.
+    (s) The character at the cursor is highlighted as one of "syntax" names,
+        or "syntax" names are omitted,
+	or the current mode is not Insert mode.
+    (m) The current mode matches to "mode" value.
 
 (2) If two or more rules are selected at the step (1),
     select the rule with the highest |smartpunc-rule-priority|.
