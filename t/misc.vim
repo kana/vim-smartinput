@@ -65,7 +65,7 @@ describe 's:decode_key_notation'
   end
 end
 
-describe 's:find_the_most_proper_rule'
+describe 's:find_the_most_proper_rule_in_insert_mode'
   before
     new
     let b:nrule1 = Call('s:normalize_rule', {
@@ -99,7 +99,7 @@ describe 's:find_the_most_proper_rule'
   end
 
   it 'should fail if there is no rule for a given char'
-    Expect Call('s:find_the_most_proper_rule', b:nrules, '[') ==# 0
+    Expect Call('s:find_the_most_proper_rule_in_insert_mode', b:nrules, '[') ==# 0
   end
 
   it 'should check the text under the cursor by "at"'
@@ -110,12 +110,12 @@ describe 's:find_the_most_proper_rule'
     " (define foo #)  ; ...
     normal! ggf)
     Expect [line('.'), col('.')] ==# [1, 13]
-    Expect Call('s:find_the_most_proper_rule', b:nrules, '<') ==# b:nrule1
+    Expect Call('s:find_the_most_proper_rule_in_insert_mode', b:nrules, '<') ==# b:nrule1
 
     " (define foo# )  ; ...
     normal! ggf)h
     Expect [line('.'), col('.')] ==# [1, 12]
-    Expect Call('s:find_the_most_proper_rule', b:nrules, '<') ==# b:nrule2
+    Expect Call('s:find_the_most_proper_rule_in_insert_mode', b:nrules, '<') ==# b:nrule2
   end
 
   it 'should check the filetype of the current buffer with "filetype"'
@@ -126,12 +126,12 @@ describe 's:find_the_most_proper_rule'
     " (define foo #)  ; ...
     normal! ggf)
     Expect [line('.'), col('.')] ==# [1, 13]
-    Expect Call('s:find_the_most_proper_rule', b:nrules, '<') ==# b:nrule3
+    Expect Call('s:find_the_most_proper_rule_in_insert_mode', b:nrules, '<') ==# b:nrule3
 
     " (define foo# )  ; ...
     normal! ggf)h
     Expect [line('.'), col('.')] ==# [1, 12]
-    Expect Call('s:find_the_most_proper_rule', b:nrules, '<') ==# b:nrule3
+    Expect Call('s:find_the_most_proper_rule_in_insert_mode', b:nrules, '<') ==# b:nrule3
   end
 
   it 'should check the syntax name of text under the cursor with "syntax"'
@@ -142,12 +142,12 @@ describe 's:find_the_most_proper_rule'
     " (define foo #)  ; ...
     normal! ggf)
     Expect [line('.'), col('.')] ==# [1, 13]
-    Expect Call('s:find_the_most_proper_rule', b:nrules, '<') ==# b:nrule3
+    Expect Call('s:find_the_most_proper_rule_in_insert_mode', b:nrules, '<') ==# b:nrule3
 
     " (define foo )  ; #...
     normal! ggf.
     Expect [line('.'), col('.')] ==# [1, 18]
-    Expect Call('s:find_the_most_proper_rule', b:nrules, '<') ==# b:nrule4
+    Expect Call('s:find_the_most_proper_rule_in_insert_mode', b:nrules, '<') ==# b:nrule4
   end
 end
 

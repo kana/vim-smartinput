@@ -228,7 +228,7 @@ function! s:_encode_for_map_char_expr(rhs_char)
 endfunction
 
 function! s:_trigger_or_fallback(char, fallback)
-  let nrule = s:find_the_most_proper_rule(s:available_nrules, a:char)
+  let nrule = s:find_the_most_proper_rule_in_insert_mode(s:available_nrules, a:char)
   if nrule is 0
     return a:fallback
   else
@@ -323,7 +323,7 @@ endfunction
 
 
 
-function! s:find_the_most_proper_rule(nrules, char)  "{{{2
+function! s:find_the_most_proper_rule_in_insert_mode(nrules, char)  "{{{2
   " FIXME: Optimize for speed if necessary.
   let syntax_names = map(synstack(line('.'), col('.')),
   \                      'synIDattr(synIDtrans(v:val), "name")')
