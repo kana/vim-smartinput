@@ -323,6 +323,40 @@ endfunction
 
 
 
+function! s:find_the_most_proper_rule_in_command_line_mode(nrules, char, cl_text, cl_column, cl_type)  "{{{2
+  " FIXME: Optimize for speed if necessary.
+
+  let column = a:cl_column - 1
+  let cl_text = (column == 0 ? '' : a:cl_text[:(column - 1)])
+  \             . s:UNTYPABLE_CHAR
+  \             . a:cl_text[(column):]
+
+  for nrule in a:nrules
+    if stridx(nrule.mode, a:cl_type) == -1
+      continue
+    endif
+
+    if !(a:char ==# nrule._char)
+      continue
+    endif
+
+    " FIXME: Replace \%# correctly.
+    " For example, if nrule.at is '\\%#', it should not be replaced.
+    if cl_text !~# substitute(nrule.at, '\\%#', s:UNTYPABLE_CHAR, 'g')
+      continue
+    endif
+
+    return nrule
+  endfor
+
+  return 0
+endfunction
+
+let s:UNTYPABLE_CHAR = "\x01"  " FIXME: Use a more proper value.
+
+
+
+
 function! s:find_the_most_proper_rule_in_insert_mode(nrules, char)  "{{{2
   " FIXME: Optimize for speed if necessary.
   let syntax_names = map(synstack(line('.'), col('.')),

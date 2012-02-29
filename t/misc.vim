@@ -65,6 +65,78 @@ describe 's:decode_key_notation'
   end
 end
 
+describe 's:find_the_most_proper_rule_in_command_line_mode'
+  before
+    new
+    let b:nrule1 = Call('s:normalize_rule', {
+    \   'at': '\%#',
+    \   'char': '<LT>',
+    \   'input': '<LT>><Left>',
+    \   'mode': ':',
+    \ })
+    let b:nrule2 = Call('s:normalize_rule', {
+    \   'at': '\w\%#',
+    \   'char': '<LT>',
+    \   'input': '<LT>',
+    \   'mode': ':',
+    \ })
+    let b:nrule3 = Call('s:normalize_rule', {
+    \   'at': '\%#',
+    \   'char': '<LT>',
+    \   'input': '<LT>',
+    \   'filetype': ['lisp', 'scheme'],
+    \   'mode': '/',
+    \ })
+    let b:nrule4 = Call('s:normalize_rule', {
+    \   'at': '\%#',
+    \   'char': '<LT>',
+    \   'input': '<LT>><Left>',
+    \   'filetype': ['lisp', 'scheme'],
+    \   'syntax': ['Comment', 'String'],
+    \   'mode': '/',
+    \ })
+    let b:nrule5 = Call('s:normalize_rule', {
+    \   'at': '\%#',
+    \   'char': '<LT>',
+    \   'input': 'This rule MUST NOT be selected.',
+    \   'mode': 'i',
+    \ })
+    let b:nrules = [b:nrule5, b:nrule4, b:nrule3, b:nrule2, b:nrule1]
+
+    function! b:find(...)
+      return call('Call',
+      \           ['s:find_the_most_proper_rule_in_command_line_mode'] + a:000)
+    endfunction
+  end
+
+  after
+    close!
+  end
+
+  it 'should fail if there is no rule for a given char'
+    Expect b:find(b:nrules, '[', '', 1, ':') ==# 0
+  end
+
+  it 'should fail if there is no rule for a given command-line type'
+    Expect b:find(b:nrules, '<', '', 1, 'X') ==# 0
+  end
+
+  it 'should check the text under the cursor by "at"'
+    " foo #bar
+    Expect b:find(b:nrules, '<', 'foo bar', 5, ':') ==# b:nrule1
+
+    " foo# bar
+    Expect b:find(b:nrules, '<', 'foo bar', 4, ':') ==# b:nrule2
+  end
+
+  it 'should ignore "filetype" and "syntax"'
+    setfiletype scheme
+
+    " foo #bar
+    Expect b:find(b:nrules, '<', 'foo bar', 5, '/') ==# b:nrule4
+  end
+end
+
 describe 's:find_the_most_proper_rule_in_insert_mode'
   before
     new
