@@ -131,6 +131,7 @@ smartpunc#define_default_rules()	    *smartpunc#define_default_rules()*
 smartpunc#define_rule({rule})			*smartpunc#define_rule()*
 			Define a rule for the smart input assistant.
 			See |smartpunc-rules| for the details of {rule}.
+
 						*smartpunc#map_to_trigger()*
 smartpunc#map_to_trigger({lhs}, {rhs-char}, {rhs-fallback})
 			Map {lhs} to trigger the smart input assistant for
@@ -139,6 +140,14 @@ smartpunc#map_to_trigger({lhs}, {rhs-char}, {rhs-fallback})
 			inserted instead of {lhs}.  {lhs}, {rhs-char} and
 			{rhs-fallback} are strings to denote key sequences.
 			See also |smartpunc-exampels| for the details.
+
+smartpunc#map_trigger_keys([{overridep}])	*smartpunc#map_trigger_keys()*
+			Map keys to trigger smart input assistant according to
+			rules which are currently defined.
+			Existing key mappings are overridden if {overridep} is
+			true, otherwise existing key mappings are kept.
+			If {overridep} is omitted, it is treated as a false
+			value.
 
 
 ------------------------------------------------------------------------------

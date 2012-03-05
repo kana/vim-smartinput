@@ -238,6 +238,33 @@ endfunction
 
 
 
+function! smartpunc#map_trigger_keys(...)  "{{{2
+  let overridep = 1 <= a:0 ? a:1 : 0
+
+  let all_chars = map(copy(s:available_nrules), 'v:val.char')
+  let d = {}
+  for char in all_chars
+    let d[char] = char
+  endfor
+  let unique_chars = keys(d)
+
+  let M = function('smartpunc#map_to_trigger')
+  let map_modifier = overridep ? '' : '<unique>'
+  for char in unique_chars
+    " Do not override existing key mappings.
+    silent! call M(map_modifier . ' ' . char, char, char)
+  endfor
+  silent! call M(map_modifier . ' ' . '<C-h>', '<BS>', '<C-h>')
+  silent! call M(map_modifier . ' ' . '<Return>', '<Enter>', '<Return>')
+  silent! call M(map_modifier . ' ' . '<C-m>', '<Enter>', '<C-m>')
+  silent! call M(map_modifier . ' ' . '<CR>', '<Enter>', '<CR>')
+  silent! call M(map_modifier . ' ' . '<C-j>', '<Enter>', '<C-j>')
+  silent! call M(map_modifier . ' ' . '<NL>', '<Enter>', '<NL>')
+endfunction
+
+
+
+
 "{{{2
 
 
