@@ -29,11 +29,7 @@ endif
 
 
 
-call smartpunc#define_default_rules()
-
-if !exists('g:smartpunc_no_default_key_mappings')
-  call smartpunc#map_trigger_keys()
-endif
+call smartpunc#invoke_the_initial_setup_if_necessary()
 
 
 

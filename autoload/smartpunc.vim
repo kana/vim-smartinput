@@ -271,6 +271,14 @@ endfunction
 
 
 " Misc.  "{{{1
+function! smartpunc#invoke_the_initial_setup_if_necessary()  "{{{2
+  " The initial setup is invoked implicitly by :source'ing the autoload file.
+  " So that this function does nothing explicitly.
+endfunction
+
+
+
+
 function! smartpunc#scope()  "{{{2
   return s:
 endfunction
@@ -417,6 +425,38 @@ endfunction
 function! s:sid_value()  "{{{2
   return substitute(smartpunc#sid(), '<SNR>', "\<SNR>", 'g')
 endfunction
+
+
+
+
+"{{{2
+
+
+
+
+" The initial setup  "{{{1
+function! s:do_initial_setup()  "{{{2
+  call smartpunc#define_default_rules()
+
+  if !exists('g:smartpunc_no_default_key_mappings')
+    call smartpunc#map_trigger_keys()
+  endif
+endfunction
+
+
+
+
+" Invoke the initial setup.  "{{{2
+
+if !exists('s:loaded_count')
+  let s:loaded_count = 0
+endif
+
+let s:loaded_count += 1
+
+if s:loaded_count == 1
+  call s:do_initial_setup()
+endif
 
 
 
