@@ -63,6 +63,7 @@ endfunction
 
 
 function! smartpunc#define_default_rules()  "{{{2
+  " urules  "{{{
   let urules = {}
   let urules.names = []
   let urules.table = {}
@@ -70,7 +71,6 @@ function! smartpunc#define_default_rules()  "{{{2
     call add(self.names, a:name)
     let self.table[a:name] = a:urules
   endfunction
-  " Other rules  "{{{
   call urules.add('()', [
   \   {'at': '\%#', 'char': '(', 'input': '()<Left>'},
   \   {'at': '(\%#)', 'char': ')', 'input': '<Right>'},
@@ -125,175 +125,6 @@ function! smartpunc#define_default_rules()  "{{{2
   call urules.add('(<Enter>)', [
   \   {'at': '(\%#)', 'char': '<Enter>', 'input': '<Enter>X<Enter>)<BS><Up><C-o>$<BS>'},
   \ ])
-  call urules.add('case:', [
-  \   {'at': '\C\<case\>.*\%#', 'char': ':', 'input': ':'},
-  \ ])
-  call urules.add('default:', [
-  \   {'at': '\C\<default\>.*\%#', 'char': ':', 'input': ':'},
-  \ ])
-  call urules.add('x.y', [])
-  call urules.add('f(x)', [])
-  call urules.add('a[x]', [])
-  call urules.add('new', [])
-  call urules.add('typeof', [])
-  call urules.add('checked', [])
-  call urules.add('unchecked', [])
-  call urules.add('default(T)', [])
-  call urules.add('delegate', [])
-  call urules.add('+ (unary)', [])
-  call urules.add('- (unary)', [])
-  call urules.add('!', [])
-  call urules.add('~', [])
-  call urules.add('(T)x', [])
-  call urules.add('true', [])
-  call urules.add('false', [])
-  call urules.add('& (dereference)', [])
-  call urules.add('sizeof', [])
-  call urules.add('is', [])
-  call urules.add('as', [])
-  call urules.add('T<T>', [
-  \   {'at': '\V\V < \%#', 'char': '>', 'input': '<BS><BS><BS><LT>><Left>'},
-  \   {'at': '<\%#>', 'char': '<BS>', 'input': '<BS><Del>'},
-  \ ])
-  call urules.add('// comment', [
-  \   {'at': '\V\V / \%#', 'char': '/', 'input': '<BS><BS><BS>// '},
-  \   {'at': '// \%#', 'char': '<BS>', 'input': '<BS><BS><BS> / '},
-  \ ])
-  call urules.add('/// comment', [
-  \   {'at': '\V\V// \%#', 'char': '/', 'input': '<BS><BS><BS>/// '},
-  \   {'at': '/// \%#', 'char': '<BS>', 'input': '<BS><BS><BS><BS>// '},
-  \ ])
-  call urules.add('/* comment */', [
-  \   {'at': '\V\V / \%#', 'char': '*', 'input': '<BS><BS><BS>/*  */<Left><Left><Left>'},
-  \   {'at': '/\* \%# \*/', 'char': '<BS>', 'input': '<BS><BS><BS><Del><Del><Del> / '},
-  \ ])
-  "}}}
-  " Single-character operator rules  "{{{
-  for operator_name in [
-  \   '=',
-  \   '+',
-  \   '-',
-  \   '*',
-  \   '/',
-  \   '%',
-  \   '<',
-  \   '>',
-  \   '|',
-  \   '&',
-  \   '^',
-  \   '?',
-  \   ':',
-  \ ]
-    let rule_set_name = operator_name
-    let k = s:_operator_key_from(operator_name)
-    let p = s:_operator_pattern_from(operator_name)
-    let bs3 = repeat('<BS>', 3)
-    call urules.add(rule_set_name, [
-    \   {'at': '\%#', 'char': k, 'input': ' '.k.' '},
-    \   {'at': '\V '.p.' \%#', 'char': '<BS>', 'input': bs3},
-    \   {'at': '\S \%#', 'char': k, 'input': k.' '},
-    \   {'at': '\V '.p.' \%#', 'char': '<Space>', 'input': ''},
-    \ ])
-  endfor
-  "}}}
-  " Double-character operator rules (normal)  "{{{
-  for operator_name in [
-  \   '==',
-  \   '=>',
-  \   '=~',
-  \   '+=',
-  \   '-=',
-  \   '*=',
-  \   '/=',
-  \   '%=',
-  \   '<=',
-  \   '<<',
-  \   '>=',
-  \   '>>',
-  \   '|=',
-  \   '||',
-  \   '&=',
-  \   '&&',
-  \   '^=',
-  \   '??',
-  \ ]
-    let rule_set_name = operator_name
-    let kt = s:_operator_key_from(operator_name[1])
-    let k1 = s:_operator_key_from(operator_name[0])
-    let k2 = s:_operator_key_from(operator_name)
-    let p1 = s:_operator_pattern_from(operator_name[0])
-    let p2 = s:_operator_pattern_from(operator_name)
-    let bs3 = repeat('<BS>', 3)
-    let bs4 = repeat('<BS>', 4)
-    call urules.add(rule_set_name, [
-    \   {'at': '\V '.p1.' \%#', 'char': kt, 'input': bs3.' '.k2.' '},
-    \   {'at': '\V '.p2.' \%#', 'char': '<BS>', 'input': bs4.' '.k1.' '},
-    \   {'at': '\V '.p2.' \%#', 'char': '<Space>', 'input': ''},
-    \ ])
-  endfor
-  "}}}
-  " Double-character operator rules (!=, etc)  "{{{
-  for operator_name in [
-  \   '!=',
-  \   '!~',
-  \ ]
-    let rule_set_name = operator_name
-    let kt = s:_operator_key_from(operator_name[1])
-    let k1 = s:_operator_key_from(operator_name[0])
-    let k2 = s:_operator_key_from(operator_name)
-    let p1 = s:_operator_pattern_from(operator_name[0])
-    let p2 = s:_operator_pattern_from(operator_name)
-    let bs1 = repeat('<BS>', 1)
-    let bs4 = repeat('<BS>', 4)
-    call urules.add(rule_set_name, [
-    \   {'at': '\V'.p1.'\%#', 'char': kt, 'input': bs1.' '.k2.' '},
-    \   {'at': '\V '.p2.' \%#', 'char': '<BS>', 'input': bs4.k1},
-    \   {'at': '\V '.p2.' \%#', 'char': '<Space>', 'input': ''},
-    \ ])
-  endfor
-  "}}}
-  " Double-character operator rules (++, etc)  "{{{
-  for operator_name in [
-  \   '++',
-  \   '--',
-  \   '->',
-  \ ]
-    let rule_set_name = operator_name
-    let kt = s:_operator_key_from(operator_name[1])
-    let k1 = s:_operator_key_from(operator_name[0])
-    let k2 = s:_operator_key_from(operator_name)
-    let p1 = s:_operator_pattern_from(operator_name[0])
-    let p2 = s:_operator_pattern_from(operator_name)
-    let bs2 = repeat('<BS>', 2)
-    let bs3 = repeat('<BS>', 3)
-    call urules.add(rule_set_name, [
-    \   {'at': '\V '.p1.' \%#', 'char': kt, 'input': bs3.k2},
-    \   {'at': '\V'.p2.'\%#', 'char': '<BS>', 'input': bs2.' '.k1.' '},
-    \ ])
-  endfor
-  "}}}
-  " Triple-character operator rules  "{{{
-  for operator_name in [
-  \   '===',
-  \   '!==',
-  \   '<=>',
-  \   '<<=',
-  \   '>>=',
-  \ ]
-    let rule_set_name = operator_name
-    let kt = s:_operator_key_from(operator_name[2])
-    let k2 = s:_operator_key_from(operator_name[:1])
-    let k3 = s:_operator_key_from(operator_name)
-    let p2 = s:_operator_pattern_from(operator_name[:1])
-    let p3 = s:_operator_pattern_from(operator_name)
-    let bs4 = repeat('<BS>', 4)
-    let bs5 = repeat('<BS>', 5)
-    call urules.add(rule_set_name, [
-    \   {'at': '\V '.p2.' \%#', 'char': kt, 'input': bs4.' '.k3.' '},
-    \   {'at': '\V '.p3.' \%#', 'char': '<BS>', 'input': bs5.' '.k2.' '},
-    \   {'at': '\V '.p3.' \%#', 'char': '<Space>', 'input': ''},
-    \ ])
-  endfor
   "}}}
 
   " ft_urule_sets_table... "{{{
@@ -309,103 +140,11 @@ function! smartpunc#define_default_rules()  "{{{2
   \     urules.table['English'],
   \     urules.table['(<Enter>)'],
   \   ],
-  \   'cs': [
-  \     urules.table['x.y'],
-  \     urules.table['f(x)'],
-  \     urules.table['a[x]'],
-  \     urules.table['++'],
-  \     urules.table['--'],
-  \     urules.table['new'],
-  \     urules.table['typeof'],
-  \     urules.table['checked'],
-  \     urules.table['unchecked'],
-  \     urules.table['default(T)'],
-  \     urules.table['delegate'],
-  \     urules.table['->'],
-  \
-  \     urules.table['+ (unary)'],
-  \     urules.table['- (unary)'],
-  \     urules.table['!'],
-  \     urules.table['~'],
-  \     urules.table['(T)x'],
-  \     urules.table['true'],
-  \     urules.table['false'],
-  \     urules.table['& (dereference)'],
-  \     urules.table['sizeof'],
-  \
-  \     urules.table['*'],
-  \     urules.table['/'],
-  \     urules.table['%'],
-  \
-  \     urules.table['+'],
-  \     urules.table['-'],
-  \
-  \     urules.table['<<'],
-  \     urules.table['>>'],
-  \
-  \     urules.table['<'],
-  \     urules.table['>'],
-  \     urules.table['<='],
-  \     urules.table['>='],
-  \     urules.table['is'],
-  \     urules.table['as'],
-  \     urules.table['=='],
-  \     urules.table['!='],
-  \
-  \     urules.table['&'],
-  \     urules.table['^'],
-  \     urules.table['|'],
-  \
-  \     urules.table['&&'],
-  \     urules.table['||'],
-  \
-  \     urules.table['??'],
-  \     urules.table['?'],
-  \     urules.table[':'],
-  \     urules.table['case:'],
-  \     urules.table['default:'],
-  \
-  \     urules.table['='],
-  \     urules.table['+='],
-  \     urules.table['-='],
-  \     urules.table['*='],
-  \     urules.table['/='],
-  \     urules.table['%='],
-  \     urules.table['&='],
-  \     urules.table['|='],
-  \     urules.table['^='],
-  \     urules.table['<<='],
-  \     urules.table['>>='],
-  \
-  \     urules.table['=>'],
-  \
-  \     urules.table['T<T>'],
-  \     urules.table['// comment'],
-  \     urules.table['/// comment'],
-  \     urules.table['/* comment */'],
-  \   ],
-  \   'javascript': [
-  \     urules.table['='],
-  \     urules.table['=='],
-  \     urules.table['==='],
-  \     urules.table['!='],
-  \     urules.table['!=='],
-  \   ],
   \   'lisp': [
   \     urules.table['Lisp quote'],
   \   ],
-  \   'ruby': [
-  \     urules.table['<'],
-  \     urules.table['<='],
-  \     urules.table['<=>'],
-  \   ],
   \   'scheme': [
   \     urules.table['Lisp quote'],
-  \   ],
-  \   'vim': [
-  \     urules.table['='],
-  \     urules.table['=~'],
-  \     urules.table['!~'],
   \   ],
   \ }
   "}}}
