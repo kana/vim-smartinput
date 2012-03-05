@@ -89,12 +89,6 @@ function! smartpunc#define_default_rules()  "{{{2
   \   {'at': '{\%#}', 'char': '<BS>', 'input': '<BS><Del>'},
   \   {'at': '\\\%#', 'char': '{', 'input': '{'},
   \ ])
-  call urules.add('<>', [
-  \   {'at': '\%#', 'char': '<LT>', 'input': '<LT>><Left>'},
-  \   {'at': '<\%#>', 'char': '>', 'input': '<Right>'},
-  \   {'at': '<\%#>', 'char': '<BS>', 'input': '<BS><Del>'},
-  \   {'at': '\\\%#', 'char': '<LT>', 'input': '<LT>'},
-  \ ])
   call urules.add('''''', [
   \   {'at': '\%#', 'char': '''', 'input': '''''<Left>'},
   \   {'at': '''\%#''', 'char': '''', 'input': '<Right>'},
@@ -133,7 +127,6 @@ function! smartpunc#define_default_rules()  "{{{2
   \     urules.table['()'],
   \     urules.table['[]'],
   \     urules.table['{}'],
-  \     urules.table['<>'],
   \     urules.table[''''''],
   \     urules.table['""'],
   \     urules.table['``'],
