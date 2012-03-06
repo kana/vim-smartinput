@@ -14,7 +14,7 @@ describe 'smartpunc#map_to_trigger'
     \   'char': '<Return>',
     \   'input': '<Return>X<Return>)<BS><Up><C-o>$<BS>',
     \ })
-    call smartpunc#map_to_trigger('<buffer> <Return>', '<Return>')
+    call smartpunc#map_to_trigger('i', '<buffer> <Return>', '<Return>')
   end
 
   after

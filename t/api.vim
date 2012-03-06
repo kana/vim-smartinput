@@ -243,13 +243,15 @@ describe 'smartpunc#map_to_trigger'
     SaveContext
     new
 
+    let M = function('smartpunc#map_to_trigger')
+
     " With a cursor adjustment.
     call smartpunc#define_rule({
     \   'at': '\%#',
     \   'char': '(',
     \   'input': '()<Left>',
     \ })
-    call smartpunc#map_to_trigger('<buffer> (', '(', '(')
+    call M('i', '<buffer> (', '(', '(')
 
     " Without any cursor adjustment.
     call smartpunc#define_rule({
@@ -257,15 +259,15 @@ describe 'smartpunc#map_to_trigger'
     \   'char': '1',
     \   'input': '123',
     \ })
-    call smartpunc#map_to_trigger('<buffer> 1', '1', '1')
+    call M('i', '<buffer> 1', '1', '1')
 
     " Failure case - 1.
     " ... no rule is defined for 'x' for intentional failure.
-    call smartpunc#map_to_trigger('<buffer> F1', 'x', 'x')
+    call M('i', '<buffer> F1', 'x', 'x')
 
     " Failure case - 2.
     " ... no rule is defined for 'y' for intentional failure.
-    call smartpunc#map_to_trigger('<buffer> F2', 'x', 'y')
+    call M('i', '<buffer> F2', 'x', 'y')
 
     " With a special "char".
     call smartpunc#define_rule({
@@ -273,7 +275,7 @@ describe 'smartpunc#map_to_trigger'
     \   'char': '<BS>',
     \   'input': '<BS><Del>',
     \ })
-    call smartpunc#map_to_trigger('<buffer> <BS>', '<BS>', '<BS>')
+    call M('i', '<buffer> <BS>', '<BS>', '<BS>')
 
     " With a problematic "char" - ``"''.
     call smartpunc#define_rule({
@@ -281,7 +283,7 @@ describe 'smartpunc#map_to_trigger'
     \   'char': '"',
     \   'input': '""<Left>',
     \ })
-    call smartpunc#map_to_trigger('<buffer> "', '"', '"')
+    call M('i', '<buffer> "', '"', '"')
 
     " With a problematic "char" - ``\''.
     call smartpunc#define_rule({
@@ -289,7 +291,7 @@ describe 'smartpunc#map_to_trigger'
     \   'char': '<Bslash>',
     \   'input': '<Bslash><Bslash><Left>',
     \ })
-    call smartpunc#map_to_trigger('<buffer> <Bslash>', '<Bslash>', '<Bslash>')
+    call M('i', '<buffer> <Bslash>', '<Bslash>', '<Bslash>')
 
     " With automatic indentation.
     call smartpunc#define_rule({
@@ -297,7 +299,7 @@ describe 'smartpunc#map_to_trigger'
     \   'char': '<Return>',
     \   'input': '<Return>*<Return>}<BS><Up><C-o>$<BS>',
     \ })
-    call smartpunc#map_to_trigger('<buffer> <Return>', '<Return>', '<Return>')
+    call M('i', '<buffer> <Return>', '<Return>', '<Return>')
   end
 
   after

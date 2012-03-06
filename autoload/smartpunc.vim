@@ -198,7 +198,7 @@ endfunction
 
 
 
-function! smartpunc#map_to_trigger(lhs, rhs_char, rhs_fallback)  "{{{2
+function! smartpunc#map_to_trigger(mode, lhs, rhs_char, rhs_fallback)  "{{{2
   " According to :help 'autoindent' --
   "
   " > Copy indent from current line when starting a new line
@@ -211,7 +211,8 @@ function! smartpunc#map_to_trigger(lhs, rhs_char, rhs_fallback)  "{{{2
   " a:rhs_fallback == '<Enter>',
   let char_expr = s:_encode_for_map_char_expr(a:rhs_char)
   let fallback_expr = s:_encode_for_map_char_expr(a:rhs_fallback)
-  execute printf('inoremap %s %s  <SID>_trigger_or_fallback(%s, %s)',
+  execute printf('%snoremap %s %s  <SID>_trigger_or_fallback(%s, %s)',
+  \              a:mode,
   \              '<script> <expr> <silent>',
   \              a:lhs,
   \              char_expr,
@@ -252,14 +253,14 @@ function! smartpunc#map_trigger_keys(...)  "{{{2
   let map_modifier = overridep ? '' : '<unique>'
   for char in unique_chars
     " Do not override existing key mappings.
-    silent! call M(map_modifier . ' ' . char, char, char)
+    silent! call M('i', map_modifier . ' ' . char, char, char)
   endfor
-  silent! call M(map_modifier . ' ' . '<C-h>', '<BS>', '<C-h>')
-  silent! call M(map_modifier . ' ' . '<Return>', '<Enter>', '<Return>')
-  silent! call M(map_modifier . ' ' . '<C-m>', '<Enter>', '<C-m>')
-  silent! call M(map_modifier . ' ' . '<CR>', '<Enter>', '<CR>')
-  silent! call M(map_modifier . ' ' . '<C-j>', '<Enter>', '<C-j>')
-  silent! call M(map_modifier . ' ' . '<NL>', '<Enter>', '<NL>')
+  silent! call M('i', map_modifier . ' ' . '<C-h>', '<BS>', '<C-h>')
+  silent! call M('i', map_modifier . ' ' . '<Return>', '<Enter>', '<Return>')
+  silent! call M('i', map_modifier . ' ' . '<C-m>', '<Enter>', '<C-m>')
+  silent! call M('i', map_modifier . ' ' . '<CR>', '<Enter>', '<CR>')
+  silent! call M('i', map_modifier . ' ' . '<C-j>', '<Enter>', '<C-j>')
+  silent! call M('i', map_modifier . ' ' . '<NL>', '<Enter>', '<NL>')
 endfunction
 
 
