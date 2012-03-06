@@ -299,6 +299,7 @@ function! s:calculate_rule_priority(snrule)  "{{{2
   \ len(a:snrule.at)
   \ + (a:snrule.filetype is 0 ? 0 : 100 / len(a:snrule.filetype))
   \ + (a:snrule.syntax is 0 ? 0 : 100 / len(a:snrule.syntax))
+  \ + 100 / len(a:snrule.mode)
 endfunction
 
 
@@ -393,6 +394,10 @@ function! s:normalize_rule(urule)  "{{{2
   let nrule._char = s:decode_key_notation(nrule.char)
 
   let nrule._input = s:decode_key_notation(nrule.input)
+
+  if !has_key(nrule, 'mode')
+    let nrule.mode = 'i'
+  endif
 
   if has_key(nrule, 'filetype')
     call sort(nrule.filetype)

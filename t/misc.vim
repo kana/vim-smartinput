@@ -5,35 +5,52 @@ syntax enable
 set backspace=indent,eol,start
 
 describe 's:calculate_rule_priority'
-  it 'should use "at", "filetype" and "syntax"'
+  it 'should use "at", "mode", "filetype" and "syntax"'
     let snrule1 = {
     \   'at': '\%#',
     \   'char': '(',
     \   'input': '()<Left>',
+    \   'mode': 'i',
     \   'filetype': ['foo', 'bar', 'baz'],
     \   'syntax': ['String', 'Comment'],
     \ }
-    Expect Call('s:calculate_rule_priority', snrule1) == 3 + 100 / 3 + 100 / 2
+    Expect Call('s:calculate_rule_priority', snrule1)
+    \      == 3 + 100 / 3 + 100 / 2 + 100 / 1
 
     let snrule2 = {
     \   'at': '\%#',
     \   'char': '[',
     \   'input': '[  ]<Left><Left>',
+    \   'mode': 'i',
     \   'filetype': ['foo', 'bar', 'baz'],
     \   'syntax': ['String', 'Comment'],
     \ }
-    Expect Call('s:calculate_rule_priority', snrule2) == 3 + 100 / 3 + 100 / 2
+    Expect Call('s:calculate_rule_priority', snrule2)
+    \      == 3 + 100 / 3 + 100 / 2 + 100 / 1
+
+    let snrule3 = {
+    \   'at': '\%#',
+    \   'char': '(',
+    \   'input': '<Bslash>(',
+    \   'mode': '/?',
+    \   'filetype': 0,
+    \   'syntax': 0,
+    \ }
+    Expect Call('s:calculate_rule_priority', snrule3)
+    \      == 3 + 0 + 0 + 100 / 2
   end
 
-  it 'should use a low value for omitted items'
+  it 'should use a low value for omitted "filetype" and "syntax"'
     let snrule = {
     \   'at': '\%#',
     \   'char': '(',
     \   'input': '()<Left>',
+    \   'mode': 'i',
     \   'filetype': 0,
     \   'syntax': 0,
     \ }
-    Expect Call('s:calculate_rule_priority', snrule) == 3 + 0 + 0
+    Expect Call('s:calculate_rule_priority', snrule)
+    \      == 3 + 0 + 0 + 100 / 1
   end
 end
 
@@ -409,10 +426,15 @@ describe 's:normalize_rule'
     \   '_char': Call('s:decode_key_notation', urule.char),
     \   'input': urule.input,
     \   '_input': Call('s:decode_key_notation', urule.input),
+    \   'mode': 'i',
     \   'filetype': 0,
     \   'syntax': 0,
-    \   'priority': 3 + 0 + 0,
-    \   'hash': string([printf('%06d', 3), urule.at, urule.char, 0, 0]),
+    \   'priority': 3 + 0 + 0 + 100 / 1,
+    \   'hash': string([printf('%06d', 3 + 0 + 0 + 100 / 1),
+    \                   urule.at,
+    \                   urule.char,
+    \                   0,
+    \                   0]),
     \ }
   end
 end
