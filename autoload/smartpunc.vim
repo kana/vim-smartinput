@@ -242,25 +242,35 @@ endfunction
 function! smartpunc#map_trigger_keys(...)  "{{{2
   let overridep = 1 <= a:0 ? a:1 : 0
 
-  let all_chars = map(copy(s:available_nrules), 'v:val.char')
-  let d = {}
-  for char in all_chars
-    let d[char] = char
+  let d = {'i': {}, 'c': {}}
+  for nrule in s:available_nrules
+    let char = nrule.char
+    if nrule.mode =~# 'i'
+      let d['i'][char] = char
+    endif
+    if nrule.mode =~# '[^i]'
+      let d['c'][char] = char
+    endif
   endfor
-  let unique_chars = keys(d)
 
   let M = function('smartpunc#map_to_trigger')
   let map_modifier = overridep ? '' : '<unique>'
-  for char in unique_chars
-    " Do not override existing key mappings.
-    silent! call M('i', map_modifier . ' ' . char, char, char)
+  for mode in keys(d)
+    let unique_chars = keys(d[mode])
+    for char in unique_chars
+      " Do not override existing key mappings.
+      silent! call M(mode, map_modifier.' '.char, char, char)
+    endfor
   endfor
-  silent! call M('i', map_modifier . ' ' . '<C-h>', '<BS>', '<C-h>')
-  silent! call M('i', map_modifier . ' ' . '<Return>', '<Enter>', '<Return>')
-  silent! call M('i', map_modifier . ' ' . '<C-m>', '<Enter>', '<C-m>')
-  silent! call M('i', map_modifier . ' ' . '<CR>', '<Enter>', '<CR>')
-  silent! call M('i', map_modifier . ' ' . '<C-j>', '<Enter>', '<C-j>')
-  silent! call M('i', map_modifier . ' ' . '<NL>', '<Enter>', '<NL>')
+
+  for mode in ['i', 'c']
+    silent! call M(mode, map_modifier.' '.'<C-h>', '<BS>', '<C-h>')
+    silent! call M(mode, map_modifier.' '.'<Return>', '<Enter>', '<Return>')
+    silent! call M(mode, map_modifier.' '.'<C-m>', '<Enter>', '<C-m>')
+    silent! call M(mode, map_modifier.' '.'<CR>', '<Enter>', '<CR>')
+    silent! call M(mode, map_modifier.' '.'<C-j>', '<Enter>', '<C-j>')
+    silent! call M(mode, map_modifier.' '.'<NL>', '<Enter>', '<NL>')
+  endfor
 endfunction
 
 
