@@ -75,36 +75,42 @@ function! smartpunc#define_default_rules()  "{{{2
   \   {'at': '\%#', 'char': '(', 'input': '()<Left>'},
   \   {'at': '\%#)', 'char': ')', 'input': '<Right>'},
   \   {'at': '(\%#)', 'char': '<BS>', 'input': '<BS><Del>'},
+  \   {'at': '()\%#', 'char': '<BS>', 'input': '<BS><BS>'},
   \   {'at': '\\\%#', 'char': '(', 'input': '('},
   \ ])
   call urules.add('[]', [
   \   {'at': '\%#', 'char': '[', 'input': '[]<Left>'},
   \   {'at': '\%#\]', 'char': ']', 'input': '<Right>'},
   \   {'at': '\[\%#\]', 'char': '<BS>', 'input': '<BS><Del>'},
+  \   {'at': '\[\]\%#', 'char': '<BS>', 'input': '<BS><BS>'},
   \   {'at': '\\\%#', 'char': '[', 'input': '['},
   \ ])
   call urules.add('{}', [
   \   {'at': '\%#', 'char': '{', 'input': '{}<Left>'},
   \   {'at': '\%#}', 'char': '}', 'input': '<Right>'},
   \   {'at': '{\%#}', 'char': '<BS>', 'input': '<BS><Del>'},
+  \   {'at': '{}\%#', 'char': '<BS>', 'input': '<BS><BS>'},
   \   {'at': '\\\%#', 'char': '{', 'input': '{'},
   \ ])
   call urules.add('''''', [
   \   {'at': '\%#', 'char': '''', 'input': '''''<Left>'},
   \   {'at': '\%#''\ze', 'char': '''', 'input': '<Right>'},
   \   {'at': '''\%#''', 'char': '<BS>', 'input': '<BS><Del>'},
+  \   {'at': '''''\%#', 'char': '<BS>', 'input': '<BS><BS>'},
   \   {'at': '\\\%#', 'char': '''', 'input': ''''},
   \ ])
   call urules.add('""', [
   \   {'at': '\%#', 'char': '"', 'input': '""<Left>'},
   \   {'at': '\%#"', 'char': '"', 'input': '<Right>'},
   \   {'at': '"\%#"', 'char': '<BS>', 'input': '<BS><Del>'},
+  \   {'at': '""\%#', 'char': '<BS>', 'input': '<BS><BS>'},
   \   {'at': '\\\%#', 'char': '"', 'input': '"'},
   \ ])
   call urules.add('``', [
   \   {'at': '\%#', 'char': '`', 'input': '``<Left>'},
   \   {'at': '\%#`', 'char': '`', 'input': '<Right>'},
   \   {'at': '`\%#`', 'char': '<BS>', 'input': '<BS><Del>'},
+  \   {'at': '``\%#', 'char': '<BS>', 'input': '<BS><BS>'},
   \   {'at': '\\\%#', 'char': '`', 'input': '`'},
   \ ])
   call urules.add('English', [
