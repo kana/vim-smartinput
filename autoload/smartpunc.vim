@@ -228,7 +228,19 @@ function! s:_encode_for_map_char_expr(rhs_char)
 endfunction
 
 function! s:_trigger_or_fallback(char, fallback)
-  let nrule = s:find_the_most_proper_rule_in_insert_mode(s:available_nrules, a:char)
+  let nrule =
+  \ mode() =~# '\v^(i|R|Rv)$'
+  \ ? s:find_the_most_proper_rule_in_insert_mode(
+  \     s:available_nrules,
+  \     a:char
+  \   )
+  \ : s:find_the_most_proper_rule_in_command_line_mode(
+  \     s:available_nrules,
+  \     a:char,
+  \     getcmdline(),
+  \     getcmdpos(),
+  \     getcmdtype()
+  \   )
   if nrule is 0
     return a:fallback
   else

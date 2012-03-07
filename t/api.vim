@@ -300,6 +300,15 @@ describe 'smartpunc#map_to_trigger'
     \   'input': '<Return>*<Return>}<BS><Up><C-o>$<BS>',
     \ })
     call M('i', '<buffer> <Return>', '<Return>', '<Return>')
+
+    " In Command-line mode.
+    call smartpunc#define_rule({
+    \   'at': '\[\%#]',
+    \   'char': '<BS>',
+    \   'input': '<BS><Del>',
+    \   'mode': ':',
+    \ })
+    call M('c', '<buffer> <BS>', '<BS>', '<BS>')
   end
 
   after
@@ -467,6 +476,27 @@ describe 'smartpunc#map_to_trigger'
     \                                 '        Z',
     \                                 '}']
     Expect [line('.'), col('.')] ==# [5, 10 - 1]
+  end
+
+  it 'should do smart input assistant in Command-line mode'
+    let b:log = []
+    function! b:check()
+      call add(b:log, [getcmdtype(), getcmdline(), getcmdpos()])
+      return ''
+    endfunction
+    cnoremap <buffer> <expr> C  b:check()
+
+    " '([x#])'
+    " '([#])'
+    " '(#)'
+    " '#)'
+    execute 'normal' ":([x])\<Left>\<Left>C\<BS>C\<BS>C\<BS>C\<C-c>"
+    Expect b:log ==# [
+    \   [':', '([x])', 4],
+    \   [':', '([])', 3],
+    \   [':', '()', 2],
+    \   [':', ')', 1],
+    \ ]
   end
 end
 
