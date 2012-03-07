@@ -523,14 +523,15 @@ describe 'The default configuration'
       " So that the expected rule ("at" ==# '\w\%#') is selected.
       "
       " To avoid the problem, split :normal at the trigger character.
-      for test_set in map(copy(a:test_set_names), 'b:test_set_table[v:val]')
+      for n in a:test_set_names
+        let test_set = b:test_set_table[n]
         % delete _
         let i = 0  " For debugging.
         for [input, lines, linenr, colnr] in test_set
           let i += 1
           execute 'normal' 'a'.input
-          Expect [i, getline(1, line('$'))] ==# [i, lines]
-          Expect [i, [line('.'), col('.')]] ==# [i, [linenr, colnr]]
+          Expect [n, i, getline(1, line('$'))] ==# [n, i, lines]
+          Expect [n, i, [line('.'), col('.')]] ==# [n, i, [linenr, colnr]]
         endfor
       endfor
     endfunction
