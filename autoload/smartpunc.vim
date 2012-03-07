@@ -91,7 +91,7 @@ function! smartpunc#define_default_rules()  "{{{2
   \ ])
   call urules.add('''''', [
   \   {'at': '\%#', 'char': '''', 'input': '''''<Left>'},
-  \   {'at': '''\%#''', 'char': '''', 'input': '<Right>'},
+  \   {'at': '\%#''\ze', 'char': '''', 'input': '<Right>'},
   \   {'at': '''\%#''', 'char': '<BS>', 'input': '<BS><Del>'},
   \   {'at': '\\\%#', 'char': '''', 'input': ''''},
   \ ])
