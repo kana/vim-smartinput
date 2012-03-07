@@ -4,8 +4,10 @@
 " "vim -u NONE" etc.  Remove the kay mappings to ensure that there is no key
 " mappings, because some tests in this file assume such state.
 imapclear
+cmapclear
 
 inoremap (  (((
+cnoremap <BS>  Backspace!!!
 
 runtime! plugin/smartpunc.vim
 
@@ -13,14 +15,20 @@ call vspec#hint({'scope': 'smartpunc#scope()', 'sid': 'smartpunc#sid()'})
 
 describe 'Start-up'
   it 'should preverse existing key mappings prior to the default key mappings'
-    redir => s
-    0 verbose imap
-    redir END
-    let lhss = split(s, '\n')
-    call map(lhss, 'substitute(v:val, ''\v\S+\s+(\S+)\s+.*'', ''\1'', ''g'')')
-    call sort(lhss)
+    let f = {}
+    function! f.get_lhss(map_command)
+      redir => s
+      execute '0 verbose' a:map_command
+      redir END
+      let lhss = split(s, '\n')
+      call map(lhss, 'substitute(v:val, ''\v\S+\s+(\S+)\s+.*'', ''\1'', "g")')
+      call sort(lhss)
+      return lhss
+    endfunction
 
-    Expect lhss ==# [
+    let lhssi = f.get_lhss('imap')
+
+    Expect lhssi ==# [
     \   '"',
     \   '''',
     \   '(',
@@ -36,5 +44,15 @@ describe 'Start-up'
     \   '}',
     \ ]
     Expect maparg('(', 'i') ==# '((('
+
+    let lhssc = f.get_lhss('cmap')
+
+    Expect lhssc ==# [
+    \   '<BS>',
+    \   '<C-H>',
+    \   '<CR>',
+    \   '<NL>',
+    \ ]
+    Expect maparg('<BS>', 'c') ==# 'Backspace!!!'
   end
 end

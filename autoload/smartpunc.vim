@@ -198,7 +198,7 @@ endfunction
 
 
 
-function! smartpunc#map_to_trigger(lhs, rhs_char, rhs_fallback)  "{{{2
+function! smartpunc#map_to_trigger(mode, lhs, rhs_char, rhs_fallback)  "{{{2
   " According to :help 'autoindent' --
   "
   " > Copy indent from current line when starting a new line
@@ -211,7 +211,8 @@ function! smartpunc#map_to_trigger(lhs, rhs_char, rhs_fallback)  "{{{2
   " a:rhs_fallback == '<Enter>',
   let char_expr = s:_encode_for_map_char_expr(a:rhs_char)
   let fallback_expr = s:_encode_for_map_char_expr(a:rhs_fallback)
-  execute printf('inoremap %s %s  <SID>_trigger_or_fallback(%s, %s)',
+  execute printf('%snoremap %s %s  <SID>_trigger_or_fallback(%s, %s)',
+  \              a:mode,
   \              '<script> <expr> <silent>',
   \              a:lhs,
   \              char_expr,
@@ -227,7 +228,19 @@ function! s:_encode_for_map_char_expr(rhs_char)
 endfunction
 
 function! s:_trigger_or_fallback(char, fallback)
-  let nrule = s:find_the_most_proper_rule(s:available_nrules, a:char)
+  let nrule =
+  \ mode() =~# '\v^(i|R|Rv)$'
+  \ ? s:find_the_most_proper_rule_in_insert_mode(
+  \     s:available_nrules,
+  \     a:char
+  \   )
+  \ : s:find_the_most_proper_rule_in_command_line_mode(
+  \     s:available_nrules,
+  \     a:char,
+  \     getcmdline(),
+  \     getcmdpos(),
+  \     getcmdtype()
+  \   )
   if nrule is 0
     return a:fallback
   else
@@ -241,25 +254,35 @@ endfunction
 function! smartpunc#map_trigger_keys(...)  "{{{2
   let overridep = 1 <= a:0 ? a:1 : 0
 
-  let all_chars = map(copy(s:available_nrules), 'v:val.char')
-  let d = {}
-  for char in all_chars
-    let d[char] = char
+  let d = {'i': {}, 'c': {}}
+  for nrule in s:available_nrules
+    let char = nrule.char
+    if nrule.mode =~# 'i'
+      let d['i'][char] = char
+    endif
+    if nrule.mode =~# '[^i]'
+      let d['c'][char] = char
+    endif
   endfor
-  let unique_chars = keys(d)
 
   let M = function('smartpunc#map_to_trigger')
   let map_modifier = overridep ? '' : '<unique>'
-  for char in unique_chars
-    " Do not override existing key mappings.
-    silent! call M(map_modifier . ' ' . char, char, char)
+  for mode in keys(d)
+    let unique_chars = keys(d[mode])
+    for char in unique_chars
+      " Do not override existing key mappings.
+      silent! call M(mode, map_modifier.' '.char, char, char)
+    endfor
   endfor
-  silent! call M(map_modifier . ' ' . '<C-h>', '<BS>', '<C-h>')
-  silent! call M(map_modifier . ' ' . '<Return>', '<Enter>', '<Return>')
-  silent! call M(map_modifier . ' ' . '<C-m>', '<Enter>', '<C-m>')
-  silent! call M(map_modifier . ' ' . '<CR>', '<Enter>', '<CR>')
-  silent! call M(map_modifier . ' ' . '<C-j>', '<Enter>', '<C-j>')
-  silent! call M(map_modifier . ' ' . '<NL>', '<Enter>', '<NL>')
+
+  for mode in ['i', 'c']
+    silent! call M(mode, map_modifier.' '.'<C-h>', '<BS>', '<C-h>')
+    silent! call M(mode, map_modifier.' '.'<Return>', '<Enter>', '<Return>')
+    silent! call M(mode, map_modifier.' '.'<C-m>', '<Enter>', '<C-m>')
+    silent! call M(mode, map_modifier.' '.'<CR>', '<Enter>', '<CR>')
+    silent! call M(mode, map_modifier.' '.'<C-j>', '<Enter>', '<C-j>')
+    silent! call M(mode, map_modifier.' '.'<NL>', '<Enter>', '<NL>')
+  endfor
 endfunction
 
 
@@ -299,6 +322,7 @@ function! s:calculate_rule_priority(snrule)  "{{{2
   \ len(a:snrule.at)
   \ + (a:snrule.filetype is 0 ? 0 : 100 / len(a:snrule.filetype))
   \ + (a:snrule.syntax is 0 ? 0 : 100 / len(a:snrule.syntax))
+  \ + 100 / len(a:snrule.mode)
 endfunction
 
 
@@ -311,12 +335,50 @@ endfunction
 
 
 
-function! s:find_the_most_proper_rule(nrules, char)  "{{{2
+function! s:find_the_most_proper_rule_in_command_line_mode(nrules, char, cl_text, cl_column, cl_type)  "{{{2
+  " FIXME: Optimize for speed if necessary.
+
+  let column = a:cl_column - 1
+  let cl_text = (column == 0 ? '' : a:cl_text[:(column - 1)])
+  \             . s:UNTYPABLE_CHAR
+  \             . a:cl_text[(column):]
+
+  for nrule in a:nrules
+    if stridx(nrule.mode, a:cl_type) == -1
+      continue
+    endif
+
+    if !(a:char ==# nrule._char)
+      continue
+    endif
+
+    " FIXME: Replace \%# correctly.
+    " For example, if nrule.at is '\\%#', it should not be replaced.
+    if cl_text !~# substitute(nrule.at, '\\%#', s:UNTYPABLE_CHAR, 'g')
+      continue
+    endif
+
+    return nrule
+  endfor
+
+  return 0
+endfunction
+
+let s:UNTYPABLE_CHAR = "\x01"  " FIXME: Use a more proper value.
+
+
+
+
+function! s:find_the_most_proper_rule_in_insert_mode(nrules, char)  "{{{2
   " FIXME: Optimize for speed if necessary.
   let syntax_names = map(synstack(line('.'), col('.')),
   \                      'synIDattr(synIDtrans(v:val), "name")')
 
   for nrule in a:nrules
+    if stridx(nrule.mode, 'i') == -1
+      continue
+    endif
+
     if !(a:char ==# nrule._char)
       continue
     endif
@@ -393,6 +455,10 @@ function! s:normalize_rule(urule)  "{{{2
   let nrule._char = s:decode_key_notation(nrule.char)
 
   let nrule._input = s:decode_key_notation(nrule.input)
+
+  if !has_key(nrule, 'mode')
+    let nrule.mode = 'i'
+  endif
 
   if has_key(nrule, 'filetype')
     call sort(nrule.filetype)

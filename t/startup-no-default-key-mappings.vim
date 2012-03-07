@@ -4,6 +4,7 @@
 " "vim -u NONE" etc.  Remove the kay mappings to ensure that there is no key
 " mappings, because some tests in this file assume such state.
 imapclear
+cmapclear
 
 let g:smartpunc_no_default_key_mappings = !0
 
@@ -13,11 +14,15 @@ call vspec#hint({'scope': 'smartpunc#scope()', 'sid': 'smartpunc#sid()'})
 
 describe 'g:smartpunc_no_default_key_mappings'
   it 'should suppress to define the default key mappings'
-    redir => s
+    redir => si
     0 verbose imap
     redir END
+    redir => sc
+    0 verbose cmap
+    redir END
 
-    Expect substitute(s, '[\r\n]', '', 'g') ==# 'No mapping found'
+    Expect substitute(si, '[\r\n]', '', 'g') ==# 'No mapping found'
+    Expect substitute(sc, '[\r\n]', '', 'g') ==# 'No mapping found'
     Expect Ref('s:available_nrules') !=# []
   end
 end

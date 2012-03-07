@@ -5,35 +5,52 @@ syntax enable
 set backspace=indent,eol,start
 
 describe 's:calculate_rule_priority'
-  it 'should use "at", "filetype" and "syntax"'
+  it 'should use "at", "mode", "filetype" and "syntax"'
     let snrule1 = {
     \   'at': '\%#',
     \   'char': '(',
     \   'input': '()<Left>',
+    \   'mode': 'i',
     \   'filetype': ['foo', 'bar', 'baz'],
     \   'syntax': ['String', 'Comment'],
     \ }
-    Expect Call('s:calculate_rule_priority', snrule1) == 3 + 100 / 3 + 100 / 2
+    Expect Call('s:calculate_rule_priority', snrule1)
+    \      == 3 + 100 / 3 + 100 / 2 + 100 / 1
 
     let snrule2 = {
     \   'at': '\%#',
     \   'char': '[',
     \   'input': '[  ]<Left><Left>',
+    \   'mode': 'i',
     \   'filetype': ['foo', 'bar', 'baz'],
     \   'syntax': ['String', 'Comment'],
     \ }
-    Expect Call('s:calculate_rule_priority', snrule2) == 3 + 100 / 3 + 100 / 2
+    Expect Call('s:calculate_rule_priority', snrule2)
+    \      == 3 + 100 / 3 + 100 / 2 + 100 / 1
+
+    let snrule3 = {
+    \   'at': '\%#',
+    \   'char': '(',
+    \   'input': '<Bslash>(',
+    \   'mode': '/?',
+    \   'filetype': 0,
+    \   'syntax': 0,
+    \ }
+    Expect Call('s:calculate_rule_priority', snrule3)
+    \      == 3 + 0 + 0 + 100 / 2
   end
 
-  it 'should use a low value for omitted items'
+  it 'should use a low value for omitted "filetype" and "syntax"'
     let snrule = {
     \   'at': '\%#',
     \   'char': '(',
     \   'input': '()<Left>',
+    \   'mode': 'i',
     \   'filetype': 0,
     \   'syntax': 0,
     \ }
-    Expect Call('s:calculate_rule_priority', snrule) == 3 + 0 + 0
+    Expect Call('s:calculate_rule_priority', snrule)
+    \      == 3 + 0 + 0 + 100 / 1
   end
 end
 
@@ -48,7 +65,79 @@ describe 's:decode_key_notation'
   end
 end
 
-describe 's:find_the_most_proper_rule'
+describe 's:find_the_most_proper_rule_in_command_line_mode'
+  before
+    new
+    let b:nrule1 = Call('s:normalize_rule', {
+    \   'at': '\%#',
+    \   'char': '<LT>',
+    \   'input': '<LT>><Left>',
+    \   'mode': ':',
+    \ })
+    let b:nrule2 = Call('s:normalize_rule', {
+    \   'at': '\w\%#',
+    \   'char': '<LT>',
+    \   'input': '<LT>',
+    \   'mode': ':',
+    \ })
+    let b:nrule3 = Call('s:normalize_rule', {
+    \   'at': '\%#',
+    \   'char': '<LT>',
+    \   'input': '<LT>',
+    \   'filetype': ['lisp', 'scheme'],
+    \   'mode': '/',
+    \ })
+    let b:nrule4 = Call('s:normalize_rule', {
+    \   'at': '\%#',
+    \   'char': '<LT>',
+    \   'input': '<LT>><Left>',
+    \   'filetype': ['lisp', 'scheme'],
+    \   'syntax': ['Comment', 'String'],
+    \   'mode': '/',
+    \ })
+    let b:nrule5 = Call('s:normalize_rule', {
+    \   'at': '\%#',
+    \   'char': '<LT>',
+    \   'input': 'This rule MUST NOT be selected.',
+    \   'mode': 'i',
+    \ })
+    let b:nrules = [b:nrule5, b:nrule4, b:nrule3, b:nrule2, b:nrule1]
+
+    function! b:find(...)
+      return call('Call',
+      \           ['s:find_the_most_proper_rule_in_command_line_mode'] + a:000)
+    endfunction
+  end
+
+  after
+    close!
+  end
+
+  it 'should fail if there is no rule for a given char'
+    Expect b:find(b:nrules, '[', '', 1, ':') ==# 0
+  end
+
+  it 'should fail if there is no rule for a given command-line type'
+    Expect b:find(b:nrules, '<', '', 1, 'X') ==# 0
+  end
+
+  it 'should check the text under the cursor by "at"'
+    " foo #bar
+    Expect b:find(b:nrules, '<', 'foo bar', 5, ':') ==# b:nrule1
+
+    " foo# bar
+    Expect b:find(b:nrules, '<', 'foo bar', 4, ':') ==# b:nrule2
+  end
+
+  it 'should ignore "filetype" and "syntax"'
+    setfiletype scheme
+
+    " foo #bar
+    Expect b:find(b:nrules, '<', 'foo bar', 5, '/') ==# b:nrule4
+  end
+end
+
+describe 's:find_the_most_proper_rule_in_insert_mode'
   before
     new
     let b:nrule1 = Call('s:normalize_rule', {
@@ -74,7 +163,13 @@ describe 's:find_the_most_proper_rule'
     \   'filetype': ['lisp', 'scheme'],
     \   'syntax': ['Comment', 'String'],
     \ })
-    let b:nrules = [b:nrule4, b:nrule3, b:nrule2, b:nrule1]
+    let b:nrule5 = Call('s:normalize_rule', {
+    \   'at': '\%#',
+    \   'char': '<LT>',
+    \   'input': 'This rule MUST NOT be selected.',
+    \   'mode': ':',
+    \ })
+    let b:nrules = [b:nrule5, b:nrule4, b:nrule3, b:nrule2, b:nrule1]
   end
 
   after
@@ -82,7 +177,7 @@ describe 's:find_the_most_proper_rule'
   end
 
   it 'should fail if there is no rule for a given char'
-    Expect Call('s:find_the_most_proper_rule', b:nrules, '[') ==# 0
+    Expect Call('s:find_the_most_proper_rule_in_insert_mode', b:nrules, '[') ==# 0
   end
 
   it 'should check the text under the cursor by "at"'
@@ -93,12 +188,12 @@ describe 's:find_the_most_proper_rule'
     " (define foo #)  ; ...
     normal! ggf)
     Expect [line('.'), col('.')] ==# [1, 13]
-    Expect Call('s:find_the_most_proper_rule', b:nrules, '<') ==# b:nrule1
+    Expect Call('s:find_the_most_proper_rule_in_insert_mode', b:nrules, '<') ==# b:nrule1
 
     " (define foo# )  ; ...
     normal! ggf)h
     Expect [line('.'), col('.')] ==# [1, 12]
-    Expect Call('s:find_the_most_proper_rule', b:nrules, '<') ==# b:nrule2
+    Expect Call('s:find_the_most_proper_rule_in_insert_mode', b:nrules, '<') ==# b:nrule2
   end
 
   it 'should check the filetype of the current buffer with "filetype"'
@@ -109,12 +204,12 @@ describe 's:find_the_most_proper_rule'
     " (define foo #)  ; ...
     normal! ggf)
     Expect [line('.'), col('.')] ==# [1, 13]
-    Expect Call('s:find_the_most_proper_rule', b:nrules, '<') ==# b:nrule3
+    Expect Call('s:find_the_most_proper_rule_in_insert_mode', b:nrules, '<') ==# b:nrule3
 
     " (define foo# )  ; ...
     normal! ggf)h
     Expect [line('.'), col('.')] ==# [1, 12]
-    Expect Call('s:find_the_most_proper_rule', b:nrules, '<') ==# b:nrule3
+    Expect Call('s:find_the_most_proper_rule_in_insert_mode', b:nrules, '<') ==# b:nrule3
   end
 
   it 'should check the syntax name of text under the cursor with "syntax"'
@@ -125,12 +220,12 @@ describe 's:find_the_most_proper_rule'
     " (define foo #)  ; ...
     normal! ggf)
     Expect [line('.'), col('.')] ==# [1, 13]
-    Expect Call('s:find_the_most_proper_rule', b:nrules, '<') ==# b:nrule3
+    Expect Call('s:find_the_most_proper_rule_in_insert_mode', b:nrules, '<') ==# b:nrule3
 
     " (define foo )  ; #...
     normal! ggf.
     Expect [line('.'), col('.')] ==# [1, 18]
-    Expect Call('s:find_the_most_proper_rule', b:nrules, '<') ==# b:nrule4
+    Expect Call('s:find_the_most_proper_rule_in_insert_mode', b:nrules, '<') ==# b:nrule4
   end
 end
 
@@ -409,10 +504,15 @@ describe 's:normalize_rule'
     \   '_char': Call('s:decode_key_notation', urule.char),
     \   'input': urule.input,
     \   '_input': Call('s:decode_key_notation', urule.input),
+    \   'mode': 'i',
     \   'filetype': 0,
     \   'syntax': 0,
-    \   'priority': 3 + 0 + 0,
-    \   'hash': string([printf('%06d', 3), urule.at, urule.char, 0, 0]),
+    \   'priority': 3 + 0 + 0 + 100 / 1,
+    \   'hash': string([printf('%06d', 3 + 0 + 0 + 100 / 1),
+    \                   urule.at,
+    \                   urule.char,
+    \                   0,
+    \                   0]),
     \ }
   end
 end
