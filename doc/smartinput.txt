@@ -41,12 +41,15 @@ Changelog               |smartinput-changelog|
 ==============================================================================
 INTRODUCTION					*smartinput-introduction*
 
-*smartinput* is a Vim plugin to provide a smart input assistant for
-punctuations.  Whenever you write a text, especially source code, you have to
-input and deal with a pair of punctuations such as (), [], {}, and so on.
-This plugin provides various input assistants according to the current context
-and 'filetype' as follows (note that "#" indicates the cursor position in the
-following examples):
+*smartinput* is a Vim plugin to provide smart input assistant.
+Whenever you write a text, especially source code, you have to input and deal
+with pairs of punctuations such as (), [], {}, and so on.  This plugin
+provides various input assistants for such characters according to the current
+context by default, and you can define your own rules to how the smart input
+assistant behaves in Insert mode and Command-line mode.
+
+For example, this plugin provides the following rules by default
+(note that "#" indicates the cursor position in the following examples):
 
 Complete the corresponding character automatically:
 
@@ -62,13 +65,14 @@ Leave from the current block easily:
    -------+-------+-------- ~
    (#)    | )     | ()#
    [#]    | ]     | []#
-   "foo#  | "     | "foo"#
+   "foo#" | "     | "foo"#
 
 Undo the completion easily:
 
    Before | Input | After   ~
    -------+-------+-------- ~
    (#)    | <BS>  | #
+   ()#    | <BS>  | #
 
 Care to input strings and regular expressions:
 
