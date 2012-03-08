@@ -1,4 +1,4 @@
-*smartinput.txt*	Smart input assistant for punctuations
+*smartinput.txt*	Provide smart input assistant
 
 Version 0.0.0
 Script ID: ****
