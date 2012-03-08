@@ -1,4 +1,4 @@
-" smartpunc - Smart input assistant for punctuations
+" smartinput - Provide smart input assistant
 " Version: 0.0.0
 " Copyright (C) 2012 Kana Natsuno <http://whileimautomaton.net/>
 " License: So-called MIT/X license  {{{
@@ -55,14 +55,14 @@ let s:available_nrules = []  "{{{2
 
 
 " Interface  "{{{1
-function! smartpunc#clear_rules()  "{{{2
+function! smartinput#clear_rules()  "{{{2
   let s:available_nrules = []
 endfunction
 
 
 
 
-function! smartpunc#define_default_rules()  "{{{2
+function! smartinput#define_default_rules()  "{{{2
   " urules  "{{{
   let urules = {}
   let urules.names = []
@@ -147,7 +147,7 @@ function! smartpunc#define_default_rules()  "{{{2
 
   for urule_set in ft_urule_sets_table['*']
     for urule in urule_set
-      call smartpunc#define_rule(urule)
+      call smartinput#define_rule(urule)
     endfor
   endfor
 
@@ -172,7 +172,7 @@ function! smartpunc#define_default_rules()  "{{{2
   for [urule, fts] in overlaied_urules.pairs
     let completed_urule = copy(urule)
     let completed_urule.filetype = fts
-    call smartpunc#define_rule(completed_urule)
+    call smartinput#define_rule(completed_urule)
   endfor
 
   " Add more useful rules?
@@ -193,7 +193,7 @@ endfunction
 
 
 
-function! smartpunc#define_rule(urule)  "{{{2
+function! smartinput#define_rule(urule)  "{{{2
   let nrule = s:normalize_rule(a:urule)
   call s:insert_or_replace_a_rule(s:available_nrules, nrule)
 endfunction
@@ -201,7 +201,7 @@ endfunction
 
 
 
-function! smartpunc#map_to_trigger(mode, lhs, rhs_char, rhs_fallback)  "{{{2
+function! smartinput#map_to_trigger(mode, lhs, rhs_char, rhs_fallback)  "{{{2
   " According to :help 'autoindent' --
   "
   " > Copy indent from current line when starting a new line
@@ -254,7 +254,7 @@ endfunction
 
 
 
-function! smartpunc#map_trigger_keys(...)  "{{{2
+function! smartinput#map_trigger_keys(...)  "{{{2
   let overridep = 1 <= a:0 ? a:1 : 0
 
   let d = {'i': {}, 'c': {}}
@@ -268,7 +268,7 @@ function! smartpunc#map_trigger_keys(...)  "{{{2
     endif
   endfor
 
-  let M = function('smartpunc#map_to_trigger')
+  let M = function('smartinput#map_to_trigger')
   let map_modifier = overridep ? '' : '<unique>'
   for mode in keys(d)
     let unique_chars = keys(d[mode])
@@ -297,7 +297,7 @@ endfunction
 
 
 " Misc.  "{{{1
-function! smartpunc#invoke_the_initial_setup_if_necessary()  "{{{2
+function! smartinput#invoke_the_initial_setup_if_necessary()  "{{{2
   " The initial setup is invoked implicitly by :source'ing the autoload file.
   " So that this function does nothing explicitly.
 endfunction
@@ -305,14 +305,14 @@ endfunction
 
 
 
-function! smartpunc#scope()  "{{{2
+function! smartinput#scope()  "{{{2
   return s:
 endfunction
 
 
 
 
-function! smartpunc#sid()  "{{{2
+function! smartinput#sid()  "{{{2
   return maparg('<SID>', 'n')
 endfunction
 nnoremap <SID>  <SID>
@@ -492,7 +492,7 @@ endfunction
 
 
 function! s:sid_value()  "{{{2
-  return substitute(smartpunc#sid(), '<SNR>', "\<SNR>", 'g')
+  return substitute(smartinput#sid(), '<SNR>', "\<SNR>", 'g')
 endfunction
 
 
@@ -505,10 +505,10 @@ endfunction
 
 " The initial setup  "{{{1
 function! s:do_initial_setup()  "{{{2
-  call smartpunc#define_default_rules()
+  call smartinput#define_default_rules()
 
-  if !exists('g:smartpunc_no_default_key_mappings')
-    call smartpunc#map_trigger_keys()
+  if !exists('g:smartinput_no_default_key_mappings')
+    call smartinput#map_trigger_keys()
   endif
 endfunction
 

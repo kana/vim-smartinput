@@ -6,13 +6,13 @@
 imapclear
 cmapclear
 
-let g:smartpunc_no_default_key_mappings = !0
+let g:smartinput_no_default_key_mappings = !0
 
-runtime! plugin/smartpunc.vim
+runtime! plugin/smartinput.vim
 
-call vspec#hint({'scope': 'smartpunc#scope()', 'sid': 'smartpunc#sid()'})
+call vspec#hint({'scope': 'smartinput#scope()', 'sid': 'smartinput#sid()'})
 
-describe 'g:smartpunc_no_default_key_mappings'
+describe 'g:smartinput_no_default_key_mappings'
   it 'should suppress to define the default key mappings'
     redir => si
     0 verbose imap

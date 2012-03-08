@@ -5,14 +5,14 @@
 " mappings, because some tests in this file assume such state.
 imapclear
 
-runtime! plugin/smartpunc.vim
+runtime! plugin/smartinput.vim
 
-call vspec#hint({'scope': 'smartpunc#scope()', 'sid': 'smartpunc#sid()'})
+call vspec#hint({'scope': 'smartinput#scope()', 'sid': 'smartinput#sid()'})
 set backspace=indent,eol,start
 filetype plugin indent on
 syntax enable
 
-describe 'smartpunc#clear_rules'
+describe 'smartinput#clear_rules'
   before
     SaveContext
     new
@@ -43,21 +43,21 @@ describe 'smartpunc#clear_rules'
     " Because of the default configuration.
     Expect Ref('s:available_nrules') !=# []
 
-    call smartpunc#clear_rules()
+    call smartinput#clear_rules()
     Expect Ref('s:available_nrules') ==# []
 
-    call smartpunc#define_rule(b:uruleA)
+    call smartinput#define_rule(b:uruleA)
     Expect Ref('s:available_nrules') ==# [b:nruleA]
 
-    call smartpunc#define_rule(b:uruleB)
+    call smartinput#define_rule(b:uruleB)
     Expect Ref('s:available_nrules') ==# [b:nruleB, b:nruleA]
 
-    call smartpunc#clear_rules()
+    call smartinput#clear_rules()
     Expect Ref('s:available_nrules') ==# []
   end
 end
 
-describe 'smartpunc#define_default_rules'
+describe 'smartinput#define_default_rules'
   before
     SaveContext
   end
@@ -67,19 +67,19 @@ describe 'smartpunc#define_default_rules'
   end
 
   it 'should define many rules'
-    call smartpunc#clear_rules()
+    call smartinput#clear_rules()
     Expect Ref('s:available_nrules') ==# []
 
-    call smartpunc#define_default_rules()
+    call smartinput#define_default_rules()
     Expect Ref('s:available_nrules') !=# []
   end
 
   it 'should override existing rules if conflicted'
-    call smartpunc#clear_rules()
+    call smartinput#clear_rules()
     Expect Ref('s:available_nrules') ==# []
 
-    call smartpunc#define_rule({'at': 'x\%#', 'char': '(', 'input': '---'})
-    call smartpunc#define_rule({'at': '\%#', 'char': '(', 'input': '---'})
+    call smartinput#define_rule({'at': 'x\%#', 'char': '(', 'input': '---'})
+    call smartinput#define_rule({'at': '\%#', 'char': '(', 'input': '---'})
     Expect len(Ref('s:available_nrules')) == 2
 
     let unconflicted_nrule = Ref('s:available_nrules')[0]
@@ -87,7 +87,7 @@ describe 'smartpunc#define_default_rules'
     Expect unconflicted_nrule.at ==# 'x\%#'
     Expect conflicted_nrule.at ==# '\%#'
 
-    call smartpunc#define_default_rules()
+    call smartinput#define_default_rules()
     Expect Ref('s:available_nrules') !=# []
     Expect index(Ref('s:available_nrules'), unconflicted_nrule) != -1
     Expect index(Ref('s:available_nrules'), conflicted_nrule) == -1
@@ -97,7 +97,7 @@ describe 'smartpunc#define_default_rules'
   " in 'The default configuration' block.
 end
 
-describe 'smartpunc#define_rule'
+describe 'smartinput#define_rule'
   before
     SaveContext
     new
@@ -151,10 +151,10 @@ describe 'smartpunc#define_rule'
     call Set('s:available_nrules', [])
     Expect Ref('s:available_nrules') ==# []
 
-    call smartpunc#define_rule(b:uruleA)
+    call smartinput#define_rule(b:uruleA)
     Expect Ref('s:available_nrules') ==# [b:nruleA]
 
-    call smartpunc#define_rule(b:uruleB)
+    call smartinput#define_rule(b:uruleB)
     Expect Ref('s:available_nrules') ==# [b:nruleB, b:nruleA]
   end
 
@@ -165,16 +165,16 @@ describe 'smartpunc#define_rule'
     call Set('s:available_nrules', [])
     Expect Ref('s:available_nrules') ==# []
 
-    call smartpunc#define_rule(b:uruleA)
+    call smartinput#define_rule(b:uruleA)
     Expect Ref('s:available_nrules') ==# [b:nruleA]
 
-    call smartpunc#define_rule(b:uruleA)
+    call smartinput#define_rule(b:uruleA)
     Expect Ref('s:available_nrules') ==# [b:nruleA]
 
-    call smartpunc#define_rule(b:uruleB)
+    call smartinput#define_rule(b:uruleB)
     Expect Ref('s:available_nrules') ==# [b:nruleB, b:nruleA]
 
-    call smartpunc#define_rule(b:uruleBd)
+    call smartinput#define_rule(b:uruleBd)
     Expect Ref('s:available_nrules') ==# [b:nruleBd, b:nruleA]
   end
 
@@ -187,8 +187,8 @@ describe 'smartpunc#define_rule'
     call Set('s:available_nrules', [])
     Expect Ref('s:available_nrules') ==# []
 
-    call smartpunc#define_rule(b:uruleA)
-    call smartpunc#define_rule(b:uruleB)
+    call smartinput#define_rule(b:uruleA)
+    call smartinput#define_rule(b:uruleB)
     Expect Ref('s:available_nrules') ==# [b:nruleB, b:nruleA]
 
   end
@@ -202,8 +202,8 @@ describe 'smartpunc#define_rule'
     call Set('s:available_nrules', [])
     Expect Ref('s:available_nrules') ==# []
 
-    call smartpunc#define_rule(b:uruleB)
-    call smartpunc#define_rule(b:uruleA)
+    call smartinput#define_rule(b:uruleB)
+    call smartinput#define_rule(b:uruleA)
     Expect Ref('s:available_nrules') ==# [b:nruleB, b:nruleA]
   end
 
@@ -217,8 +217,8 @@ describe 'smartpunc#define_rule'
     call Set('s:available_nrules', [])
     Expect Ref('s:available_nrules') ==# []
 
-    call smartpunc#define_rule(b:uruleC1)
-    call smartpunc#define_rule(b:uruleC2)
+    call smartinput#define_rule(b:uruleC1)
+    call smartinput#define_rule(b:uruleC2)
     Expect Ref('s:available_nrules') ==# [b:nruleC2, b:nruleC1]
   end
 
@@ -232,21 +232,21 @@ describe 'smartpunc#define_rule'
     call Set('s:available_nrules', [])
     Expect Ref('s:available_nrules') ==# []
 
-    call smartpunc#define_rule(b:uruleC2)
-    call smartpunc#define_rule(b:uruleC1)
+    call smartinput#define_rule(b:uruleC2)
+    call smartinput#define_rule(b:uruleC1)
     Expect Ref('s:available_nrules') ==# [b:nruleC2, b:nruleC1]
   end
 end
 
-describe 'smartpunc#map_to_trigger'
+describe 'smartinput#map_to_trigger'
   before
     SaveContext
     new
 
-    let M = function('smartpunc#map_to_trigger')
+    let M = function('smartinput#map_to_trigger')
 
     " With a cursor adjustment.
-    call smartpunc#define_rule({
+    call smartinput#define_rule({
     \   'at': '\%#',
     \   'char': '(',
     \   'input': '()<Left>',
@@ -254,7 +254,7 @@ describe 'smartpunc#map_to_trigger'
     call M('i', '<buffer> (', '(', '(')
 
     " Without any cursor adjustment.
-    call smartpunc#define_rule({
+    call smartinput#define_rule({
     \   'at': '\%#',
     \   'char': '1',
     \   'input': '123',
@@ -270,7 +270,7 @@ describe 'smartpunc#map_to_trigger'
     call M('i', '<buffer> F2', 'x', 'y')
 
     " With a special "char".
-    call smartpunc#define_rule({
+    call smartinput#define_rule({
     \   'at': '(\%#)',
     \   'char': '<BS>',
     \   'input': '<BS><Del>',
@@ -278,7 +278,7 @@ describe 'smartpunc#map_to_trigger'
     call M('i', '<buffer> <BS>', '<BS>', '<BS>')
 
     " With a problematic "char" - ``"''.
-    call smartpunc#define_rule({
+    call smartinput#define_rule({
     \   'at': '\%#',
     \   'char': '"',
     \   'input': '""<Left>',
@@ -286,7 +286,7 @@ describe 'smartpunc#map_to_trigger'
     call M('i', '<buffer> "', '"', '"')
 
     " With a problematic "char" - ``\''.
-    call smartpunc#define_rule({
+    call smartinput#define_rule({
     \   'at': '\%#',
     \   'char': '<Bslash>',
     \   'input': '<Bslash><Bslash><Left>',
@@ -294,7 +294,7 @@ describe 'smartpunc#map_to_trigger'
     call M('i', '<buffer> <Bslash>', '<Bslash>', '<Bslash>')
 
     " With automatic indentation.
-    call smartpunc#define_rule({
+    call smartinput#define_rule({
     \   'at': '{\%#}',
     \   'char': '<Return>',
     \   'input': '<Return>*<Return>}<BS><Up><C-o>$<BS>',
@@ -302,7 +302,7 @@ describe 'smartpunc#map_to_trigger'
     call M('i', '<buffer> <Return>', '<Return>', '<Return>')
 
     " In Command-line mode.
-    call smartpunc#define_rule({
+    call smartinput#define_rule({
     \   'at': '\[\%#]',
     \   'char': '<BS>',
     \   'input': '<BS><Del>',

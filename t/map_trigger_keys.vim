@@ -1,10 +1,10 @@
-let g:smartpunc_no_default_key_mappings = !0
+let g:smartinput_no_default_key_mappings = !0
 
-runtime! plugin/smartpunc.vim
+runtime! plugin/smartinput.vim
 
-call vspec#hint({'scope': 'smartpunc#scope()', 'sid': 'smartpunc#sid()'})
+call vspec#hint({'scope': 'smartinput#scope()', 'sid': 'smartinput#sid()'})
 
-describe 'smartpunc#map_trigger_keys'
+describe 'smartinput#map_trigger_keys'
   before
     new
 
@@ -13,14 +13,14 @@ describe 'smartpunc#map_trigger_keys'
       execute '0 verbose' a:map_command
       redir END
       let lhss = split(s, '\n')
-      call map(lhss, 'substitute(v:val, ''\v\S+\s+(\S+)\s+.*'', ''\1'',''g'')')
+      call map(lhss, 'substitute(v:val, ''\v\S+\s+(\S+)\s+.*'', ''\1'', "g")')
       call sort(lhss)
       return lhss
     endfunction
 
     imapclear
     cmapclear
-    call smartpunc#clear_rules()
+    call smartinput#clear_rules()
   end
 
   after
@@ -28,7 +28,7 @@ describe 'smartpunc#map_trigger_keys'
   end
 
   it 'should not map anything but "alias" ones if there is no rule'
-    call smartpunc#map_trigger_keys()
+    call smartinput#map_trigger_keys()
 
     Expect b:get_lhss('imap') ==# [
     \   '<C-H>',
@@ -44,12 +44,12 @@ describe 'smartpunc#map_trigger_keys'
 
   it 'should not override existing key mappings if overridep is omitted'
     inoremap x  FOO
-    call smartpunc#define_rule({'at': '', 'char': 'x', 'input': 'BAR',
+    call smartinput#define_rule({'at': '', 'char': 'x', 'input': 'BAR',
     \                          'mode': 'i'})
     cnoremap y  foo
-    call smartpunc#define_rule({'at': '', 'char': 'y', 'input': 'bar',
+    call smartinput#define_rule({'at': '', 'char': 'y', 'input': 'bar',
     \                          'mode': ':'})
-    call smartpunc#map_trigger_keys()
+    call smartinput#map_trigger_keys()
 
     Expect b:get_lhss('imap') ==# [
     \   '<C-H>',
@@ -69,12 +69,12 @@ describe 'smartpunc#map_trigger_keys'
 
   it 'should not override existing key mappings if overridep is false'
     inoremap x  FOO
-    call smartpunc#define_rule({'at': '', 'char': 'x', 'input': 'BAR',
+    call smartinput#define_rule({'at': '', 'char': 'x', 'input': 'BAR',
     \                          'mode': 'i'})
     cnoremap y  foo
-    call smartpunc#define_rule({'at': '', 'char': 'y', 'input': 'bar',
+    call smartinput#define_rule({'at': '', 'char': 'y', 'input': 'bar',
     \                          'mode': ':'})
-    call smartpunc#map_trigger_keys(!!0)
+    call smartinput#map_trigger_keys(!!0)
 
     Expect b:get_lhss('imap') ==# [
     \   '<C-H>',
@@ -94,12 +94,12 @@ describe 'smartpunc#map_trigger_keys'
 
   it 'should override existing key mappings if overridep is true'
     inoremap x  FOO
-    call smartpunc#define_rule({'at': '', 'char': 'x', 'input': 'BAR',
+    call smartinput#define_rule({'at': '', 'char': 'x', 'input': 'BAR',
     \                          'mode': 'i'})
     cnoremap y  foo
-    call smartpunc#define_rule({'at': '', 'char': 'y', 'input': 'bar',
+    call smartinput#define_rule({'at': '', 'char': 'y', 'input': 'bar',
     \                          'mode': ':'})
-    call smartpunc#map_trigger_keys(!0)
+    call smartinput#map_trigger_keys(!0)
 
     Expect b:get_lhss('imap') ==# [
     \   '<C-H>',

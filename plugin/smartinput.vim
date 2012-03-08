@@ -1,4 +1,4 @@
-" smartpunc - Smart input assistant for punctuations
+" smartinput - Provide smart input assistant
 " Version: 0.0.0
 " Copyright (C) 2012 Kana Natsuno <http://whileimautomaton.net/>
 " License: So-called MIT/X license  {{{
@@ -22,19 +22,19 @@
 "     SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 " }}}
 
-if exists('g:loaded_smartpunc')
+if exists('g:loaded_smartinput')
   finish
 endif
 
 
 
 
-call smartpunc#invoke_the_initial_setup_if_necessary()
+call smartinput#invoke_the_initial_setup_if_necessary()
 
 
 
 
-let g:loaded_smartpunc = 1
+let g:loaded_smartinput = 1
 
 " __END__
 " vim: foldmethod=marker
