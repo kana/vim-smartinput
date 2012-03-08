@@ -1,6 +1,6 @@
-runtime! plugin/smartpunc.vim
+runtime! plugin/smartinput.vim
 
-call vspec#hint({'scope': 'smartpunc#scope()', 'sid': 'smartpunc#sid()'})
+call vspec#hint({'scope': 'smartinput#scope()', 'sid': 'smartinput#sid()'})
 syntax enable
 set backspace=indent,eol,start
 

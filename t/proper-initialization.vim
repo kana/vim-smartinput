@@ -1,12 +1,12 @@
 describe 'the initialization steps'
   it 'should define the default rules fisrt, then user-defined rules'
     " Emulate stuffs in user's vimrc.
-    call smartpunc#define_rule({'at': '\%#', 'char': '(', 'input': 'BAR'})
-    call smartpunc#define_rule({'at': '', 'char': 'x', 'input': 'FOO'})
-    call vspec#hint({'scope': 'smartpunc#scope()', 'sid': 'smartpunc#sid()'})
+    call smartinput#define_rule({'at': '\%#', 'char': '(', 'input': 'BAR'})
+    call smartinput#define_rule({'at': '', 'char': 'x', 'input': 'FOO'})
+    call vspec#hint({'scope': 'smartinput#scope()', 'sid': 'smartinput#sid()'})
 
     " Emulate loading plugins.
-    runtime! plugin/smartpunc.vim
+    runtime! plugin/smartinput.vim
 
     Expect Ref('s:loaded_count') == 1
 
@@ -22,7 +22,7 @@ describe 'the initialization steps'
     Expect overridden_nrules[0].input ==# 'BAR'
 
     Expect maparg('x', 'i') ==# ''
-    call smartpunc#map_trigger_keys()
+    call smartinput#map_trigger_keys()
     Expect maparg('x', 'i') !=# ''
   end
 end

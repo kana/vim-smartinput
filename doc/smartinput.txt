@@ -1,4 +1,4 @@
-*smartpunc.txt*	Smart input assistant for punctuations
+*smartinput.txt*	Smart input assistant for punctuations
 
 Version 0.0.0
 Script ID: ****
@@ -24,24 +24,24 @@ License: So-called MIT/X license  {{{
     SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 }}}
 
-CONTENTS					*smartpunc-contents*
+CONTENTS					*smartinput-contents*
 
-Introduction            |smartpunc-introduction|
-Interface               |smartpunc-interface|
-  Functions               |smartpunc-functions|
-  Key Mappings            |smartpunc-key-mappings|
-Rules                   |smartpunc-rules|
-Customization           |smartpunc-customization|
-Bugs                    |smartpunc-bugs|
-Changelog               |smartpunc-changelog|
+Introduction            |smartinput-introduction|
+Interface               |smartinput-interface|
+  Functions               |smartinput-functions|
+  Key Mappings            |smartinput-key-mappings|
+Rules                   |smartinput-rules|
+Customization           |smartinput-customization|
+Bugs                    |smartinput-bugs|
+Changelog               |smartinput-changelog|
 
 
 
 
 ==============================================================================
-INTRODUCTION					*smartpunc-introduction*
+INTRODUCTION					*smartinput-introduction*
 
-*smartpunc* is a Vim plugin to provide a smart input assistant for
+*smartinput* is a Vim plugin to provide a smart input assistant for
 punctuations.  Whenever you write a text, especially source code, you have to
 input and deal with a pair of punctuations such as (), [], {}, and so on.
 This plugin provides various input assistants according to the current context
@@ -108,32 +108,32 @@ Requirements:
 - Vim 7.3 or later
 
 Latest version:
-https://github.com/kana/vim-smartpunc
+https://github.com/kana/vim-smartinput
 
 Document in HTML format:
-http://vim-doc.heroku.com/view?https://github.com/kana/vim-smartpunc/blob/master/doc/smartpunc.txt
+http://vim-doc.heroku.com/view?https://github.com/kana/vim-smartinput/blob/master/doc/smartinput.txt
 
 
 
 
 ==============================================================================
-INTERFACE					*smartpunc-interface*
+INTERFACE					*smartinput-interface*
 
 ------------------------------------------------------------------------------
-FUNCTIONS					*smartpunc-functions*
+FUNCTIONS					*smartinput-functions*
 
-smartpunc#clear_rules()				*smartpunc#clear_rules()*
+smartinput#clear_rules()			*smartinput#clear_rules()*
 			Clear all defined rules.
 
-smartpunc#define_default_rules()	    *smartpunc#define_default_rules()*
-			Define |smartpunc-default-rules|.
+smartinput#define_default_rules()	   *smartinput#define_default_rules()*
+			Define |smartinput-default-rules|.
 
-smartpunc#define_rule({rule})			*smartpunc#define_rule()*
+smartinput#define_rule({rule})			*smartinput#define_rule()*
 			Define a rule for the smart input assistant.
-			See |smartpunc-rules| for the details of {rule}.
+			See |smartinput-rules| for the details of {rule}.
 
-						*smartpunc#map_to_trigger()*
-smartpunc#map_to_trigger({mode}, {lhs}, {rhs-char}, {rhs-fallback})
+						*smartinput#map_to_trigger()*
+smartinput#map_to_trigger({mode}, {lhs}, {rhs-char}, {rhs-fallback})
 			Map {lhs} to trigger the smart input assistant for
 			{rhs-char} in {mode}.  If there is no proper rule
 			for the current context, {rhs-fallback} will be
@@ -145,9 +145,9 @@ smartpunc#map_to_trigger({mode}, {lhs}, {rhs-char}, {rhs-fallback})
 			{lhs} is mapped in Insert mode if {mode} is 'i'.
 			{lhs} is mapped in Command-line mode if {mode} is 'c'.
 
-			See also |smartpunc-exampels| for the details.
+			See also |smartinput-exampels| for the details.
 
-smartpunc#map_trigger_keys([{overridep}])	*smartpunc#map_trigger_keys()*
+smartinput#map_trigger_keys([{overridep}])     *smartinput#map_trigger_keys()*
 			Map keys to trigger smart input assistant according to
 			rules which are currently defined.
 			Existing key mappings are overridden if {overridep} is
@@ -157,13 +157,13 @@ smartpunc#map_trigger_keys([{overridep}])	*smartpunc#map_trigger_keys()*
 
 
 ------------------------------------------------------------------------------
-KEY MAPPINGS					*smartpunc-key-mappings*
+KEY MAPPINGS					*smartinput-key-mappings*
 
 Several characters in Insert mode and Command-line mode are mapped by default
-with |smartpunc#map_to_trigger()| to trigger the smart input assistant.
-See |smartpunc-default-rules| for the details.
+with |smartinput#map_to_trigger()| to trigger the smart input assistant.
+See |smartinput-default-rules| for the details.
 
-Set any value to *g:smartpunc_no_default_key_mappings*
+Set any value to *g:smartinput_no_default_key_mappings*
 if you don't want to define the default key mappings.
 
 Each default key mapping will not be defined if the {lhs} is already mapped to
@@ -174,10 +174,10 @@ you map "(" to something in your vimrc.
 
 
 ==============================================================================
-RULES						*smartpunc-rules*
+RULES						*smartinput-rules*
 
 ------------------------------------------------------------------------------
-RULE DEFINITION					*smartpunc-rule-definition*
+RULE DEFINITION					*smartinput-rule-definition*
 
 Smart input assistants are defined by "rules".  Each "rule" is represented as
 a |Dictionary| which contains the following items:
@@ -257,19 +257,19 @@ a |Dictionary| which contains the following items:
 
 
 ------------------------------------------------------------------------------
-DEFAULT RULES					*smartpunc-default-rules*
+DEFAULT RULES					*smartinput-default-rules*
 
 For convenience, there are many rules defined by default.
 
 If you read this document in Vim,
-see ../autoload/smartpunc.vim for the details (type |gf| at the file name).
+see ../autoload/smartinput.vim for the details (type |gf| at the file name).
 
 If you read this document with a Web browser, see the following instead:
-https://github.com/kana/vim-smartpunc/blob/master/autoload/smartpunc.vim
+https://github.com/kana/vim-smartinput/blob/master/autoload/smartinput.vim
 
 
 ------------------------------------------------------------------------------
-PRIORITIES					*smartpunc-rule-priorities*
+PRIORITIES					*smartinput-rule-priorities*
 
 Rules have priorities.  It is used to select the best rule for the smart input
 assistant.
@@ -313,10 +313,10 @@ For example:
 
 
 ------------------------------------------------------------------------------
-RULE SELECTION ALGORITHM		  *smartpunc-rule-selection-algorithm*
+RULE SELECTION ALGORITHM		 *smartinput-rule-selection-algorithm*
 
-Whenever you type a key in Insert mode or Command-line mode, smartpunc selects
-the best rule for the current context with the following steps:
+Whenever you type a key in Insert mode or Command-line mode, the plugin
+selects the best rule for the current context with the following steps:
 
 (1) Select available rules which satisfy all the following conditions:
 
@@ -331,7 +331,7 @@ the best rule for the current context with the following steps:
     (m) The current mode matches to "mode" value.
 
 (2) If two or more rules are selected at the step (1),
-    select the rule with the highest |smartpunc-rule-priority|.
+    select the rule with the highest |smartinput-rule-priority|.
 
 (3) If two or more rules are selected at the step (2),
     select the rule with the greatest "at".
@@ -339,7 +339,7 @@ the best rule for the current context with the following steps:
 
 
 ------------------------------------------------------------------------------
-RULE CONVENTIONS				*smartpunc-rule-conventions*
+RULE CONVENTIONS				*smartinput-rule-conventions*
 
 Like |i_<BS>| and |i_CTRL-H|, there are several keys which does the same
 effects.  If you want to define rules for such keys,
@@ -352,7 +352,7 @@ For example, if you want to define rules on both |i_<BS>| and |i_CTRL-H|,
 * Define rules only for <BS>.
 * Map <C-h> to trigger rules for <BS>, with the following command:
 >
-	smartpunc#map_to_trigger('<C-h>', '<BS>', '<C-h>')
+	smartinput#map_to_trigger('<C-h>', '<BS>', '<C-h>')
 <
 This convention is to avoid rule duplication.  See also the following table:
 
@@ -367,34 +367,34 @@ This convention is to avoid rule duplication.  See also the following table:
 
 
 ==============================================================================
-CUSTOMIZATION					*smartpunc-customization*
+CUSTOMIZATION					*smartinput-customization*
 
 (A) To define your own |smartpunk-rules| for the smart input assistant,
-    use |smartpunc#define_rule()|.  See also |smartpunc-default-rules| for the
-    real world examples.
+    use |smartinput#define_rule()|.  See also |smartinput-default-rules| for
+    the real world examples.
 
-(B) If you define your own |smartpunc-rules| which "char" values are different
-    from ones of |smartpunc-default-rules|, you have to define trigger keys
-    for your own rules with |smartpunc#map_to_trigger()|.
+(B) If you define your own |smartinput-rules| which "char" values are
+    different from ones of |smartinput-default-rules|, you have to define
+    trigger keys for your own rules with |smartinput#map_to_trigger()|.
 
 
 
 
 ==============================================================================
-BUGS						*smartpunc-bugs*
+BUGS						*smartinput-bugs*
 
 - Currently there is no known issue.
 
 - If you find any problem or have any suggestion, please give your feedback to
-  the author by: https://github.com/kana/vim-smartpunc/issues
+  the author by: https://github.com/kana/vim-smartinput/issues
 
 
 
 
 ==============================================================================
-CHANGELOG					*smartpunc-changelog*
+CHANGELOG					*smartinput-changelog*
 
-0.0.0	2012-02-09T22:35:02+09:00		*smartpunc-changelog-0.0.0*
+0.0.0	2012-02-09T22:35:02+09:00		*smartinput-changelog-0.0.0*
 	- Initial version.
 
 

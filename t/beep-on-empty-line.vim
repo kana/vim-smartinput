@@ -1,20 +1,20 @@
-runtime! plugin/smartpunc.vim
+runtime! plugin/smartinput.vim
 
-call vspec#hint({'scope': 'smartpunc#scope()', 'sid': 'smartpunc#sid()'})
+call vspec#hint({'scope': 'smartinput#scope()', 'sid': 'smartinput#sid()'})
 set backspace=indent,eol,start
 
-describe 'smartpunc#map_to_trigger'
+describe 'smartinput#map_to_trigger'
   before
     SaveContext
     new
 
     " If the cursor will be moved to an empty line...
-    call smartpunc#define_rule({
+    call smartinput#define_rule({
     \   'at': '(\%#)',
     \   'char': '<Return>',
     \   'input': '<Return>X<Return>)<BS><Up><C-o>$<BS>',
     \ })
-    call smartpunc#map_to_trigger('i', '<buffer> <Return>', '<Return>')
+    call smartinput#map_to_trigger('i', '<buffer> <Return>', '<Return>')
   end
 
   after

@@ -9,9 +9,9 @@ cmapclear
 inoremap (  (((
 cnoremap <BS>  Backspace!!!
 
-runtime! plugin/smartpunc.vim
+runtime! plugin/smartinput.vim
 
-call vspec#hint({'scope': 'smartpunc#scope()', 'sid': 'smartpunc#sid()'})
+call vspec#hint({'scope': 'smartinput#scope()', 'sid': 'smartinput#sid()'})
 
 describe 'Start-up'
   it 'should preverse existing key mappings prior to the default key mappings'
