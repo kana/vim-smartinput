@@ -857,8 +857,9 @@ describe 'The default configuration'
     setlocal expandtab
     Expect &l:filetype ==# 'c'
 
-      execute 'normal' printf('ggcGfoo(%sbar,%sbaz', key, key)
     for key in ["\<Enter>", "\<Return>", "\<CR>", "\<C-m>", "\<NL>", "\<C-j>"]
+      % delete _
+      execute 'normal' printf('ifoo(%sbar,%sbaz', key, key)
       Expect getline(1, line('$')) ==# ['foo(',
       \                                 '                bar,',
       \                                 '                baz',
