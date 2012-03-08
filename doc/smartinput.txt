@@ -263,13 +263,17 @@ a |Dictionary| which contains the following items:
 ------------------------------------------------------------------------------
 DEFAULT RULES					*smartinput-default-rules*
 
-For convenience, there are many rules defined by default.
+For convenience, there are many rules defined by default.  And it's hard to
+list and to describe each rule here, because the default rules will be often
+updated.
 
-If you read this document in Vim,
-see ../autoload/smartinput.vim for the details (type |gf| at the file name).
+See |smartinput-introduction| for a short digest of the default rules.
 
-If you read this document with a Web browser, see the following instead:
-https://github.com/kana/vim-smartinput/blob/master/autoload/smartinput.vim
+See the source code of |smartinput#define_default_rules()| for the details:
+- If you read this document in Vim,
+  open ../autoload/smartinput.vim (type |gf| at the file name).
+- If you read this document with a Web browser, open the following:
+  https://github.com/kana/vim-smartinput/blob/master/autoload/smartinput.vim
 
 
 ------------------------------------------------------------------------------
