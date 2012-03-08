@@ -865,6 +865,14 @@ describe 'The default configuration'
       \                                 '                baz',
       \                                 '   )']
       Expect [line('.'), col('.')] ==# [3, 20 - 1]
+
+      % delete _
+      execute 'normal' printf('i{%sfoo();%sbar();', key, key)
+      Expect getline(1, line('$')) ==# ['{',
+      \                                 '        foo();',
+      \                                 '        bar();',
+      \                                 '}']
+      Expect [line('.'), col('.')] ==# [3, 15 - 1]
     endfor
   end
 end
