@@ -857,13 +857,22 @@ describe 'The default configuration'
     setlocal expandtab
     Expect &l:filetype ==# 'c'
 
-    for key in ["\<Enter>", "\<Return>", "\<C-m>", "\<CR>", "\<C-j>", "\<C-j>"]
-      execute 'normal' printf('ggcGfoo(%sbar,%sbaz', key, key)
+    for key in ["\<Enter>", "\<Return>", "\<CR>", "\<C-m>", "\<NL>", "\<C-j>"]
+      % delete _
+      execute 'normal' printf('ifoo(%sbar,%sbaz', key, key)
       Expect getline(1, line('$')) ==# ['foo(',
       \                                 '                bar,',
       \                                 '                baz',
       \                                 '   )']
       Expect [line('.'), col('.')] ==# [3, 20 - 1]
+
+      % delete _
+      execute 'normal' printf('i{%sfoo();%sbar();', key, key)
+      Expect getline(1, line('$')) ==# ['{',
+      \                                 '        foo();',
+      \                                 '        bar();',
+      \                                 '}']
+      Expect [line('.'), col('.')] ==# [3, 15 - 1]
     endfor
   end
 end

@@ -77,6 +77,7 @@ function! smartpunc#define_default_rules()  "{{{2
   \   {'at': '(\%#)', 'char': '<BS>', 'input': '<BS><Del>'},
   \   {'at': '()\%#', 'char': '<BS>', 'input': '<BS><BS>'},
   \   {'at': '\\\%#', 'char': '(', 'input': '('},
+  \   {'at': '(\%#)', 'char': '<Enter>', 'input': '<Enter>X<Enter>)<BS><Up><End><BS>'},
   \ ])
   call urules.add('[]', [
   \   {'at': '\%#', 'char': '[', 'input': '[]<Left>'},
@@ -91,6 +92,7 @@ function! smartpunc#define_default_rules()  "{{{2
   \   {'at': '{\%#}', 'char': '<BS>', 'input': '<BS><Del>'},
   \   {'at': '{}\%#', 'char': '<BS>', 'input': '<BS><BS>'},
   \   {'at': '\\\%#', 'char': '{', 'input': '{'},
+  \   {'at': '{\%#}', 'char': '<Enter>', 'input': '<Enter>X<Enter><Up><End><C-t><BS>'},
   \ ])
   call urules.add('''''', [
   \   {'at': '\%#', 'char': '''', 'input': '''''<Left>'},
@@ -121,10 +123,6 @@ function! smartpunc#define_default_rules()  "{{{2
   \   {'at': '\%#', 'char': '''', 'input': '''''<Left>',
   \    'syntax': ['Constant']},
   \ ])
-  " FIXME: Add more rules like '(<Enter>)'
-  call urules.add('(<Enter>)', [
-  \   {'at': '(\%#)', 'char': '<Enter>', 'input': '<Enter>X<Enter>)<BS><Up><C-o>$<BS>'},
-  \ ])
   "}}}
 
   " ft_urule_sets_table... "{{{
@@ -137,7 +135,6 @@ function! smartpunc#define_default_rules()  "{{{2
   \     urules.table['""'],
   \     urules.table['``'],
   \     urules.table['English'],
-  \     urules.table['(<Enter>)'],
   \   ],
   \   'lisp': [
   \     urules.table['Lisp quote'],
