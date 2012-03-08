@@ -377,13 +377,14 @@ This convention is to avoid rule duplication.  See also the following table:
 ==============================================================================
 CUSTOMIZATION					*smartinput-customization*
 
-(A) To define your own |smartpunk-rules| for the smart input assistant,
+(A) To define your own |smartinput-rules| for the smart input assistant,
     use |smartinput#define_rule()|.  See also |smartinput-default-rules| for
     the real world examples.
 
 (B) If you define your own |smartinput-rules| which "char" values are
     different from ones of |smartinput-default-rules|, you have to define
-    trigger keys for your own rules with |smartinput#map_to_trigger()|.
+    trigger keys for your own rules with |smartinput#map_to_trigger()| or
+    |smartinput#map_trigger_keys()|.
 
 
 
