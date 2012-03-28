@@ -216,7 +216,7 @@ function! smartinput#map_to_trigger(mode, lhs, rhs_char, rhs_fallback)  "{{{2
   let fallback_expr = s:_encode_for_map_char_expr(a:rhs_fallback)
   execute printf('%snoremap %s %s  <SID>_trigger_or_fallback(%s, %s)',
   \              a:mode,
-  \              '<script> <expr> <silent>',
+  \              '<script> <expr>',
   \              a:lhs,
   \              char_expr,
   \              fallback_expr)
