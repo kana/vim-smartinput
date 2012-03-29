@@ -121,6 +121,9 @@ function! smartinput#define_default_rules()  "{{{2
   \   {'at': '``\%#', 'char': '<BS>', 'input': '<BS><BS>'},
   \   {'at': '\\\%#', 'char': '`', 'input': '`'},
   \ ])
+  call urules.add('```', [
+  \   {'at': '``\%#', 'char': '`', 'input': '````<Left><Left><Left>'},
+  \ ])
   call urules.add('English', [
   \   {'at': '\w\%#', 'char': '''', 'input': ''''},
   \ ])
@@ -141,6 +144,7 @@ function! smartinput#define_default_rules()  "{{{2
   \     urules.table['""'],
   \     urules.table['"""'],
   \     urules.table['``'],
+  \     urules.table['```'],
   \     urules.table['English'],
   \   ],
   \   'lisp': [
