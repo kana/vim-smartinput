@@ -101,6 +101,12 @@ function! smartinput#define_default_rules()  "{{{2
   \   {'at': '''''\%#', 'char': '<BS>', 'input': '<BS><BS>'},
   \   {'at': '\\\%#', 'char': '''', 'input': ''''},
   \ ])
+  call urules.add('''''''', [
+  \   {'at': '''''\%#', 'char': '''', 'input': '''''''''<Left><Left><Left>'},
+  \   {'at': '\%#''''''\ze', 'char': '''', 'input': '<Right><Right><Right>'},
+  \   {'at': '''''''\%#''''''', 'char': '<BS>', 'input': '<BS><BS><BS><Del><Del><Del>'},
+  \   {'at': '''''''''''''\%#', 'char': '<BS>', 'input': '<BS><BS><BS><BS><BS><BS>'},
+  \ ])
   call urules.add('""', [
   \   {'at': '\%#', 'char': '"', 'input': '""<Left>'},
   \   {'at': '\%#"', 'char': '"', 'input': '<Right>'},
@@ -108,12 +114,24 @@ function! smartinput#define_default_rules()  "{{{2
   \   {'at': '""\%#', 'char': '<BS>', 'input': '<BS><BS>'},
   \   {'at': '\\\%#', 'char': '"', 'input': '"'},
   \ ])
+  call urules.add('"""', [
+  \   {'at': '""\%#', 'char': '"', 'input': '""""<Left><Left><Left>'},
+  \   {'at': '\%#"""', 'char': '"', 'input': '<Right><Right><Right>'},
+  \   {'at': '"""\%#"""', 'char': '<BS>', 'input': '<BS><BS><BS><Del><Del><Del>'},
+  \   {'at': '""""""\%#', 'char': '<BS>', 'input': '<BS><BS><BS><BS><BS><BS>'},
+  \ ])
   call urules.add('``', [
   \   {'at': '\%#', 'char': '`', 'input': '``<Left>'},
   \   {'at': '\%#`', 'char': '`', 'input': '<Right>'},
   \   {'at': '`\%#`', 'char': '<BS>', 'input': '<BS><Del>'},
   \   {'at': '``\%#', 'char': '<BS>', 'input': '<BS><BS>'},
   \   {'at': '\\\%#', 'char': '`', 'input': '`'},
+  \ ])
+  call urules.add('```', [
+  \   {'at': '``\%#', 'char': '`', 'input': '````<Left><Left><Left>'},
+  \   {'at': '\%#```', 'char': '`', 'input': '<Right><Right><Right>'},
+  \   {'at': '```\%#```', 'char': '<BS>', 'input': '<BS><BS><BS><Del><Del><Del>'},
+  \   {'at': '``````\%#', 'char': '<BS>', 'input': '<BS><BS><BS><BS><BS><BS>'},
   \ ])
   call urules.add('English', [
   \   {'at': '\w\%#', 'char': '''', 'input': ''''},
@@ -132,8 +150,11 @@ function! smartinput#define_default_rules()  "{{{2
   \     urules.table['[]'],
   \     urules.table['{}'],
   \     urules.table[''''''],
+  \     urules.table[''''''''],
   \     urules.table['""'],
+  \     urules.table['"""'],
   \     urules.table['``'],
+  \     urules.table['```'],
   \     urules.table['English'],
   \   ],
   \   'lisp': [
