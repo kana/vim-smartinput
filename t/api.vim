@@ -639,6 +639,11 @@ describe 'The default configuration'
     \     ["\<C-v>'", ['x'''''], 1, 4 - 1],
     \     ["\<BS>", ['x'], 1, 2 - 1],
     \   ],
+    \   ''''''' complete': [
+    \     ["'", [''''''], 1, 2 - 1],
+    \     ["'", [''''''], 1, 3 - 1],
+    \     ["'", [''''''''''''''], 1, 4 - 1],
+    \   ],
     \   '() complete': [
     \     ["(", ['()'], 1, 2 - 1],
     \   ],
@@ -851,6 +856,7 @@ describe 'The default configuration'
     \   ''''' leave #2',
     \   ''''' undo #1',
     \   ''''' undo #2',
+    \   ''''''' complete',
     \   '"" complete',
     \   '"" escape',
     \   '"" leave #1',
