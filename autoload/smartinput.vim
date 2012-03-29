@@ -141,6 +141,9 @@ function! smartinput#define_default_rules()  "{{{2
   \   {'at': '\%#', 'char': '''', 'input': '''''<Left>',
   \    'syntax': ['Constant']},
   \ ])
+  call urules.add('Vim script comment', [
+  \   {'at': '^\s*\%#', 'char': '"', 'input': '"'},
+  \ ])
   "}}}
 
   " ft_urule_sets_table... "{{{
@@ -162,6 +165,9 @@ function! smartinput#define_default_rules()  "{{{2
   \   ],
   \   'scheme': [
   \     urules.table['Lisp quote'],
+  \   ],
+  \   'vim': [
+  \     urules.table['Vim script comment'],
   \   ],
   \ }
   "}}}
