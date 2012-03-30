@@ -1,6 +1,6 @@
 *smartinput.txt*	Provide smart input assistant
 
-Version 0.0.0
+Version 0.0.1
 Script ID: ****
 Copyright (C) 2012 Kana Natsuno <http://whileimautomaton.net/>
 License: So-called MIT/X license  {{{
@@ -402,6 +402,16 @@ BUGS						*smartinput-bugs*
 
 ==============================================================================
 CHANGELOG					*smartinput-changelog*
+
+0.0.1	2012-03-30T19:38:53+09:00		*smartinput-changelog-0.0.1*
+	- Fix side effects in the default configuration.  <C-h> in
+	  Command-line mode did not update the screen immediately.
+	- Add the default rules to input triple quotes such as '''...''',
+	  """...""" and ```...```, for Python, Markdown, etc.
+	- Add the default rules to easily comment to edit Vim script.  Because
+	  |:comment| in Vim script starts with " while string literals are
+	  quoted with ".  Now " is completed only if the current context is to
+	  input string literals.
 
 0.0.0	2012-02-09T22:35:02+09:00		*smartinput-changelog-0.0.0*
 	- Initial version.
