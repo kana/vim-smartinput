@@ -992,4 +992,43 @@ describe 'The default configuration'
       Expect [line('.'), col('.')] ==# [3, 15 - 1]
     endfor
   end
+
+  it 'should have rules to input comments and strings easily in Vim script'
+    setfiletype vim
+
+    " `"` at the beginning of a line must be a comment sign.
+    % delete _
+    execute 'normal' 'i" This is a comment.'
+    Expect getline(1, line('$')) ==# ['" This is a comment.']
+    Expect [line('.'), col('.')] ==# [1, 21 - 1]
+
+    " The comment sign may be indented.
+    % delete _
+    execute 'normal' 'i  " This is an indented comment.'
+    Expect getline(1, line('$')) ==# ['  " This is an indented comment.']
+    Expect [line('.'), col('.')] ==# [1, 33 - 1]
+
+    " In a comment, `"` is usually inserted as a string literal or an ordinary
+    " English word.  So that it should be completed.
+    % delete _
+    execute 'normal' 'i" This is a '
+    execute 'normal' 'a"'
+    execute 'normal' 'acomment'
+    Expect getline(1, line('$')) ==# ['" This is a "comment"']
+    Expect [line('.'), col('.')] ==# [1, 21 - 1]
+
+    " `"` after an operator is usually a string literal.
+    % delete _
+    execute 'normal' 'ilet foo = bar . "baz'
+    Expect getline(1, line('$')) ==# ['let foo = bar . "baz"']
+    Expect [line('.'), col('.')] ==# [1, 21 - 1]
+
+    " But it's hard to guess all cases.  We assume only `"` at the beginning
+    " of a line is a comment sign.  In other words, `"` after non-indent
+    " character is always treated as a string literal.
+    % delete _
+    execute 'normal' 'ilet foo = bar " baz'
+    Expect getline(1, line('$')) ==# ['let foo = bar " baz"']
+    Expect [line('.'), col('.')] ==# [1, 20 - 1]
+  end
 end
