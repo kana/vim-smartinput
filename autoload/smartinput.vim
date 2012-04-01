@@ -73,7 +73,7 @@ function! smartinput#define_default_rules()  "{{{2
   endfunction
   call urules.add('()', [
   \   {'at': '\%#', 'char': '(', 'input': '()<Left>'},
-  \   {'at': '\%#)', 'char': ')', 'input': '<Right>'},
+  \   {'at': '\%#\_s*)', 'char': ')', 'input': '<C-o>:call search('')'', ''cW'')<Enter><Right>'},
   \   {'at': '(\%#)', 'char': '<BS>', 'input': '<BS><Del>'},
   \   {'at': '()\%#', 'char': '<BS>', 'input': '<BS><BS>'},
   \   {'at': '\\\%#', 'char': '(', 'input': '('},
@@ -81,14 +81,14 @@ function! smartinput#define_default_rules()  "{{{2
   \ ])
   call urules.add('[]', [
   \   {'at': '\%#', 'char': '[', 'input': '[]<Left>'},
-  \   {'at': '\%#\]', 'char': ']', 'input': '<Right>'},
+  \   {'at': '\%#\_s*\]', 'char': ']', 'input': '<C-o>:call search('']'', ''cW'')<Enter><Right>'},
   \   {'at': '\[\%#\]', 'char': '<BS>', 'input': '<BS><Del>'},
   \   {'at': '\[\]\%#', 'char': '<BS>', 'input': '<BS><BS>'},
   \   {'at': '\\\%#', 'char': '[', 'input': '['},
   \ ])
   call urules.add('{}', [
   \   {'at': '\%#', 'char': '{', 'input': '{}<Left>'},
-  \   {'at': '\%#}', 'char': '}', 'input': '<Right>'},
+  \   {'at': '\%#\_s*}', 'char': '}', 'input': '<C-o>:call search(''}'', ''cW'')<Enter><Right>'},
   \   {'at': '{\%#}', 'char': '<BS>', 'input': '<BS><Del>'},
   \   {'at': '{}\%#', 'char': '<BS>', 'input': '<BS><BS>'},
   \   {'at': '\\\%#', 'char': '{', 'input': '{'},
