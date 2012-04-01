@@ -99,7 +99,14 @@ function! smartinput#define_default_rules()  "{{{2
   \   {'at': '\%#''\ze', 'char': '''', 'input': '<Right>'},
   \   {'at': '''\%#''', 'char': '<BS>', 'input': '<BS><Del>'},
   \   {'at': '''''\%#', 'char': '<BS>', 'input': '<BS><BS>'},
-  \   {'at': '\\\%#', 'char': '''', 'input': ''''},
+  \   {'at': '\\\%#\ze', 'char': '''', 'input': ''''},
+  \ ])
+  " Though strong quote is a useful feature and it is supported in several
+  " languages, \ is usually used to escape next charcters in most languages.
+  " So that rules for strong quote are written as additional ones for specific
+  " 'filetype's which override the default behavior.
+  call urules.add(''''' as strong quote', [
+  \   {'at': '\%#''', 'char': '''', 'input': '<Right>'},
   \ ])
   call urules.add('''''''', [
   \   {'at': '''''\%#', 'char': '''', 'input': '''''''''<Left><Left><Left>'},
@@ -160,14 +167,33 @@ function! smartinput#define_default_rules()  "{{{2
   \     urules.table['```'],
   \     urules.table['English'],
   \   ],
+  \   'csh': [
+  \     urules.table[''''' as strong quote'],
+  \   ],
   \   'lisp': [
   \     urules.table['Lisp quote'],
+  \   ],
+  \   'perl': [
+  \     urules.table[''''' as strong quote'],
+  \   ],
+  \   'ruby': [
+  \     urules.table[''''' as strong quote'],
   \   ],
   \   'scheme': [
   \     urules.table['Lisp quote'],
   \   ],
+  \   'sh': [
+  \     urules.table[''''' as strong quote'],
+  \   ],
+  \   'tcsh': [
+  \     urules.table[''''' as strong quote'],
+  \   ],
   \   'vim': [
+  \     urules.table[''''' as strong quote'],
   \     urules.table['Vim script comment'],
+  \   ],
+  \   'zsh': [
+  \     urules.table[''''' as strong quote'],
   \   ],
   \ }
   "}}}
