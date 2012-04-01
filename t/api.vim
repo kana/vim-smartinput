@@ -503,6 +503,7 @@ end
 describe 'The default configuration'
   before
     new
+    setlocal autoindent
 
     function! b:.test_rules(test_set_names)
       " NB: [WHAT_MAP_EXPR_CAN_SEE] For some reason, ":normal SLet's" doesn't
