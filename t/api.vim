@@ -503,6 +503,7 @@ end
 describe 'The default configuration'
   before
     new
+    setlocal autoindent
 
     function! b:.test_rules(test_set_names)
       " NB: [WHAT_MAP_EXPR_CAN_SEE] For some reason, ":normal SLet's" doesn't
@@ -699,6 +700,14 @@ describe 'The default configuration'
     \     ["\<Enter>x", ['(', 'x', ')'], 2, 2 - 1],
     \     [")", ['(', 'x', ')'], 3, 2 - 1],
     \   ],
+    \   '() leave #5': [
+    \     ["(", ['()'], 1, 2 - 1],
+    \     ["\<Enter>", ['(', '', ')'], 2, 0 + 1],
+    \     ["(", ['(', '()', ')'], 2, 2 - 1],
+    \     ["\<Enter>x", ['(', '(', 'x', ')', ')'], 3, 2 - 1],
+    \     [")", ['(', '(', 'x', ')', ')'], 4, 2 - 1],
+    \     [")", ['(', '(', 'x', ')', ')'], 5, 2 - 1],
+    \   ],
     \   '() undo #1': [
     \     ["(", ['()'], 1, 2 - 1],
     \     ["x", ['(x)'], 1, 3 - 1],
@@ -744,6 +753,14 @@ describe 'The default configuration'
     \     ["[", ['[]'], 1, 2 - 1],
     \     ["\<Enter>x\<Enter>\<Up>\<Right>", ['[', 'x', ']'], 2, 2 - 1],
     \     ["]", ['[', 'x', ']'], 3, 2 - 1],
+    \   ],
+    \   '[] leave #5': [
+    \     ["[", ['[]'], 1, 2 - 1],
+    \     ["\<Enter>\<Enter>\<Up>", ['[', '', ']'], 2, 0 + 1],
+    \     ["[", ['[', '[]', ']'], 2, 2 - 1],
+    \     ["\<Enter>\<Enter>\<Up>x", ['[', '[', 'x', ']', ']'], 3, 2 - 1],
+    \     ["]", ['[', '[', 'x', ']', ']'], 4, 2 - 1],
+    \     ["]", ['[', '[', 'x', ']', ']'], 5, 2 - 1],
     \   ],
     \   '[] undo #1': [
     \     ["[", ['[]'], 1, 2 - 1],
@@ -845,6 +862,14 @@ describe 'The default configuration'
     \     ["\<Enter>x", ['{', "\tx", '}'], 2, 3 - 1],
     \     ["}", ['{', "\tx", '}'], 3, 2 - 1],
     \   ],
+    \   '{} leave #5': [
+    \     ["{", ['{}'], 1, 2 - 1],
+    \     ["\<Enter>", ['{', "\t", '}'], 2, 2 - 1],
+    \     ["{", ['{', "\t{}", '}'], 2, 3 - 1],
+    \     ["\<Enter>x", ['{', "\t{", "\t\tx", "\t}", '}'], 3, 4 - 1],
+    \     ["}", ['{', "\t{", "\t\tx", "\t}", '}'], 4, 3 - 1],
+    \     ["}", ['{', "\t{", "\t\tx", "\t}", '}'], 5, 2 - 1],
+    \   ],
     \   '{} undo #1': [
     \     ["{", ['{}'], 1, 2 - 1],
     \     ["x", ['{x}'], 1, 3 - 1],
@@ -897,6 +922,7 @@ describe 'The default configuration'
     \   '() leave #2',
     \   '() leave #3',
     \   '() leave #4',
+    \   '() leave #5',
     \   '() undo #1',
     \   '() undo #2',
     \   '[] complete',
@@ -905,6 +931,7 @@ describe 'The default configuration'
     \   '[] leave #2',
     \   '[] leave #3',
     \   '[] leave #4',
+    \   '[] leave #5',
     \   '[] undo #1',
     \   '[] undo #2',
     \   '{} complete',
@@ -913,6 +940,7 @@ describe 'The default configuration'
     \   '{} leave #2',
     \   '{} leave #3',
     \   '{} leave #4',
+    \   '{} leave #5',
     \   '{} undo #1',
     \   '{} undo #2',
     \   ''''' complete',
