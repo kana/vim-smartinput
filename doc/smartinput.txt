@@ -392,10 +392,10 @@ CUSTOMIZATION					*smartinput-customization*
 ==============================================================================
 BUGS						*smartinput-bugs*
 
-- Currently there is no known issue.
-
-- If you find any problem or have any suggestion, please give your feedback to
-  the author by: https://github.com/kana/vim-smartinput/issues
+- Still this plugin is not mature, there might be problematic behaivor and
+  missing features.  If you find any problem or have any suggestion, please
+  give your feedback to the author via:
+  https://github.com/kana/vim-smartinput/issues
 
 
 
