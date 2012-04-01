@@ -403,6 +403,15 @@ BUGS						*smartinput-bugs*
 ==============================================================================
 CHANGELOG					*smartinput-changelog*
 
+0.0.2	2012-04-01T16:11:14+09:00		*smartinput-changelog-0.0.2*
+	- Revise the default rules to easily leave from multiline {}, [] and
+	  () blocks.  Thanks to Curtis McEnroe for the suggestion.
+	- Revise the default rules for escaped ' and rules to leave from a ''
+	  block.  The former is used by default, and the latter is used only
+	  for specific languages which \ doesn't have special meanings in ''
+	  blocks, for example, Perl, Ruby, shell script and Vim script.
+	  Thansk to Andrew Ray for the suggestion.
+
 0.0.1	2012-03-30T19:38:53+09:00		*smartinput-changelog-0.0.1*
 	- Fix side effects in the default configuration.  <C-h> in
 	  Command-line mode did not update the screen immediately.
