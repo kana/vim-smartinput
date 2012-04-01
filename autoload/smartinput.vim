@@ -73,7 +73,7 @@ function! smartinput#define_default_rules()  "{{{2
   endfunction
   call urules.add('()', [
   \   {'at': '\%#', 'char': '(', 'input': '()<Left>'},
-  \   {'at': '\%#\_s*)', 'char': ')', 'input': '<C-o>:call search('')'', ''cW'')<Enter><Right>'},
+  \   {'at': '\%#\_s*)', 'char': ')', 'input': '<Char-0x1C><C-o>:call search('')'', ''cW'')<Enter><Right>'},
   \   {'at': '(\%#)', 'char': '<BS>', 'input': '<BS><Del>'},
   \   {'at': '()\%#', 'char': '<BS>', 'input': '<BS><BS>'},
   \   {'at': '\\\%#', 'char': '(', 'input': '('},
