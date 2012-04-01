@@ -99,7 +99,7 @@ function! smartinput#define_default_rules()  "{{{2
   \   {'at': '\%#''\ze', 'char': '''', 'input': '<Right>'},
   \   {'at': '''\%#''', 'char': '<BS>', 'input': '<BS><Del>'},
   \   {'at': '''''\%#', 'char': '<BS>', 'input': '<BS><BS>'},
-  \   {'at': '\\\%#', 'char': '''', 'input': ''''},
+  \   {'at': '\\\%#\ze', 'char': '''', 'input': ''''},
   \ ])
   call urules.add('''''''', [
   \   {'at': '''''\%#', 'char': '''', 'input': '''''''''<Left><Left><Left>'},
