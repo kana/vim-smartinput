@@ -1116,4 +1116,37 @@ describe 'The default configuration'
     Expect getline(1, line('$')) ==# ['let foo = bar " baz"']
     Expect [line('.'), col('.')] ==# [1, 20 - 1]
   end
+
+  it 'should have rules for "strong quote" in specific languages'
+    for [is_strong, filetype] in [
+    \   [0, 'c'],
+    \   [0, 'cpp'],
+    \   [0, 'cs'],
+    \   [0, 'javascript'],
+    \   [0, 'python'],
+    \   [1, 'csh'],
+    \   [1, 'perl'],
+    \   [1, 'ruby'],
+    \   [1, 'sh'],
+    \   [1, 'tcsh'],
+    \   [1, 'vim'],
+    \   [1, 'zsh'],
+    \ ]
+      let &l:filetype = filetype
+      % delete _
+      let test_cases = [
+      \   ["'", [[''''''], [1, 2 - 1]], [[''''''], [1, 2 - 1]]],
+      \   ["\\", [['''\'''], [1, 3 - 1]], [['''\'''], [1, 3 - 1]]],
+      \   ["'", [['''\'''''], [1, 4 - 1]], [['''\'''], [1, 4 - 1]]],
+      \   ["'", [['''\'''''], [1, 5 - 1]], [['''\'''''''], [1, 5 - 1]]],
+      \ ]
+      for i in range(len(test_cases))
+        let [input, expected_weak, expected_strong] = test_cases[i]
+        let expected = is_strong ? expected_strong : expected_weak
+        execute 'normal' 'a'.input
+        Expect [&l:filetype, i, [getline(1, line('$')), [line('.'), col('.')]]]
+        \ ==# [filetype, i, expected]
+      endfor
+    endfor
+  end
 end
