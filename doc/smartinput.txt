@@ -397,6 +397,11 @@ BUGS						*smartinput-bugs*
   give your feedback to the author via:
   https://github.com/kana/vim-smartinput/issues
 
+- Though there are many default rules to support user input naturally, the
+  smart input assistant is not perfect.  It sometimes completes quotes etc
+  where such completion is not necessary.  In that case, use |i_CTRL-V| to
+  input a character solely.  For example, type "<C-v>(" to input only "(".
+
 
 
 
