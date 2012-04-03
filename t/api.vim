@@ -877,16 +877,16 @@ describe 'The default configuration'
     \   ],
     \   '{} leave #4': [
     \     ["{", ['{}'], 1, 2 - 1],
-    \     ["\<Enter>x", ['{', "\tx", '}'], 2, 3 - 1],
-    \     ["}", ['{', "\tx", '}'], 3, 2 - 1],
+    \     ["\<Enter>  x", ['{', '  x', '}'], 2, 4 - 1],
+    \     ["}", ['{', '  x', '}'], 3, 2 - 1],
     \   ],
     \   '{} leave #5': [
     \     ["{", ['{}'], 1, 2 - 1],
-    \     ["\<Enter>", ['{', "\t", '}'], 2, 2 - 1],
-    \     ["{", ['{', "\t{}", '}'], 2, 3 - 1],
-    \     ["\<Enter>x", ['{', "\t{", "\t\tx", "\t}", '}'], 3, 4 - 1],
-    \     ["}", ['{', "\t{", "\t\tx", "\t}", '}'], 4, 3 - 1],
-    \     ["}", ['{', "\t{", "\t\tx", "\t}", '}'], 5, 2 - 1],
+    \     ["\<Enter>  ", ['{', '  ', '}'], 2, 3 - 1],
+    \     ["{", ['{', '  {}', '}'], 2, 4 - 1],
+    \     ["\<Enter>  x", ['{', '  {', '    x', '  }', '}'], 3, 6 - 1],
+    \     ["}", ['{', '  {', '    x', '  }', '}'], 4, 4 - 1],
+    \     ["}", ['{', '  {', '    x', '  }', '}'], 5, 2 - 1],
     \   ],
     \   '{} undo #1': [
     \     ["{", ['{}'], 1, 2 - 1],
@@ -1054,27 +1054,50 @@ describe 'The default configuration'
     Expect b:getSynNames(line('.'), col('.')) ==# ['Comment']
   end
 
-  it 'should have rules to write C-like syntax source code'
-    setfiletype c
-    setlocal expandtab
-    Expect &l:filetype ==# 'c'
+  it 'should have rules to expand a () block and a {} block'
+    setfiletype ruby
+    setlocal expandtab shiftwidth=2 softtabstop=2
 
-    for key in ["\<Enter>", "\<Return>", "\<CR>", "\<C-m>", "\<NL>", "\<C-j>"]
-      % delete _
-      execute 'normal' printf('ifoo(%sbar,%sbaz', key, key)
-      Expect getline(1, line('$')) ==# ['foo(',
-      \                                 '                bar,',
-      \                                 '                baz',
-      \                                 '   )']
-      Expect [line('.'), col('.')] ==# [3, 20 - 1]
+    let keys = ["\<Enter>", "\<Return>", "\<CR>", "\<C-m>", "\<NL>", "\<C-j>"]
+    for additional_indentkeys in ['', '*<Return>']
+      " Some configurations for automatic indentation perform indentation
+      " before breaking the current line, while the others do not so.  For
+      " example, $VIMRUNTIME/indent/php.vim performs such indentation.  So
+      " that we have to test both cases.
+      setlocal indentkeys<
+      let &l:indentkeys .= ',' . additional_indentkeys
 
-      % delete _
-      execute 'normal' printf('i{%sfoo();%sbar();', key, key)
-      Expect getline(1, line('$')) ==# ['{',
-      \                                 '        foo();',
-      \                                 '        bar();',
-      \                                 '}']
-      Expect [line('.'), col('.')] ==# [3, 15 - 1]
+      for key in keys
+        let note = [strtrans(key), additional_indentkeys]
+
+        % delete _
+        execute 'normal' printf('ifoo(%sbar,%sbaz', key, key)
+        Expect [note, line('.'), col('.'), getline(1, line('$'))]
+        \ ==# [
+        \   note,
+        \   3, 6 - 1,
+        \   [
+        \     'foo(',
+        \     '  bar,',
+        \     '  baz',
+        \     ')',
+        \   ],
+        \ ]
+
+        % delete _
+        execute 'normal' printf('i{%sfoo()%sbar()', key, key)
+        Expect [note, line('.'), col('.'), getline(1, line('$'))]
+        \ ==# [
+        \   note,
+        \   3, 8 - 1,
+        \   [
+        \     '{',
+        \     '  foo()',
+        \     '  bar()',
+        \     '}',
+        \   ],
+        \ ]
+      endfor
     endfor
   end
 
