@@ -1054,10 +1054,10 @@ describe 'The default configuration'
     Expect b:getSynNames(line('.'), col('.')) ==# ['Comment']
   end
 
-  it 'should have rules to write C-like syntax source code'
-    setfiletype c
-    setlocal expandtab
-    Expect &l:filetype ==# 'c'
+  it 'should have rules to expand a () block and a {} block'
+    " FIXME: This test fails because of the current implementation.
+    setfiletype ruby
+    setlocal expandtab shiftwidth=2 softtabstop=2
 
     let keys = ["\<Enter>", "\<Return>", "\<CR>", "\<C-m>", "\<NL>", "\<C-j>"]
     for additional_indentkeys in ['', '*<Return>']
@@ -1076,25 +1076,25 @@ describe 'The default configuration'
         Expect [note, line('.'), col('.'), getline(1, line('$'))]
         \ ==# [
         \   note,
-        \   3, 20 - 1,
+        \   3, 6 - 1,
         \   [
         \     'foo(',
-        \     '                bar,',
-        \     '                baz',
-        \     '   )',
+        \     '  bar,',
+        \     '  baz',
+        \     ')',
         \   ],
         \ ]
 
         % delete _
-        execute 'normal' printf('i{%sfoo();%sbar();', key, key)
+        execute 'normal' printf('i{%sfoo()%sbar()', key, key)
         Expect [note, line('.'), col('.'), getline(1, line('$'))]
         \ ==# [
         \   note,
-        \   3, 15 - 1,
+        \   3, 8 - 1,
         \   [
         \     '{',
-        \     '        foo();',
-        \     '        bar();',
+        \     '  foo()',
+        \     '  bar()',
         \     '}',
         \   ],
         \ ]
