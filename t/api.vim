@@ -1059,22 +1059,37 @@ describe 'The default configuration'
     setlocal expandtab
     Expect &l:filetype ==# 'c'
 
-    for key in ["\<Enter>", "\<Return>", "\<CR>", "\<C-m>", "\<NL>", "\<C-j>"]
+    let keys = ["\<Enter>", "\<Return>", "\<CR>", "\<C-m>", "\<NL>", "\<C-j>"]
+    for key in keys
+      let note = [strtrans(key)]
+
       % delete _
       execute 'normal' printf('ifoo(%sbar,%sbaz', key, key)
-      Expect getline(1, line('$')) ==# ['foo(',
-      \                                 '                bar,',
-      \                                 '                baz',
-      \                                 '   )']
-      Expect [line('.'), col('.')] ==# [3, 20 - 1]
+      Expect [note, line('.'), col('.'), getline(1, line('$'))]
+      \ ==# [
+      \   note,
+      \   3, 20 - 1,
+      \   [
+      \     'foo(',
+      \     '                bar,',
+      \     '                baz',
+      \     '   )',
+      \   ],
+      \ ]
 
       % delete _
       execute 'normal' printf('i{%sfoo();%sbar();', key, key)
-      Expect getline(1, line('$')) ==# ['{',
-      \                                 '        foo();',
-      \                                 '        bar();',
-      \                                 '}']
-      Expect [line('.'), col('.')] ==# [3, 15 - 1]
+      Expect [note, line('.'), col('.'), getline(1, line('$'))]
+      \ ==# [
+      \   note,
+      \   3, 15 - 1,
+      \   [
+      \     '{',
+      \     '        foo();',
+      \     '        bar();',
+      \     '}',
+      \   ],
+      \ ]
     endfor
   end
 
