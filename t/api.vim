@@ -1060,36 +1060,45 @@ describe 'The default configuration'
     Expect &l:filetype ==# 'c'
 
     let keys = ["\<Enter>", "\<Return>", "\<CR>", "\<C-m>", "\<NL>", "\<C-j>"]
-    for key in keys
-      let note = [strtrans(key)]
+    for additional_indentkeys in ['', '*<Return>']
+      " Some configurations for automatic indentation perform indentation
+      " before breaking the current line, while the others do not so.  For
+      " example, $VIMRUNTIME/indent/php.vim performs such indentation.  So
+      " that we have to test both cases.
+      setlocal indentkeys<
+      let &l:indentkeys .= ',' . additional_indentkeys
 
-      % delete _
-      execute 'normal' printf('ifoo(%sbar,%sbaz', key, key)
-      Expect [note, line('.'), col('.'), getline(1, line('$'))]
-      \ ==# [
-      \   note,
-      \   3, 20 - 1,
-      \   [
-      \     'foo(',
-      \     '                bar,',
-      \     '                baz',
-      \     '   )',
-      \   ],
-      \ ]
+      for key in keys
+        let note = [strtrans(key), additional_indentkeys]
 
-      % delete _
-      execute 'normal' printf('i{%sfoo();%sbar();', key, key)
-      Expect [note, line('.'), col('.'), getline(1, line('$'))]
-      \ ==# [
-      \   note,
-      \   3, 15 - 1,
-      \   [
-      \     '{',
-      \     '        foo();',
-      \     '        bar();',
-      \     '}',
-      \   ],
-      \ ]
+        % delete _
+        execute 'normal' printf('ifoo(%sbar,%sbaz', key, key)
+        Expect [note, line('.'), col('.'), getline(1, line('$'))]
+        \ ==# [
+        \   note,
+        \   3, 20 - 1,
+        \   [
+        \     'foo(',
+        \     '                bar,',
+        \     '                baz',
+        \     '   )',
+        \   ],
+        \ ]
+
+        % delete _
+        execute 'normal' printf('i{%sfoo();%sbar();', key, key)
+        Expect [note, line('.'), col('.'), getline(1, line('$'))]
+        \ ==# [
+        \   note,
+        \   3, 15 - 1,
+        \   [
+        \     '{',
+        \     '        foo();',
+        \     '        bar();',
+        \     '}',
+        \   ],
+        \ ]
+      endfor
     endfor
   end
 
