@@ -877,16 +877,16 @@ describe 'The default configuration'
     \   ],
     \   '{} leave #4': [
     \     ["{", ['{}'], 1, 2 - 1],
-    \     ["\<Enter>x", ['{', "\tx", '}'], 2, 3 - 1],
-    \     ["}", ['{', "\tx", '}'], 3, 2 - 1],
+    \     ["\<Enter>  x", ['{', '  x', '}'], 2, 4 - 1],
+    \     ["}", ['{', '  x', '}'], 3, 2 - 1],
     \   ],
     \   '{} leave #5': [
     \     ["{", ['{}'], 1, 2 - 1],
-    \     ["\<Enter>", ['{', "\t", '}'], 2, 2 - 1],
-    \     ["{", ['{', "\t{}", '}'], 2, 3 - 1],
-    \     ["\<Enter>x", ['{', "\t{", "\t\tx", "\t}", '}'], 3, 4 - 1],
-    \     ["}", ['{', "\t{", "\t\tx", "\t}", '}'], 4, 3 - 1],
-    \     ["}", ['{', "\t{", "\t\tx", "\t}", '}'], 5, 2 - 1],
+    \     ["\<Enter>  ", ['{', '  ', '}'], 2, 3 - 1],
+    \     ["{", ['{', '  {}', '}'], 2, 4 - 1],
+    \     ["\<Enter>  x", ['{', '  {', '    x', '  }', '}'], 3, 6 - 1],
+    \     ["}", ['{', '  {', '    x', '  }', '}'], 4, 4 - 1],
+    \     ["}", ['{', '  {', '    x', '  }', '}'], 5, 2 - 1],
     \   ],
     \   '{} undo #1': [
     \     ["{", ['{}'], 1, 2 - 1],
@@ -1055,7 +1055,6 @@ describe 'The default configuration'
   end
 
   it 'should have rules to expand a () block and a {} block'
-    " FIXME: This test fails because of the current implementation.
     setfiletype ruby
     setlocal expandtab shiftwidth=2 softtabstop=2
 
