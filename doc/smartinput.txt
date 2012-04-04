@@ -402,6 +402,8 @@ BUGS						*smartinput-bugs*
   where such completion is not necessary.  In that case, use |i_CTRL-V| to
   input a character solely.  For example, type "<C-v>(" to input only "(".
 
+- Several rules require that 'backspace' is set to "indent,eol,start" or 2.
+
 
 
 
