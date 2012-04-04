@@ -1,5 +1,5 @@
 " smartinput - Provide smart input assistant
-" Version: 0.0.2
+" Version: 0.0.3
 " Copyright (C) 2012 Kana Natsuno <http://whileimautomaton.net/>
 " License: So-called MIT/X license  {{{
 "     Permission is hereby granted, free of charge, to any person obtaining
