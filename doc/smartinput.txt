@@ -415,7 +415,7 @@ CHANGELOG					*smartinput-changelog*
 	  block.  The former is used by default, and the latter is used only
 	  for specific languages which \ doesn't have special meanings in ''
 	  blocks, for example, Perl, Ruby, shell script and Vim script.
-	  Thansk to Andrew Ray for the suggestion.
+	  Thanks to Andrew Ray for the suggestion.
 
 0.0.1	2012-03-30T19:38:53+09:00		*smartinput-changelog-0.0.1*
 	- Fix side effects in the default configuration.  <C-h> in
