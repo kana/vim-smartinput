@@ -167,6 +167,9 @@ function! smartinput#define_default_rules()  "{{{2
   \     urules.table['```'],
   \     urules.table['English'],
   \   ],
+  \   'clojure': [
+  \     urules.table['Lisp quote'],
+  \   ],
   \   'csh': [
   \     urules.table[''''' as strong quote'],
   \   ],
