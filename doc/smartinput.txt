@@ -397,11 +397,13 @@ BUGS						*smartinput-bugs*
   give your feedback to the author via:
   https://github.com/kana/vim-smartinput/issues
 
+				   *smartinput-disable-completion-temporarily*
 - Though there are many default rules to support user input naturally, the
   smart input assistant is not perfect.  It sometimes completes quotes etc
   where such completion is not necessary.  In that case, use |i_CTRL-V| to
   input a character solely.  For example, type "<C-v>(" to input only "(".
 
+					    *smartinput-backspace-requirement*
 - Several rules require that 'backspace' is set to "indent,eol,start" or 2.
 
 
@@ -409,6 +411,14 @@ BUGS						*smartinput-bugs*
 
 ==============================================================================
 CHANGELOG					*smartinput-changelog*
+
+0.0.3	2012-04-04T21:33:34+09:00		*smartinput-changelog-0.0.3*
+	- Revise rules for expanding {} and () blocks to indent correctly for
+	  some 'filetype's, especially for PHP.  Thanks to Jon Duell for the
+	  feedback on this problem.
+	- Add a note on how to disable completion temporarily.
+	  See |smartinput-disable-completion-temporarily| for the details.
+	- Add a note on 'backspace'.  See |smartinput-backspace-requirement|.
 
 0.0.2	2012-04-01T16:11:14+09:00		*smartinput-changelog-0.0.2*
 	- Revise the default rules to easily leave from multiline {}, [] and
