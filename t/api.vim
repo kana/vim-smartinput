@@ -1122,4 +1122,44 @@ describe 'The default configuration'
       endfor
     endfor
   end
+
+  it 'should have rules for Python-specific string literals'
+    setfiletype python
+
+    let test_set_table = {}
+    for prefix in ['r', 'R',
+    \              'b', 'B', 'br', 'bR', 'Br', 'BR',
+    \              'u', 'U', 'ur', 'uR', 'Ur', 'UR']
+      let test_set_table[printf('%s''...'' in code', prefix)] = [
+      \   [prefix . "", [prefix . ''], 1, len(prefix) + 1 - 1],
+      \   ["'", [prefix . ''''''], 1, len(prefix) + 2 - 1],
+      \   ["x", [prefix . '''x'''], 1, len(prefix) + 3 - 1],
+      \ ]
+      let test_set_table[printf('%s''...'' in string', prefix)] = [
+      \   ["\"", ['""'], 1, 1 + 1 - 1],
+      \   [prefix . "", ['"' . prefix . '"'], 1, 1 + len(prefix) + 1 - 1],
+      \   ["'", ['"' . prefix . '''"'], 1, 1 + len(prefix) + 1 + 1 - 1],
+      \   ["x", ['"' . prefix . '''x"'], 1, 1 + len(prefix) + 2 + 1 - 1],
+      \ ]
+      let test_set_table[printf('%s''...'' in comment (middle)', prefix)] = [
+      \   ["# $\<Left>", ['# $'], 1, 2 + 1 - 1],
+      \   [prefix . "", ['# ' . prefix . '$'], 1, 2 + len(prefix) + 1 - 1],
+      \   ["'", ['# ' . prefix . '''$'], 1, 2 + len(prefix) + 1 + 1 - 1],
+      \   ["x", ['# ' . prefix . '''x$'], 1, 2 + len(prefix) + 2 + 1 - 1],
+      \ ]
+      let test_set_table[printf('%s''...'' in comment (EOL)', prefix)] = [
+      \   ["foo # ", ['foo # '], 1, 6 + 1 - 1],
+      \   [prefix . "", ['foo # ' . prefix . ''], 1, 6 + len(prefix) + 1 - 1],
+      \   ["'", ['foo # ' . prefix . ''''], 1, 6 + len(prefix) + 1 + 1 - 1],
+      \   ["x", ['foo # ' . prefix . '''x'], 1, 6 + len(prefix) + 2 + 1 - 1],
+      \ ]
+    endfor
+    let test_set_table['Typical comment'] = [
+    \   ["# You", ['# You'], 1, 6 - 1],
+    \   ["'", ['# You'''], 1, 7 - 1],
+    \   ["re", ['# You''re'], 1, 9 - 1],
+    \ ]
+
+    call b:.test_rules(test_set_table)
+  end
 end

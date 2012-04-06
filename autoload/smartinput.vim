@@ -148,6 +148,15 @@ function! smartinput#define_default_rules()  "{{{2
   \   {'at': '\%#', 'char': '''', 'input': '''''<Left>',
   \    'syntax': ['Constant']},
   \ ])
+  " Unfortunately, the space beyond the end of a comment line is not
+  " highlighted as 'Comment'.  So that it is necessary to define one more rule
+  " to cover the edge case with only 'at'.
+  call urules.add('Python string', [
+  \   {'at': '\v\c<([bu]|[bu]?r)>%#', 'char': '''', 'input': '''''<Left>'},
+  \   {'at': '\v\c<([bu]|[bu]?r)>%#', 'char': '''', 'input': '''',
+  \    'syntax': ['Comment', 'Constant']},
+  \   {'at': '\v\c\#.*<([bu]|[bu]?r)>%#$', 'char': '''', 'input': ''''},
+  \ ])
   call urules.add('Vim script comment', [
   \   {'at': '^\s*\%#', 'char': '"', 'input': '"'},
   \ ])
@@ -178,6 +187,9 @@ function! smartinput#define_default_rules()  "{{{2
   \   ],
   \   'perl': [
   \     urules.table[''''' as strong quote'],
+  \   ],
+  \   'python': [
+  \     urules.table['Python string'],
   \   ],
   \   'ruby': [
   \     urules.table[''''' as strong quote'],
