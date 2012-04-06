@@ -1052,6 +1052,23 @@ describe 'The default configuration'
     Expect getline(1, line('$')) ==# ['; (define filetype ''scheme)']
     Expect [line('.'), col('.')] ==# [1, 27 - 1]
     Expect b:getSynNames(line('.'), col('.')) ==# ['Comment']
+
+    setlocal filetype=clojure
+    setlocal syntax=lisp
+    Expect &l:filetype ==# 'clojure'
+    Expect &l:syntax ==# 'lisp'
+    normal S(def filetype 'clojure
+    Expect getline(1, line('$')) ==# ['(def filetype ''clojure)']
+    Expect [line('.'), col('.')] ==# [1, 23 - 1]
+    Expect b:getSynNames(line('.'), col('.')) ==# ['lispList', 'Identifier']
+    normal S(def filetype "'clojure
+    Expect getline(1, line('$')) ==# ['(def filetype "''clojure''")']
+    Expect [line('.'), col('.')] ==# [1, 24 - 1]
+    Expect b:getSynNames(line('.'), col('.')) ==# ['lispList', 'Constant']
+    normal S; (def filetype 'clojure
+    Expect getline(1, line('$')) ==# ['; (def filetype ''clojure)']
+    Expect [line('.'), col('.')] ==# [1, 25 - 1]
+    Expect b:getSynNames(line('.'), col('.')) ==# ['Comment']
   end
 
   it 'should have rules to expand a () block and a {} block'
