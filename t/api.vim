@@ -505,7 +505,7 @@ describe 'The default configuration'
     new
     setlocal autoindent
 
-    function! b:.test_rules(test_set_names)
+    function! b:.test_rules(test_set_table)
       " NB: [WHAT_MAP_EXPR_CAN_SEE] For some reason, ":normal SLet's" doesn't
       " work as I expected.  When "'" is being inserted with the command,
       " s:_trigger_or_fallback is called with the following context:
@@ -524,8 +524,8 @@ describe 'The default configuration'
       " So that the expected rule ("at" ==# '\w\%#') is selected.
       "
       " To avoid the problem, split :normal at the trigger character.
-      for n in a:test_set_names
-        let test_set = b:test_set_table[n]
+      for n in sort(keys(a:test_set_table))
+        let test_set = a:test_set_table[n]
         % delete _
         let i = 0  " For debugging.
         for [input, lines, linenr, colnr] in test_set
@@ -536,8 +536,39 @@ describe 'The default configuration'
         endfor
       endfor
     endfunction
+  end
 
-    let b:test_set_table = {
+  after
+    close!
+  end
+
+  it 'should define necessary key mappings to trigger smart input assistants'
+    redir => s
+    0 verbose imap
+    redir END
+    let lhss = split(s, '\n')
+    call map(lhss, 'substitute(v:val, ''\v\S+\s+(\S+)\s+.*'', ''\1'', ''g'')')
+    call sort(lhss)
+
+    Expect lhss ==# [
+    \   '"',
+    \   '''',
+    \   '(',
+    \   ')',
+    \   '<BS>',
+    \   '<C-H>',
+    \   '<CR>',
+    \   '<NL>',
+    \   '[',
+    \   ']',
+    \   '`',
+    \   '{',
+    \   '}',
+    \ ]
+  end
+
+  it 'should have generic rules for all filetypes'
+    call b:.test_rules({
     \   '"" complete': [
     \     ["\"", ['""'], 1, 2 - 1],
     \   ],
@@ -900,105 +931,7 @@ describe 'The default configuration'
     \     ["}", ['x{}'], 1, 4 - 1],
     \     ["\<BS>", ['x'], 1, 2 - 1],
     \   ],
-    \ }
-  end
-
-  after
-    close!
-  end
-
-  it 'should define necessary key mappings to trigger smart input assistants'
-    redir => s
-    0 verbose imap
-    redir END
-    let lhss = split(s, '\n')
-    call map(lhss, 'substitute(v:val, ''\v\S+\s+(\S+)\s+.*'', ''\1'', ''g'')')
-    call sort(lhss)
-
-    Expect lhss ==# [
-    \   '"',
-    \   '''',
-    \   '(',
-    \   ')',
-    \   '<BS>',
-    \   '<C-H>',
-    \   '<CR>',
-    \   '<NL>',
-    \   '[',
-    \   ']',
-    \   '`',
-    \   '{',
-    \   '}',
-    \ ]
-  end
-
-  it 'should have generic rules for all filetypes'
-    call b:.test_rules([
-    \   '() complete',
-    \   '() escape',
-    \   '() leave #1',
-    \   '() leave #2',
-    \   '() leave #3',
-    \   '() leave #4',
-    \   '() leave #5',
-    \   '() undo #1',
-    \   '() undo #2',
-    \   '[] complete',
-    \   '[] escape',
-    \   '[] leave #1',
-    \   '[] leave #2',
-    \   '[] leave #3',
-    \   '[] leave #4',
-    \   '[] leave #5',
-    \   '[] undo #1',
-    \   '[] undo #2',
-    \   '{} complete',
-    \   '{} escape',
-    \   '{} leave #1',
-    \   '{} leave #2',
-    \   '{} leave #3',
-    \   '{} leave #4',
-    \   '{} leave #5',
-    \   '{} undo #1',
-    \   '{} undo #2',
-    \   ''''' complete',
-    \   ''''' escape #1',
-    \   ''''' escape #2',
-    \   ''''' leave #1',
-    \   ''''' leave #2',
-    \   ''''' undo #1',
-    \   ''''' undo #2',
-    \   ''''''' complete',
-    \   ''''''' leave #1',
-    \   ''''''' leave #2',
-    \   ''''''' undo #1',
-    \   ''''''' undo #2',
-    \   '"" complete',
-    \   '"" escape #1',
-    \   '"" escape #2',
-    \   '"" leave #1',
-    \   '"" leave #2',
-    \   '"" undo #1',
-    \   '"" undo #2',
-    \   '""" complete',
-    \   '""" leave #1',
-    \   '""" leave #2',
-    \   '""" undo #1',
-    \   '""" undo #2',
-    \   '`` complete',
-    \   '`` escape #1',
-    \   '`` escape #2',
-    \   '`` leave #1',
-    \   '`` leave #2',
-    \   '`` undo #1',
-    \   '`` undo #2',
-    \   '``` complete',
-    \   '``` leave #1',
-    \   '``` leave #2',
-    \   '``` undo #1',
-    \   '``` undo #2',
-    \   'English',
-    \ ])
+    \ })
   end
 
   it 'should have rules to write Lisp/Scheme source code'
