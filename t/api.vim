@@ -1162,4 +1162,20 @@ describe 'The default configuration'
 
     call b:.test_rules(test_set_table)
   end
+
+  it 'should be cooperative with Visual-block Insert'
+    for input in ['(foo)bar:', '[foo]bar', '{foo}bar:']
+      % delete _
+      put =['a', 'b', 'c', 'd']
+      1 delete _
+      execute 'normal' "gg0\<C-v>GI".input."\<Esc>"
+      Expect getline(1, '$') ==# [
+      \   input . 'a',
+      \   input . 'b',
+      \   input . 'c',
+      \   input . 'd',
+      \ ]
+      Expect [line('.'), col('.')] ==# [1, 0 + 1]
+    endfor
+  end
 end
