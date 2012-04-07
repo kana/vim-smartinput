@@ -202,11 +202,13 @@ a |Dictionary| which contains the following items:
 
 "char" (string) (required)
 	Specifies a character to trigger the smart input assistant.
+	See also |smartinput-special-keys|.
 
 "input" (string) (required)
 	Specifies a result of the smart input assistant.
 	This value is used like {rhs} for |:map| commands.
 	This value is inputted instead of the "char" value.
+	See also |smartinput-special-keys|.
 
 "mode" (string) (optional)
 	Specifies the context to use the smart input assistant.
@@ -258,6 +260,14 @@ a |Dictionary| which contains the following items:
 	* "lispString" is not effective because it is linked to "String".
 
 	This specification works only for Insert mode.
+
+						*smartinput-special-keys*
+Values of "char" and "input" are internally passed to |:map| commands.  So
+that:
+
+- Special keys must be written like '<Left>', not "\<Left>".
+- "|" must be written '<Bar>'.
+- "\" must be written '<Bslash>'.
 
 
 ------------------------------------------------------------------------------
