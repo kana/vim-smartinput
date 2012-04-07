@@ -421,6 +421,31 @@ CUSTOMIZATION					*smartinput-customization*
     \   'syntax': ['Constant', 'Special'],
     \ })
 <
+						*smartinput-customization-d*
+(D) Example #2: If you often write Ruby script and you want to insert "||"
+    by typing "|" to declare block-local variable easily,
+    add the following lines into your |vimrc|:
+>
+    call smartinput#map_to_trigger('i', '<Bar>', '<Bar>', '<Bar>')
+    call smartinput#define_rule({
+    \   'at': '\%#',
+    \   'char': '<Bar>',
+    \   'input': '<Bar><Bar><Left>',
+    \   'filetype': ['ruby'],
+    \ })
+<
+    But the above rule is not so useful, because "||" is always inserted and
+    the cursor is moved into the bars, even if you want to write the following
+    idiom: "foo ||= bar".  So that it's better to tweak the "at" value to
+    activate the rule if and only if the cursor is just after "{" or "do":
+>
+    call smartinput#define_rule({
+    \   'at': '\({\|\<do\>\)\s*\%#',
+    \   'char': '<Bar>',
+    \   'input': '<Bar><Bar><Left>',
+    \   'filetype': ['ruby'],
+    \ })
+<
 
 
 
