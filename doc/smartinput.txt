@@ -407,6 +407,20 @@ CUSTOMIZATION					*smartinput-customization*
     trigger keys for your own rules with |smartinput#map_to_trigger()| or
     |smartinput#map_trigger_keys()|.
 
+						*smartinput-customization-c*
+(C) Example #1: If you often write Ruby script and you want to insert "#{}"
+    by typing "#" in a string literal to input string interpolation easily,
+    add the following lines into your |vimrc|:
+>
+    call smartinput#map_to_trigger('i', '#', '#', '#')
+    call smartinput#define_rule({
+    \   'at': '\%#',
+    \   'char': '#',
+    \   'input': '#{}<Left>',
+    \   'filetype': ['ruby'],
+    \   'syntax': ['Constant', 'Special'],
+    \ })
+<
 
 
 
