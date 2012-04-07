@@ -1,6 +1,6 @@
 *smartinput.txt*	Provide smart input assistant
 
-Version 0.0.3
+Version 0.0.4
 Script ID: ****
 Copyright (C) 2012 Kana Natsuno <http://whileimautomaton.net/>
 License: So-called MIT/X license  {{{
@@ -471,6 +471,14 @@ BUGS						*smartinput-bugs*
 
 ==============================================================================
 CHANGELOG					*smartinput-changelog*
+
+0.0.4	2012-04-07T16:26:23+09:00		*smartinput-changelog-0.0.4*
+	- Add rules for Clojure.  Thanks to Bodaniel Jeanes for the feedback.
+	- Add rules for Python-specific string literals such as r'...'.
+	  Thanks to Adrian Sampson for the initial rules and the ideas.
+	- Add examples to write custom rules.
+	  See |smartinput-customization-c| and |smartinput-customization-d|
+	  for the details.  Thanks to Guillaume for the feedback.
 
 0.0.3	2012-04-04T21:33:34+09:00		*smartinput-changelog-0.0.3*
 	- Revise rules for expanding {} and () blocks to indent correctly for
