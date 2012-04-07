@@ -202,11 +202,13 @@ a |Dictionary| which contains the following items:
 
 "char" (string) (required)
 	Specifies a character to trigger the smart input assistant.
+	See also |smartinput-special-keys|.
 
 "input" (string) (required)
 	Specifies a result of the smart input assistant.
 	This value is used like {rhs} for |:map| commands.
 	This value is inputted instead of the "char" value.
+	See also |smartinput-special-keys|.
 
 "mode" (string) (optional)
 	Specifies the context to use the smart input assistant.
@@ -249,6 +251,8 @@ a |Dictionary| which contains the following items:
 	- The cursor position is highlighted as one of this value.
 
 	See also |group-name| for examples of available values.
+	See also |smartinput-check-syntax-highlighting|.
+
 	Note that only "wide" syntax items are effective.  In other words,
 	syntax items which is linked to another is not effective, and they
 	will never be matched.  For example:
@@ -258,6 +262,21 @@ a |Dictionary| which contains the following items:
 	* "lispString" is not effective because it is linked to "String".
 
 	This specification works only for Insert mode.
+
+						*smartinput-special-keys*
+Values of "char" and "input" are internally passed to |:map| commands.  So
+that:
+
+- Special keys must be written like '<Left>', not "\<Left>".
+- "|" must be written '<Bar>'.
+- "\" must be written '<Bslash>'.
+
+					*smartinput-check-syntax-highlighting*
+To investigate how the character under the cursor is highlighted, use the
+following command:
+>
+  echo map(synstack(line('.'),col('.')),'synIDattr(synIDtrans(v:val),"name")')
+<
 
 
 ------------------------------------------------------------------------------
@@ -377,15 +396,56 @@ This convention is to avoid rule duplication.  See also the following table:
 ==============================================================================
 CUSTOMIZATION					*smartinput-customization*
 
+						*smartinput-customization-a*
 (A) To define your own |smartinput-rules| for the smart input assistant,
     use |smartinput#define_rule()|.  See also |smartinput-default-rules| for
     the real world examples.
 
+						*smartinput-customization-b*
 (B) If you define your own |smartinput-rules| which "char" values are
     different from ones of |smartinput-default-rules|, you have to define
     trigger keys for your own rules with |smartinput#map_to_trigger()| or
     |smartinput#map_trigger_keys()|.
 
+						*smartinput-customization-c*
+(C) Example #1: If you often write Ruby script and you want to insert "#{}"
+    by typing "#" in a string literal to input string interpolation easily,
+    add the following lines into your |vimrc|:
+>
+    call smartinput#map_to_trigger('i', '#', '#', '#')
+    call smartinput#define_rule({
+    \   'at': '\%#',
+    \   'char': '#',
+    \   'input': '#{}<Left>',
+    \   'filetype': ['ruby'],
+    \   'syntax': ['Constant', 'Special'],
+    \ })
+<
+						*smartinput-customization-d*
+(D) Example #2: If you often write Ruby script and you want to insert "||"
+    by typing "|" to declare block-local variable easily,
+    add the following lines into your |vimrc|:
+>
+    call smartinput#map_to_trigger('i', '<Bar>', '<Bar>', '<Bar>')
+    call smartinput#define_rule({
+    \   'at': '\%#',
+    \   'char': '<Bar>',
+    \   'input': '<Bar><Bar><Left>',
+    \   'filetype': ['ruby'],
+    \ })
+<
+    But the above rule is not so useful, because "||" is always inserted and
+    the cursor is moved into the bars, even if you want to write the following
+    idiom: "foo ||= bar".  So that it's better to tweak the "at" value to
+    activate the rule if and only if the cursor is just after "{" or "do":
+>
+    call smartinput#define_rule({
+    \   'at': '\({\|\<do\>\)\s*\%#',
+    \   'char': '<Bar>',
+    \   'input': '<Bar><Bar><Left>',
+    \   'filetype': ['ruby'],
+    \ })
+<
 
 
 
