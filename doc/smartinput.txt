@@ -251,6 +251,8 @@ a |Dictionary| which contains the following items:
 	- The cursor position is highlighted as one of this value.
 
 	See also |group-name| for examples of available values.
+	See also |smartinput-check-syntax-highlighting|.
+
 	Note that only "wide" syntax items are effective.  In other words,
 	syntax items which is linked to another is not effective, and they
 	will never be matched.  For example:
@@ -268,6 +270,13 @@ that:
 - Special keys must be written like '<Left>', not "\<Left>".
 - "|" must be written '<Bar>'.
 - "\" must be written '<Bslash>'.
+
+					*smartinput-check-syntax-highlighting*
+To investigate how the character under the cursor is highlighted, use the
+following command:
+>
+  echo map(synstack(line('.'),col('.')),'synIDattr(synIDtrans(v:val),"name")')
+<
 
 
 ------------------------------------------------------------------------------
