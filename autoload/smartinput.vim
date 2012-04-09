@@ -73,7 +73,7 @@ function! smartinput#define_default_rules()  "{{{2
   endfunction
   call urules.add('()', [
   \   {'at': '\%#', 'char': '(', 'input': '()<Left>'},
-  \   {'at': '\%#\_s*)', 'char': ')', 'input': '<Char-0x1C><C-o>:call search('')'', ''cW'')<Enter><Right>'},
+  \   {'at': '\%#\_s*)', 'char': ')', 'input': '<C-r>=smartinput#_leave_block('')'')<Enter><Right>'},
   \   {'at': '(\%#)', 'char': '<BS>', 'input': '<BS><Del>'},
   \   {'at': '()\%#', 'char': '<BS>', 'input': '<BS><BS>'},
   \   {'at': '\\\%#', 'char': '(', 'input': '('},
@@ -81,14 +81,14 @@ function! smartinput#define_default_rules()  "{{{2
   \ ])
   call urules.add('[]', [
   \   {'at': '\%#', 'char': '[', 'input': '[]<Left>'},
-  \   {'at': '\%#\_s*\]', 'char': ']', 'input': '<Char-0x1C><C-o>:call search('']'', ''cW'')<Enter><Right>'},
+  \   {'at': '\%#\_s*\]', 'char': ']', 'input': '<C-r>=smartinput#_leave_block('']'')<Enter><Right>'},
   \   {'at': '\[\%#\]', 'char': '<BS>', 'input': '<BS><Del>'},
   \   {'at': '\[\]\%#', 'char': '<BS>', 'input': '<BS><BS>'},
   \   {'at': '\\\%#', 'char': '[', 'input': '['},
   \ ])
   call urules.add('{}', [
   \   {'at': '\%#', 'char': '{', 'input': '{}<Left>'},
-  \   {'at': '\%#\_s*}', 'char': '}', 'input': '<Char-0x1C><C-o>:call search(''}'', ''cW'')<Enter><Right>'},
+  \   {'at': '\%#\_s*}', 'char': '}', 'input': '<C-r>=smartinput#_leave_block(''}'')<Enter><Right>'},
   \   {'at': '{\%#}', 'char': '<BS>', 'input': '<BS><Del>'},
   \   {'at': '{}\%#', 'char': '<BS>', 'input': '<BS><BS>'},
   \   {'at': '\\\%#', 'char': '{', 'input': '{'},
@@ -256,6 +256,16 @@ endfunction
 function! s:_operator_pattern_from(operator_name)
   let k = a:operator_name
   return k
+endfunction
+
+function! smartinput#_leave_block(end_char)
+  " NB: Originally <C-o> was used to execute search(), but <C-o> in
+  " Visual-block Insert acts as if <Esc>a, so visually selected lines will be
+  " updated and the current mode will be shifted to Insert mode.  It means
+  " that there is no timing to execute a Normal mode command.  Therefore we
+  " have to use <C-r>= instead.
+  call search(a:end_char, 'cW')
+  return ''
 endfunction
 
 
