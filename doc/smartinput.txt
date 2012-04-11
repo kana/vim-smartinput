@@ -472,6 +472,14 @@ BUGS						*smartinput-bugs*
 ==============================================================================
 CHANGELOG					*smartinput-changelog*
 
+0.0.5	2012-04-11T21:48:41+09:00		*smartinput-changelog-0.0.5*
+	- Fix rules to leave from a (), [], or {} block.  They did not work
+	  properly with Visual-block Insert (|v_b_I|), etc.  Thanks to Dennis
+	  Sjögren for reporting the problem.
+	- Fix rules to expand a () or {} block.  After expanding a block,
+	  <Esc> had to be typed twice to return to Normal mode.  Thanks to
+	  Jonas Haag for reporting the problem.
+
 0.0.4	2012-04-07T16:26:23+09:00		*smartinput-changelog-0.0.4*
 	- Add rules for Clojure.  Thanks to Bodaniel Jeanes for the feedback.
 	- Add rules for Python-specific string literals such as r'...'.
