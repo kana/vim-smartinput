@@ -149,7 +149,7 @@ smartinput#map_to_trigger({mode}, {lhs}, {rhs-char}, {rhs-fallback})
 			{lhs} is mapped in Insert mode if {mode} is 'i'.
 			{lhs} is mapped in Command-line mode if {mode} is 'c'.
 
-			See also |smartinput-exampels| for the details.
+			See also |smartinput-customization| for the details.
 
 smartinput#map_trigger_keys([{overridep}])     *smartinput#map_trigger_keys()*
 			Map keys to trigger smart input assistant according to
@@ -189,7 +189,7 @@ a |Dictionary| which contains the following items:
 "at" (string) (required)
 	Specifies the context to use the smart input assistant.
 	This value is treated as a |regular-expression|.
-	The smart input assistant will be used if the regular exprssion
+	The smart input assistant will be used if the regular expression
 	matches to the cursor position.
 
 	Tips: You can use |/\%#| to indicate the cursor position.
@@ -221,8 +221,8 @@ a |Dictionary| which contains the following items:
 	i		Insert mode
 	:		Command-line mode for normal Ex commands
 	>		Command-line mode for |debug-mode| commands
-	/		Command-line mode for serching with |/|
-	?		Command-line mode for serching with |?|
+	/		Command-line mode for searching with |/|
+	?		Command-line mode for searching with |?|
 	@		Command-line mode for |input()|
 	-		Command-line mode for |:insert| or |:append|
 
@@ -452,7 +452,7 @@ CUSTOMIZATION					*smartinput-customization*
 ==============================================================================
 BUGS						*smartinput-bugs*
 
-- Still this plugin is not mature, there might be problematic behaivor and
+- Still this plugin is not mature, there might be problematic behavior and
   missing features.  If you find any problem or have any suggestion, please
   give your feedback to the author via:
   https://github.com/kana/vim-smartinput/issues
