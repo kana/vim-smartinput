@@ -1178,4 +1178,32 @@ describe 'The default configuration'
       Expect [line('.'), col('.')] ==# [1, 0 + 1]
     endfor
   end
+
+  it 'should be escaped immediately after expanding a block'
+    " Insert mode will never be nested if keys are typed interactively.  But
+    " some key sequences (such as i<C-o>S) typed via :normal or :map cause
+    " "nested" Insert mode, so that <Esc> must be typed twice to return to
+    " Normal mode.  We have to avoid using such key sequences at the moment.
+    " See also: http://groups.google.com/group/vim_dev/browse_thread/thread/a1948a72bb919900
+
+    % delete _
+    execute 'normal' "ifoo\<Esc>I{\<Return>\<Esc>/o\<Return>"
+    Expect getline(1, '$') ==# [
+    \   '{',
+    \   '',
+    \   '}foo',
+    \ ]
+    " or ['{', '/o', '', '}foo'] if Insert mode is nested.
+    Expect [line('.'), col('.')] ==# [3, 3]
+
+    % delete _
+    execute 'normal' "ifoo\<Esc>I(\<Return>\<Esc>/o\<Return>"
+    Expect getline(1, '$') ==# [
+    \   '(',
+    \   '',
+    \   ')foo',
+    \ ]
+    " or ['(', '/o', '', ')foo'] if Insert mode is nested.
+    Expect [line('.'), col('.')] ==# [3, 3]
+  end
 end
