@@ -1206,4 +1206,30 @@ describe 'The default configuration'
     " or ['(', '/o', '', ')foo'] if Insert mode is nested.
     Expect [line('.'), col('.')] ==# [3, 3]
   end
+
+  it 'should keep register contents'
+    % delete _
+    let @" = 'foo'
+    execute 'normal' "i{\<Return>"
+    Expect getline(1, '$') ==# [
+    \   '{',
+    \   '',
+    \   '}',
+    \ ]
+    Expect [line('.'), col('.')] ==# [2, 0 + 1]
+    Expect @" ==# 'foo'
+    Expect @0 ==# 'foo'
+
+    % delete _
+    let @" = 'foo'
+    execute 'normal' "i(\<Return>"
+    Expect getline(1, '$') ==# [
+    \   '(',
+    \   '',
+    \   ')',
+    \ ]
+    Expect [line('.'), col('.')] ==# [2, 0 + 1]
+    Expect @" ==# 'foo'
+    Expect @0 ==# 'foo'
+  end
 end
