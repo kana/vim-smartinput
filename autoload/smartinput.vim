@@ -308,6 +308,14 @@ function! s:_encode_for_map_char_expr(rhs_char)
   return s
 endfunction
 
+function! s:_input_pre_expr()
+  let s = ''
+  if exists('g:loaded_neocomplcache')
+      let s = neocomplcache#cancel_popup()
+  endif
+  return s
+endfunction
+
 function! s:_trigger_or_fallback(char, fallback)
   let nrule =
   \ mode() =~# '\v^(i|R|Rv)$'
@@ -322,10 +330,11 @@ function! s:_trigger_or_fallback(char, fallback)
   \     getcmdpos(),
   \     getcmdtype()
   \   )
+
   if nrule is 0
     return a:fallback
   else
-    return nrule._input
+    return s:_input_pre_expr() . nrule._input
   endif
 endfunction
 
@@ -588,6 +597,7 @@ function! s:do_initial_setup()  "{{{2
   if !exists('g:smartinput_no_default_key_mappings')
     call smartinput#map_trigger_keys()
   endif
+
 endfunction
 
 
