@@ -311,7 +311,7 @@ endfunction
 function! s:_input_pre_expr()
   let s = ''
   if exists('g:loaded_neocomplcache')
-      let s = neocomplcache#cancel_popup()
+      let s = neocomplcache#smart_close_popup()
   endif
   return s
 endfunction
@@ -332,8 +332,10 @@ function! s:_trigger_or_fallback(char, fallback)
   \   )
 
   if nrule is 0
+    " echomsg "_trigger_or_fallback : fallback " . a:fallback
     return a:fallback
   else
+    " echomsg "_trigger_or_fallback : input " . s:_input_pre_expr() . nrule._input
     return s:_input_pre_expr() . nrule._input
   endif
 endfunction
