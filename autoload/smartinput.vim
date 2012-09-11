@@ -72,7 +72,7 @@ function! smartinput#define_default_rules()  "{{{2
     let self.table[a:name] = a:urules
   endfunction
   call urules.add('()', [
-  \   {'at': '\%#', 'char': '(', 'input': '()<Left>'},
+  \   {'at': '\%#\_s', 'char': '(', 'input': '()<Left>'},
   \   {'at': '\%#\_s*)', 'char': ')', 'input': '<C-r>=smartinput#_leave_block('')'')<Enter><Right>'},
   \   {'at': '(\%#)', 'char': '<BS>', 'input': '<BS><Del>'},
   \   {'at': '()\%#', 'char': '<BS>', 'input': '<BS><BS>'},
@@ -308,6 +308,14 @@ function! s:_encode_for_map_char_expr(rhs_char)
   return s
 endfunction
 
+function! s:_input_pre_expr()
+  let s = ''
+  if exists('g:loaded_neocomplcache')
+      let s = neocomplcache#smart_close_popup()
+  endif
+  return s
+endfunction
+
 function! s:_trigger_or_fallback(char, fallback)
   let nrule =
   \ mode() =~# '\v^(i|R|Rv)$'
@@ -322,10 +330,13 @@ function! s:_trigger_or_fallback(char, fallback)
   \     getcmdpos(),
   \     getcmdtype()
   \   )
+
   if nrule is 0
+    " call tlog#Log("smartinput fallback:" . PP(a:fallback))
     return a:fallback
   else
-    return nrule._input
+    " call tlog#Log("smartinput _input " . s:_input_pre_expr() . nrule._input)
+    return s:_input_pre_expr() . nrule._input
   endif
 endfunction
 
@@ -588,6 +599,7 @@ function! s:do_initial_setup()  "{{{2
   if !exists('g:smartinput_no_default_key_mappings')
     call smartinput#map_trigger_keys()
   endif
+
 endfunction
 
 
