@@ -72,7 +72,7 @@ function! smartinput#define_default_rules()  "{{{2
     let self.table[a:name] = a:urules
   endfunction
   call urules.add('()', [
-  \   {'at': '\%#', 'char': '(', 'input': '()<Left>'},
+  \   {'at': '\%#\_s', 'char': '(', 'input': '()<Left>'},
   \   {'at': '\%#\_s*)', 'char': ')', 'input': '<C-r>=smartinput#_leave_block('')'')<Enter><Right>'},
   \   {'at': '(\%#)', 'char': '<BS>', 'input': '<BS><Del>'},
   \   {'at': '()\%#', 'char': '<BS>', 'input': '<BS><BS>'},
@@ -332,10 +332,10 @@ function! s:_trigger_or_fallback(char, fallback)
   \   )
 
   if nrule is 0
-    " echomsg "_trigger_or_fallback : fallback " . a:fallback
+    " call tlog#Log("smartinput fallback:" . PP(a:fallback))
     return a:fallback
   else
-    " echomsg "_trigger_or_fallback : input " . s:_input_pre_expr() . nrule._input
+    " call tlog#Log("smartinput _input " . s:_input_pre_expr() . nrule._input)
     return s:_input_pre_expr() . nrule._input
   endif
 endfunction
