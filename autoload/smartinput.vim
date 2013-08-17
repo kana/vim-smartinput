@@ -95,6 +95,7 @@ function! smartinput#define_default_rules()  "{{{2
   \   {'at': '\\\%#', 'char': '{', 'input': '{'},
   \   {'at': '{\%#}', 'char': '<Enter>', 'input': '<Enter><Esc>"_O'},
   \   {'at': '=.*{\%#}', 'char': '<Enter>', 'input': '<Enter><End>;<Esc>"_O'},
+  \   {'at': '^\_s*return .*{\%#}', 'char': '<Enter>', 'input': '<Enter><End>;<Esc>"_O'},
   \   {'at': '(.*{\%#})', 'char': '<Enter>', 'input': '<Enter><Enter><BS><End>;<Up><Esc>"_A'},
   \ ])
   "\   {'at': '\%#\_s*}', 'char': '}', 'input': '<C-r>=smartinput#_leave_block(''}'')<Enter><Right>'},
