@@ -94,10 +94,15 @@ function! smartinput#define_default_rules()  "{{{2
   \   {'at': '{}\%#', 'char': '<BS>', 'input': '<BS><BS>'},
   \   {'at': '\\\%#', 'char': '{', 'input': '{'},
   \   {'at': '{\%#}', 'char': '<Enter>', 'input': '<Enter><Esc>"_O'},
-  \   {'at': '=[^>].*{\%#}', 'char': '<Enter>', 'input': '<Enter><End>;<Esc>"_O'},
-  \   {'at': '=>.*{\%#}', 'char': '<Enter>', 'input': '<Enter><End>,<Esc>"_O'},
-  \   {'at': '^\_s*return .*{\%#}', 'char': '<Enter>', 'input': '<Enter><End>;<Esc>"_O'},
-  \   {'at': '(.*{\%#})', 'char': '<Enter>', 'input': '<Enter><Enter><BS><End>;<Up><Esc>"_A'},
+  \ ])
+  call urules.add('C {}', [
+  \   {'at': '=[^>][^)]*{\%#}$', 'char': '<Enter>', 'input': '<Enter><End>;<Esc>"_O'},
+  \   {'at': '^\_s*return .*{\%#}$', 'char': '<Enter>', 'input': '<Enter><End>;<Esc>"_O'},
+  \   {'at': '(.*{\%#})', 'char': '<Enter>', 'input': '<Enter><Enter><BS><End><Up><Esc>"_A'},
+  \   {'at': '(.*{\%#})$', 'char': '<Enter>', 'input': '<Enter><Enter><BS><End>;<Up><Esc>"_A'},
+  \ ])
+  call urules.add('Perl {}', [
+  \   {'at': '=>.*{\%#}$', 'char': '<Enter>', 'input': '<Enter><End>,<Esc>"_O'},
   \ ])
   "\   {'at': '\%#\_s*}', 'char': '}', 'input': '<C-r>=smartinput#_leave_block(''}'')<Enter><Right>'},
   "\   {'at': '(.*{\%#})', 'char': '<Enter>', 'input': '<Enter><Enter><BS><Up><Esc>"_A'},
@@ -168,6 +173,7 @@ function! smartinput#define_default_rules()  "{{{2
   \   {'at': '^\s*\%#', 'char': '"', 'input': '"'},
   \ ])
   "}}}
+"  autocmd FileType perl call smartinput#perl_define_default_rules(urules)
 
   " ft_urule_sets_table... "{{{
   let ft_urule_sets_table = {
@@ -189,11 +195,17 @@ function! smartinput#define_default_rules()  "{{{2
   \   'csh': [
   \     urules.table[''''' as strong quote'],
   \   ],
+  \   'javascript': [
+  \     urules.table[''''' as strong quote'],
+  \     urules.table['C {}'],
+  \   ],
   \   'lisp': [
   \     urules.table['Lisp quote'],
   \   ],
   \   'perl': [
   \     urules.table[''''' as strong quote'],
+  \     urules.table['C {}'],
+  \     urules.table['Perl {}'],
   \   ],
   \   'python': [
   \     urules.table['Python string'],
@@ -226,9 +238,9 @@ function! smartinput#define_default_rules()  "{{{2
     endfor
   endfor
 
-  let overlaied_urules = {}
-  let overlaied_urules.pairs = []  " [(URule, [FileType])]
-  function! overlaied_urules.add(urule, ft)
+  let overlaid_urules = {}
+  let overlaid_urules.pairs = []  " [(URule, [FileType])]
+  function! overlaid_urules.add(urule, ft)
     for [urule, fts] in self.pairs
       if urule is a:urule
         call add(fts, a:ft)
@@ -240,11 +252,11 @@ function! smartinput#define_default_rules()  "{{{2
   for ft in filter(keys(ft_urule_sets_table), 'v:val != "*"')
     for urule_set in ft_urule_sets_table[ft]
       for urule in urule_set
-        call overlaied_urules.add(urule, ft)
+        call overlaid_urules.add(urule, ft)
       endfor
     endfor
   endfor
-  for [urule, fts] in overlaied_urules.pairs
+  for [urule, fts] in overlaid_urules.pairs
     let completed_urule = copy(urule)
     let completed_urule.filetype = fts
     call smartinput#define_rule(completed_urule)
