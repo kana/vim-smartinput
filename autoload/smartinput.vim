@@ -77,6 +77,7 @@ function! smartinput#define_default_rules()  "{{{2
   \   {'at': '()\%#', 'char': '<BS>', 'input': '<BS><BS>'},
   \   {'at': '\\\%#', 'char': '(', 'input': '('},
   \   {'at': '(\%#)', 'char': '<Enter>', 'input': '<Enter><Esc>"_O'},
+  \   {'at': '(\n\t*\%#\n\t*)', 'char': '<BS>', 'input': '<Esc>dd:left<CR>i<BS>'},
   \   {'at': '\%#\s*)', 'char': ')', 'input': '<C-r>=smartinput#_leave_block('')'')<Enter><Right>'},
   \ ])
   "\   {'at': '\%#\_s*)', 'char': ')', 'input': '<C-r>=smartinput#_leave_block('')'')<Enter><Right>'},
@@ -87,6 +88,7 @@ function! smartinput#define_default_rules()  "{{{2
   \   {'at': '\[\]\%#', 'char': '<BS>', 'input': '<BS><BS>'},
   \   {'at': '\\\%#', 'char': '[', 'input': '['},
   \   {'at': '\[\%#\]', 'char': '<Enter>', 'input': '<Enter><Esc>"_O'},
+  \   {'at': '\[\n\t*\%#\n\t*\]', 'char': '<BS>', 'input': '<Esc>dd:left<CR>i<BS>'},
   \   {'at': '\%#\s*\]', 'char': ']', 'input': '<C-r>=smartinput#_leave_block('']'')<Enter><Right>'},
   \ ])
   "\   {'at': '\%#\_s*\]', 'char': ']', 'input': '<C-r>=smartinput#_leave_block('']'')<Enter><Right>'},
@@ -96,6 +98,7 @@ function! smartinput#define_default_rules()  "{{{2
   \   {'at': '{}\%#', 'char': '<BS>', 'input': '<BS><BS>'},
   \   {'at': '\\\%#', 'char': '{', 'input': '{'},
   \   {'at': '{\%#}', 'char': '<Enter>', 'input': '<Enter><Esc>"_O'},
+  \   {'at': '{\n\t*\%#\n\t*}', 'char': '<BS>', 'input': '<Esc>dd:left<CR>i<BS>'},
   \   {'at': '\%#\s*}', 'char': '}', 'input': '<C-r>=smartinput#_leave_block(''}'')<Enter><Right>'},
   \ ])
   call urules.add('C {}', [
