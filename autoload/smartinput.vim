@@ -77,6 +77,7 @@ function! smartinput#define_default_rules()  "{{{2
   \   {'at': '()\%#', 'char': '<BS>', 'input': '<BS><BS>'},
   \   {'at': '\\\%#', 'char': '(', 'input': '('},
   \   {'at': '(\%#)', 'char': '<Enter>', 'input': '<Enter><Esc>"_O'},
+  \   {'at': '\%#\s*)', 'char': ')', 'input': '<C-r>=smartinput#_leave_block('')'')<Enter><Right>'},
   \ ])
   "\   {'at': '\%#\_s*)', 'char': ')', 'input': '<C-r>=smartinput#_leave_block('')'')<Enter><Right>'},
   "\   {'at': '(\%#)', 'char': '<Enter>', 'input': '<Enter><Enter><BS><Up><Esc>"_A'},
@@ -86,6 +87,7 @@ function! smartinput#define_default_rules()  "{{{2
   \   {'at': '\[\]\%#', 'char': '<BS>', 'input': '<BS><BS>'},
   \   {'at': '\\\%#', 'char': '[', 'input': '['},
   \   {'at': '\[\%#\]', 'char': '<Enter>', 'input': '<Enter><Esc>"_O'},
+  \   {'at': '\%#\s*\]', 'char': ']', 'input': '<C-r>=smartinput#_leave_block('']'')<Enter><Right>'},
   \ ])
   "\   {'at': '\%#\_s*\]', 'char': ']', 'input': '<C-r>=smartinput#_leave_block('']'')<Enter><Right>'},
   call urules.add('{}', [
@@ -94,15 +96,21 @@ function! smartinput#define_default_rules()  "{{{2
   \   {'at': '{}\%#', 'char': '<BS>', 'input': '<BS><BS>'},
   \   {'at': '\\\%#', 'char': '{', 'input': '{'},
   \   {'at': '{\%#}', 'char': '<Enter>', 'input': '<Enter><Esc>"_O'},
+  \   {'at': '\%#\s*}', 'char': '}', 'input': '<C-r>=smartinput#_leave_block(''}'')<Enter><Right>'},
   \ ])
   call urules.add('C {}', [
   \   {'at': '=[^>][^)]*{\%#}$', 'char': '<Enter>', 'input': '<Enter><End>;<Esc>"_O'},
+  \   {'at': '=[^>][^)]*(\%#)$', 'char': '<Enter>', 'input': '<Enter><End>;<Esc>"_O'},
+  \   {'at': '=[^>][^)]*\[\%#\]$', 'char': '<Enter>', 'input': '<Enter><End>;<Esc>"_O'},
   \   {'at': '^\_s*return .*{\%#}$', 'char': '<Enter>', 'input': '<Enter><End>;<Esc>"_O'},
-  \   {'at': '(.*{\%#})', 'char': '<Enter>', 'input': '<Enter><Enter><BS><End><Up><Esc>"_A'},
-  \   {'at': '(.*{\%#})$', 'char': '<Enter>', 'input': '<Enter><Enter><BS><End>;<Up><Esc>"_A'},
+  \   {'at': '(.*{\%#})$', 'char': '<Enter>', 'input': '<Enter><End>;<Esc>"_O'},
   \ ])
+"  \   {'at': '(.*{\%#})', 'char': '<Enter>', 'input': '<Enter><Enter><BS><End><Up><Esc>"_A'},
+"  \   {'at': '(.*{\%#})$', 'char': '<Enter>', 'input': '<Enter><Enter><BS><End>;<Up><Esc>"_A'},
   call urules.add('Perl {}', [
   \   {'at': '=>.*{\%#}$', 'char': '<Enter>', 'input': '<Enter><End>,<Esc>"_O'},
+  \   {'at': '=>.*(\%#)$', 'char': '<Enter>', 'input': '<Enter><End>,<Esc>"_O'},
+  \   {'at': '=>.*\[\%#\]$', 'char': '<Enter>', 'input': '<Enter><End>,<Esc>"_O'},
   \ ])
   "\   {'at': '\%#\_s*}', 'char': '}', 'input': '<C-r>=smartinput#_leave_block(''}'')<Enter><Right>'},
   "\   {'at': '(.*{\%#})', 'char': '<Enter>', 'input': '<Enter><Enter><BS><Up><Esc>"_A'},
