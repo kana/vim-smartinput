@@ -107,6 +107,7 @@ function! smartinput#define_default_rules()  "{{{2
   \   {'at': '=[^>][^)]*\[\%#\]$', 'char': '<Enter>', 'input': '<Enter><End>;<Esc>"_O'},
   \   {'at': '^\_s*return .*{\%#}$', 'char': '<Enter>', 'input': '<Enter><End>;<Esc>"_O'},
   \   {'at': '(.*{\%#})$', 'char': '<Enter>', 'input': '<Enter><End>;<Esc>"_O'},
+  \   {'at': '^\s*[A-Za-z_][A-Za-z0-9_]*\%#$', 'char': '(', 'input': '();<Left><Left>'},
   \ ])
 "  \   {'at': '(.*{\%#})', 'char': '<Enter>', 'input': '<Enter><Enter><BS><End><Up><Esc>"_A'},
 "  \   {'at': '(.*{\%#})$', 'char': '<Enter>', 'input': '<Enter><Enter><BS><End>;<Up><Esc>"_A'},
@@ -114,6 +115,9 @@ function! smartinput#define_default_rules()  "{{{2
   \   {'at': '=>.*{\%#}$', 'char': '<Enter>', 'input': '<Enter><End>,<Esc>"_O'},
   \   {'at': '=>.*(\%#)$', 'char': '<Enter>', 'input': '<Enter><End>,<Esc>"_O'},
   \   {'at': '=>.*\[\%#\]$', 'char': '<Enter>', 'input': '<Enter><End>,<Esc>"_O'},
+  \   {'at': '=>\%#$', 'char': '<Space>', 'input': '<Space>,<Left>'},
+  \   {'at': '^\s*my\%#$', 'char': '<Space>', 'input': '<Space>;<Left>'},
+  \   {'at': '^\s*return\%#$', 'char': '<Space>', 'input': '<Space>;<Left>'},
   \ ])
   "\   {'at': '\%#\_s*}', 'char': '}', 'input': '<C-r>=smartinput#_leave_block(''}'')<Enter><Right>'},
   "\   {'at': '(.*{\%#})', 'char': '<Enter>', 'input': '<Enter><Enter><BS><Up><Esc>"_A'},
