@@ -108,6 +108,8 @@ function! smartinput#define_default_rules()  "{{{2
   \   {'at': '^\_s*return .*{\%#}$', 'char': '<Enter>', 'input': '<Enter><End>;<Esc>"_O'},
   \   {'at': '(.*{\%#})$', 'char': '<Enter>', 'input': '<Enter><End>;<Esc>"_O'},
   \   {'at': '^\s*[A-Za-z_][A-Za-z0-9_]*\%#$', 'char': '(', 'input': '();<Left><Left>'},
+  \   {'at': '\%#[,;]', 'char': ';', 'input': '<Del>;'},
+  \   {'at': '\%#[,;]', 'char': ',', 'input': '<Del>,'},
   \ ])
 "  \   {'at': '(.*{\%#})', 'char': '<Enter>', 'input': '<Enter><Enter><BS><End><Up><Esc>"_A'},
 "  \   {'at': '(.*{\%#})$', 'char': '<Enter>', 'input': '<Enter><Enter><BS><End>;<Up><Esc>"_A'},
