@@ -118,7 +118,7 @@ function! smartinput#define_default_rules()  "{{{2
   \   {'at': '=>.*(\%#)$', 'char': '<Enter>', 'input': '<Enter><End>,<Esc>"_O'},
   \   {'at': '=>.*\[\%#\]$', 'char': '<Enter>', 'input': '<Enter><End>,<Esc>"_O'},
   \   {'at': '=>\%#$', 'char': '<Space>', 'input': '<Space>,<Left>'},
-  \   {'at': '^\s*my\%#$', 'char': '<Space>', 'input': '<Space>;<Left>'},
+  \   {'at': '=\%#$', 'char': '<Space>', 'input': '<Space>;<Left>'},
   \   {'at': '^\s*return\%#$', 'char': '<Space>', 'input': '<Space>;<Left>'},
   \ ])
   "\   {'at': '\%#\_s*}', 'char': '}', 'input': '<C-r>=smartinput#_leave_block(''}'')<Enter><Right>'},
