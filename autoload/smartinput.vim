@@ -131,6 +131,9 @@ function! smartinput#define_default_rules()  "{{{2
   \   {'at': '^\s*def\%#$', 'char': '<Space>', 'input': '<Space>:<Left>'},
   \   {'at': '\%#:$', 'char': ':', 'input': '<Right>'},
   \ ])
+  call urules.add('RapydScript blocks', [
+  \   {'at': '[^A-Za-z0-9_]def\%#$', 'char': '(', 'input': '():<Left><Left>'},
+  \ ])
   "\   {'at': '\%#\_s*}', 'char': '}', 'input': '<C-r>=smartinput#_leave_block(''}'')<Enter><Right>'},
   "\   {'at': '(.*{\%#})', 'char': '<Enter>', 'input': '<Enter><Enter><BS><Up><Esc>"_A'},
   call urules.add('''''', [
@@ -241,6 +244,7 @@ function! smartinput#define_default_rules()  "{{{2
   \   'rapydscript': [
   \     urules.table['Python blocks'],
   \     urules.table['Python string'],
+  \     urules.table['RapydScript blocks'],
   \   ],
   \   'ruby': [
   \     urules.table[''''' as strong quote'],
