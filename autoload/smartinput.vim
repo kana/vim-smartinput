@@ -101,16 +101,18 @@ function! smartinput#define_default_rules()  "{{{2
   \   {'at': '{\n\t*\%#\n\t*}', 'char': '<BS>', 'input': '<Esc>dd:left<CR>i<BS>'},
   \   {'at': '\%#\s*}', 'char': '}', 'input': '<C-r>=smartinput#_leave_block(''}'')<Enter><Right>'},
   \ ])
-  call urules.add('C blocks', [
-  \   {'at': '=[^>][^)]*{\%#}$', 'char': '<Enter>', 'input': '<Enter><End>;<Esc>"_O'},
-  \   {'at': '=[^>][^)]*(\%#)$', 'char': '<Enter>', 'input': '<Enter><End>;<Esc>"_O'},
-  \   {'at': '=[^>][^)]*\[\%#\]$', 'char': '<Enter>', 'input': '<Enter><End>;<Esc>"_O'},
+  call urules.add('Common blocks', [
   \   {'at': '=[^>][^)]*{\%#}', 'char': '<Space>', 'input': '<Space><Space><Left>'},
   \   {'at': '=[^>][^)]*(\%#)', 'char': '<Space>', 'input': '<Space><Space><Left>'},
   \   {'at': '=[^>][^)]*\[\%#\]', 'char': '<Space>', 'input': '<Space><Space><Left>'},
   \   {'at': '=[^>][^)]*{\s\%#\s}', 'char': '<BS>', 'input': '<BS><Del>'},
   \   {'at': '=[^>][^)]*(\s\%#\s)', 'char': '<BS>', 'input': '<BS><Del>'},
   \   {'at': '=[^>][^)]*\[\s\%#\s\]', 'char': '<BS>', 'input': '<BS><Del>'},
+  \ ])
+  call urules.add('C blocks', [
+  \   {'at': '=[^>][^)]*{\%#}$', 'char': '<Enter>', 'input': '<Enter><End>;<Esc>"_O'},
+  \   {'at': '=[^>][^)]*(\%#)$', 'char': '<Enter>', 'input': '<Enter><End>;<Esc>"_O'},
+  \   {'at': '=[^>][^)]*\[\%#\]$', 'char': '<Enter>', 'input': '<Enter><End>;<Esc>"_O'},
   \   {'at': '^\_s*return .*{\%#}$', 'char': '<Enter>', 'input': '<Enter><End>;<Esc>"_O'},
   \   {'at': '(.*{\%#})$', 'char': '<Enter>', 'input': '<Enter><End>;<Esc>"_O'},
   \   {'at': '^\s*[A-Za-z_][A-Za-z0-9_.]*\%#$', 'char': '(', 'input': '();<Left><Left>'},
@@ -133,6 +135,7 @@ function! smartinput#define_default_rules()  "{{{2
   \ ])
   call urules.add('RapydScript blocks', [
   \   {'at': '[^A-Za-z0-9_]def\%#$', 'char': '(', 'input': '():<Left><Left>'},
+  \   {'at': '[^A-Za-z0-9_]def\%#.\+$', 'char': '(', 'input': '(): <Left><Left><Left>'},
   \ ])
   "\   {'at': '\%#\_s*}', 'char': '}', 'input': '<C-r>=smartinput#_leave_block(''}'')<Enter><Right>'},
   "\   {'at': '(.*{\%#})', 'char': '<Enter>', 'input': '<Enter><Enter><BS><Up><Esc>"_A'},
@@ -218,6 +221,7 @@ function! smartinput#define_default_rules()  "{{{2
   \     urules.table['``'],
   \     urules.table['```'],
   \     urules.table['English'],
+  \     urules.table['Common blocks'],
   \   ],
   \   'clojure': [
   \     urules.table['Lisp quote'],
