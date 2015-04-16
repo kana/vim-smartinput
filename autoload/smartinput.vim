@@ -121,6 +121,9 @@ function! smartinput#define_default_rules()  "{{{2
   \   {'at': '=\%#$', 'char': '<Space>', 'input': '<Space>;<Left>'},
   \   {'at': '^\s*return\%#$', 'char': '<Space>', 'input': '<Space>;<Left>'},
   \ ])
+  call urules.add('JS macro', [
+  \   {'at': '^\_s*\%#', 'char': '#', 'input': '// '},
+  \ ])
 "  \   {'at': '(.*{\%#})', 'char': '<Enter>', 'input': '<Enter><Enter><BS><End><Up><Esc>"_A'},
 "  \   {'at': '(.*{\%#})$', 'char': '<Enter>', 'input': '<Enter><Enter><BS><End>;<Up><Esc>"_A'},
   call urules.add('Perl blocks', [
@@ -232,6 +235,7 @@ function! smartinput#define_default_rules()  "{{{2
   \   'javascript': [
   \     urules.table[''''' as strong quote'],
   \     urules.table['C blocks'],
+  \     urules.table['JS macro'],
   \   ],
   \   'lisp': [
   \     urules.table['Lisp quote'],
