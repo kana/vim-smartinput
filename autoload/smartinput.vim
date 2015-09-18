@@ -108,6 +108,7 @@ function! smartinput#define_default_rules()  "{{{2
   \   {'at': '=[^>][^)]*{\s\%#\s}', 'char': '<BS>', 'input': '<BS><Del>'},
   \   {'at': '=[^>][^)]*(\s\%#\s)', 'char': '<BS>', 'input': '<BS><Del>'},
   \   {'at': '=[^>][^)]*\[\s\%#\s\]', 'char': '<BS>', 'input': '<BS><Del>'},
+  \   {'at': '[A-Za-z0-9_]\%#', 'char': ',', 'input': ', '},
   \ ])
   call urules.add('C blocks', [
   \   {'at': '=[^>][^)]*{\%#}$', 'char': '<Enter>', 'input': '<Enter><End>;<Esc>"_O'},
@@ -139,6 +140,7 @@ function! smartinput#define_default_rules()  "{{{2
   call urules.add('Python blocks', [
   \   {'at': '^\s*def\%#$', 'char': '<Space>', 'input': '<Space>:<Left>'},
   \   {'at': '\%#:$', 'char': ':', 'input': '<Right>'},
+  \   {'at': '(.\+\%#)$', 'char': '<Enter>', 'input': '<Right><Enter>'},
   \ ])
   call urules.add('RapydScript blocks', [
   \   {'at': '[^A-Za-z0-9_]def\%#$', 'char': '(', 'input': '():<Left><Left>'},
