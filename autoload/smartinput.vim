@@ -145,7 +145,7 @@ function! smartinput#define_default_rules()  "{{{2
   \   {'at': '[^A-Za-z0-9_]def\%#.\+$', 'char': '(', 'input': '(): ;<Left><Left><Left><Left>'},
   \   {'at': '[^A-Za-z0-9_]def(\(.*[^,]\)\?\%#):', 'char': '<Space>', 'input': '<Right><Right><Right>'},
   \   {'at': '[^A-Za-z0-9_]def\(\s[A-Za-z0-9_$]\+\)(\(.*[^,]\)\?\%#):$', 'char': '<Enter>', 'input': '<Right><Right><Enter>'},
-  \   {'at': '[^A-Za-z0-9_]def(\(.*[^,]\)\?\%#):\s;', 'char': '<Space>', 'input': '<Right><Right><Right><BS><Del><Enter><Esc>O'},
+  \   {'at': '[^A-Za-z0-9_]def(\(.*[^,]\)\?\%#):\s;', 'char': '<Enter>', 'input': '<Right><Right><Right><BS><Del><Enter><Esc>O'},
   \   {'at': '[^A-Za-z0-9_]def(\(.*[^,]\)\?):\s\%#;', 'char': '<Enter>', 'input': '<BS><Del><Enter><Esc>O'},
   \ ])
   "\   {'at': '\%#\_s*}', 'char': '}', 'input': '<C-r>=smartinput#_leave_block(''}'')<Enter><Right>'},
