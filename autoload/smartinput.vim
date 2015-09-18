@@ -124,6 +124,10 @@ function! smartinput#define_default_rules()  "{{{2
   call urules.add('JS macro', [
   \   {'at': '^\_s*\%#', 'char': '#', 'input': '// '},
   \ ])
+"  \   {'at': '^\_s*-.*\%#', 'char': '<Enter>', 'input': '<Enter><BS><BS>-<Space>'},
+  call urules.add('markdown macro', [
+  \   {'at': '-\%#', 'char': '<Enter>', 'input': '<Enter><BS><BS>+<Space>'},
+  \ ])
 "  \   {'at': '(.*{\%#})', 'char': '<Enter>', 'input': '<Enter><Enter><BS><End><Up><Esc>"_A'},
 "  \   {'at': '(.*{\%#})$', 'char': '<Enter>', 'input': '<Enter><Enter><BS><End>;<Up><Esc>"_A'},
   call urules.add('Perl blocks', [
@@ -138,7 +142,9 @@ function! smartinput#define_default_rules()  "{{{2
   \ ])
   call urules.add('RapydScript blocks', [
   \   {'at': '[^A-Za-z0-9_]def\%#$', 'char': '(', 'input': '():<Left><Left>'},
-  \   {'at': '[^A-Za-z0-9_]def\%#.\+$', 'char': '(', 'input': '(): <Left><Left><Left>'},
+  \   {'at': '[^A-Za-z0-9_]def\%#.\+$', 'char': '(', 'input': '(): ;<Left><Left><Left><Left>'},
+  \   {'at': '[^A-Za-z0-9_]def(\(.*[^,]\)\?\%#):', 'char': '<Space>', 'input': '<Right><Right><Right>'},
+  \   {'at': '[^A-Za-z0-9_]def(\(.*[^,]\)\?):\s\%#;', 'char': '<Enter>', 'input': '<BS><Del><Enter><Esc>O'},
   \ ])
   "\   {'at': '\%#\_s*}', 'char': '}', 'input': '<C-r>=smartinput#_leave_block(''}'')<Enter><Right>'},
   "\   {'at': '(.*{\%#})', 'char': '<Enter>', 'input': '<Enter><Enter><BS><Up><Esc>"_A'},
@@ -239,6 +245,15 @@ function! smartinput#define_default_rules()  "{{{2
   \   ],
   \   'lisp': [
   \     urules.table['Lisp quote'],
+  \   ],
+  \   'vimwiki': [
+  \     urules.table['markdown macro'],
+  \   ],
+  \   'vimwiki_markdown': [
+  \     urules.table['markdown macro'],
+  \   ],
+  \   'markdown': [
+  \     urules.table['markdown macro'],
   \   ],
   \   'perl': [
   \     urules.table[''''' as strong quote'],
