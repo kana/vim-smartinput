@@ -141,7 +141,7 @@ function! smartinput#define_default_rules()  "{{{2
   call urules.add('Python blocks', [
   \   {'at': '^\s*def\%#$', 'char': '<Space>', 'input': '<Space>:<Left>'},
   \   {'at': '\%#:$', 'char': ':', 'input': '<Right>'},
-  \   {'at': '(.\+\%#)$', 'char': '<Enter>', 'input': '<Right><Enter>'},
+  \   {'at': '(.\+\%#):\?$', 'char': '<Enter>', 'input': '<Esc>o'},
   \ ])
   call urules.add('RapydScript blocks', [
   \   {'at': '[^A-Za-z0-9_]def\%#$', 'char': '(', 'input': '():<Left><Left>'},
