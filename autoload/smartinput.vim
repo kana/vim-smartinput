@@ -109,6 +109,7 @@ function! smartinput#define_default_rules()  "{{{2
   \   {'at': '=[^>][^)]*(\s\%#\s)', 'char': '<BS>', 'input': '<BS><Del>'},
   \   {'at': '=[^>][^)]*\[\s\%#\s\]', 'char': '<BS>', 'input': '<BS><Del>'},
   \   {'at': '[A-Za-z0-9_]\%#', 'char': ',', 'input': ', '},
+  \   {'at': '[A-Za-z0-9_], \%#', 'char': '<Space>', 'input': ''},
   \ ])
   call urules.add('C blocks', [
   \   {'at': '=[^>][^)]*{\%#}$', 'char': '<Enter>', 'input': '<Enter><End>;<Esc>"_O'},
