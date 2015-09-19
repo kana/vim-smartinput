@@ -141,12 +141,12 @@ function! smartinput#define_default_rules()  "{{{2
   call urules.add('Python blocks', [
   \   {'at': '^\s*def\%#$', 'char': '<Space>', 'input': '<Space>:<Left>'},
   \   {'at': '\%#:$', 'char': ':', 'input': '<Right>'},
-  \   {'at': '(.\+\%#):\?$', 'char': '<Enter>', 'input': '<Esc>o'},
+  \   {'at': '(.\+\%#[''"]\?):\?$', 'char': '<Enter>', 'input': '<Esc>o'},
   \ ])
   call urules.add('RapydScript blocks', [
   \   {'at': '[^A-Za-z0-9_]def\%#$', 'char': '(', 'input': '():<Left><Left>'},
   \   {'at': '[^A-Za-z0-9_]def\%#.\+$', 'char': '(', 'input': '(): ;<Left><Left><Left><Left>'},
-  \   {'at': '[^A-Za-z0-9_]def(\(.*[^,]\)\?\%#):', 'char': '<Space>', 'input': '<Right><Right><Right>'},
+  \   {'at': '[^A-Za-z0-9_]def(\(.*[^,]\)\?\%#):', 'char': ':', 'input': '<Right><Right><Right>'},
   \   {'at': '[^A-Za-z0-9_]def\(\s[A-Za-z0-9_$]\+\)(\(.*[^,]\)\?\%#):$', 'char': '<Enter>', 'input': '<Right><Right><Enter>'},
   \   {'at': '[^A-Za-z0-9_]def(\(.*[^,]\)\?\%#):\s;', 'char': '<Enter>', 'input': '<Right><Right><Right><BS><Del><Enter><Esc>O'},
   \   {'at': '[^A-Za-z0-9_]def(\(.*[^,]\)\?):\s\%#;', 'char': '<Enter>', 'input': '<BS><Del><Enter><Esc>O'},
