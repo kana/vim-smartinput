@@ -1,6 +1,7 @@
 " smartinput - Provide smart input assistant
 " Version: 0.0.5
-" Copyright (C) 2012 Kana Natsuno <http://whileimautomaton.net/>
+" Copyright (C) 2015 Alexander Tsepkov <atsepkov@gmail.com>
+" Originally by: (C) 2012 Kana Natsuno <http://whileimautomaton.net/>
 " License: So-called MIT/X license  {{{
 "     Permission is hereby granted, free of charge, to any person obtaining
 "     a copy of this software and associated documentation files (the
@@ -121,7 +122,7 @@ function! smartinput#define_default_rules()  "{{{2
   " 7: space after comma
   call urules.add('Basic patterns', [
   \   {'at': ',\s\%#$', 'char': '<Enter>', 'input': '<Esc>Da<Enter>'},
-  \   {'at': '[,=] \%#', 'char': '<Space>', 'input': ''},
+  \   {'at': '[,-=] \%#', 'char': '<Space>', 'input': ''},
   \   {'at': '{\%#}', 'char': '<Space>', 'input': '<Space><Space><Left>'},
   \   {'at': '(\%#)', 'char': '<Space>', 'input': '<Space><Space><Left>'},
   \   {'at': '\[\%#\]', 'char': '<Space>', 'input': '<Space><Space><Left>'},
@@ -162,14 +163,18 @@ function! smartinput#define_default_rules()  "{{{2
   \   {'at': '\%#\s*end', 'char': '<Enter>', 'input': '<Esc><Right>dtei<Enter><Esc>O'},
   \ ])
 "  Convenience macros for markdown
-"  1-5: list manipulation
+"  1-6: list manipulation
+"  7: period handling in sentences
 "  \   {'at': '^\_s*-.*\%#', 'char': '<Enter>', 'input': '<Enter><BS><BS>-<Space>'},
   call urules.add('markdown macro', [
   \   {'at': '^\s*\%#$', 'char': '-', 'input': '- '},
+  \   {'at': '^\s*- \%#$', 'char': '-', 'input': '<BS>-'},
   \   {'at': '^\s*- \%#$', 'char': ' ', 'input': ''},
-  \   {'at': '^\s*- \%#$', 'char': '-', 'input': '<Esc>>>A '},
-  \   {'at': '^\s*- \%#$', 'char': '_', 'input': '<Esc><<A '},
-  \   {'at': '-\%#', 'char': '<Enter>', 'input': '<Enter><BS><BS>+<Space>'},
+  \   {'at': '^\s*- \%#$', 'char': '<Tab>', 'input': '<Esc>>>A '},
+  \   {'at': '^\s*- \%#$', 'char': '<S-Tab>', 'input': '<Esc><<A '},
+  \   {'at': '^\s*- \%#$', 'char': '<Enter>', 'input': '<BS><BS><Enter>'},
+  \   {'at': '^[A-Za-z0-9_].*\%#$', 'char': '.', 'input': ', '},
+  \   {'at': '^[A-Za-z0-9_].*\%#$', 'char': '?', 'input': '? '},
   \ ])
 "  \   {'at': '(.*{\%#})', 'char': '<Enter>', 'input': '<Enter><Enter><BS><End><Up><Esc>"_A'},
 "  \   {'at': '(.*{\%#})$', 'char': '<Enter>', 'input': '<Enter><Enter><BS><End>;<Up><Esc>"_A'},
