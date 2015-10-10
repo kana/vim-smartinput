@@ -153,6 +153,14 @@ function! smartinput#define_default_rules()  "{{{2
   call urules.add('JS macro', [
   \   {'at': '^\_s*\%#', 'char': '#', 'input': '// '},
   \ ])
+  " since I use awesome WM and Hammerspoon, I have to use lua more often than
+  " I'd like, these help me with common macros so it's less painful
+  call urules.add('Lua macros', [
+  \   {'at': '^\_s*\%#', 'char': '#', 'input': '-- '},
+  \   {'at': '^\s*if\%#$', 'char': '<Space>', 'input': ' end<Esc>gea '},
+  \   {'at': '\sfunction\%#', 'char': '<Space>', 'input': ' () end<Esc>gea'},
+  \   {'at': '\%#\s*end', 'char': '<Enter>', 'input': '<Esc><Right>dtei<Enter><Esc>O'},
+  \ ])
 "  Convenience macros for markdown
 "  1-5: list manipulation
 "  \   {'at': '^\_s*-.*\%#', 'char': '<Enter>', 'input': '<Enter><BS><BS>-<Space>'},
@@ -177,6 +185,7 @@ function! smartinput#define_default_rules()  "{{{2
   \   {'at': '(.\+\%#[''"]\?):\?$', 'char': '<Enter>', 'input': '<Esc>o'},
   \   {'at': '^\s\+\%#', 'char': '#', 'input': '# '},
   \ ])
+  " macros for RS, mostly for def completions/expansions
   call urules.add('RapydScript blocks', [
   \   {'at': '[^A-Za-z0-9_]def\%#$', 'char': '(', 'input': '():<Left><Left>'},
   \   {'at': '[^A-Za-z0-9_]def\%#.\+$', 'char': '(', 'input': '(): ;<Left><Left><Left><Left>'},
@@ -290,6 +299,11 @@ function! smartinput#define_default_rules()  "{{{2
   \   'lisp': [
   \     urules.table['Lisp quote'],
   \   ],
+  \   'lua': [
+  \     urules.table['Lua macros'],
+  \     urules.table['Common patterns'],
+  \     urules.table['Escape patterns'],
+  \   ],
   \   'vimwiki': [
   \     urules.table['markdown macro'],
   \   ],
@@ -336,6 +350,7 @@ function! smartinput#define_default_rules()  "{{{2
   \   'vim': [
   \     urules.table[''''' as strong quote'],
   \     urules.table['Vim script comment'],
+  \     urules.table['Common patterns'],
   \   ],
   \   'zsh': [
   \     urules.table[''''' as strong quote'],
