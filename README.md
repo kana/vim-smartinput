@@ -1,5 +1,5 @@
 # SmartInput
-What does this plugin do? It auto-completes your input as you type, without asking you for permission or giving you options, Think of it like a more aggressive version of `snipmate`! "And how is that a good thing?", you may ask, Well, let me ask you this:
+What does this plugin do? It auto-completes your input as you type, without asking you for permission or giving you options. Think of it like a more aggressive version of `snipmate`! "And how is that a good thing?", you may ask. Well, let me ask you this:
 
 - Do you like when your editor auto-completes matching parentheses and brackets for you?
 - Do you like when your editor auto-indents stuff for you (assuming it gets it right)?
@@ -13,7 +13,7 @@ What does this plugin do? It auto-completes your input as you type, without aski
 - Do you want a single plugin to give vim all those type-completion features that your friend gets for free with Sublime/Atom?
 - Do you want to one-up that Sublime/Atom friend?
 
-If you answered "yes" to any of the above, you, my friend, probably want this plugin (cheesy car salesman grin),
+If you answered "yes" to any of the above, you, my friend, probably want this plugin (cheesy car salesman grin).
 
 
 # Features

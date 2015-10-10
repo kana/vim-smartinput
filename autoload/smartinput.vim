@@ -173,7 +173,7 @@ function! smartinput#define_default_rules()  "{{{2
   \   {'at': '^\s*- \%#$', 'char': '<Tab>', 'input': '<Esc>>>A '},
   \   {'at': '^\s*- \%#$', 'char': '<S-Tab>', 'input': '<Esc><<A '},
   \   {'at': '^\s*- \%#$', 'char': '<Enter>', 'input': '<BS><BS><Enter>'},
-  \   {'at': '^[A-Za-z0-9_].*\%#$', 'char': '.', 'input': ', '},
+  \   {'at': '^[A-Za-z0-9_].*\%#$', 'char': '.', 'input': '. '},
   \   {'at': '^[A-Za-z0-9_].*\%#$', 'char': '?', 'input': '? '},
   \ ])
 "  \   {'at': '(.*{\%#})', 'char': '<Enter>', 'input': '<Enter><Enter><BS><End><Up><Esc>"_A'},
