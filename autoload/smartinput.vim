@@ -72,50 +72,69 @@ function! smartinput#define_default_rules()  "{{{2
     let self.table[a:name] = a:urules
   endfunction
 "  backspacing both parentheses away typically does more harm than good
-"  \   {'at': '(\%#)', 'char': '<BS>', 'input': '<BS><Del>'},
+"  \   {'at': '()\%#', 'char': '<BS>', 'input': '<BS><BS>'},
+"  \   {'at': '\%#\s*)', 'char': ')', 'input': '<C-r>=smartinput#_leave_block('')'')<Enter><Right>'},
   call urules.add('()', [
   \   {'at': '\%#', 'char': '(', 'input': '()<Left>'},
-  \   {'at': '()\%#', 'char': '<BS>', 'input': '<BS><BS>'},
+  \   {'at': '(\%#)', 'char': '<BS>', 'input': '<BS><Del>'},
   \   {'at': '\\\%#', 'char': '(', 'input': '('},
   \   {'at': '(\%#)', 'char': '<Enter>', 'input': '<Enter><Esc>"_O'},
   \   {'at': '(\n\t*\%#\n\t*)', 'char': '<BS>', 'input': '<Esc>dd:left<CR>i<BS>'},
-  \   {'at': '\%#\s*)', 'char': ')', 'input': '<C-r>=smartinput#_leave_block('')'')<Enter><Right>'},
   \ ])
   "\   {'at': '\%#\_s*)', 'char': ')', 'input': '<C-r>=smartinput#_leave_block('')'')<Enter><Right>'},
   "\   {'at': '(\%#)', 'char': '<Enter>', 'input': '<Enter><Enter><BS><Up><Esc>"_A'},
 "  backspacing both parentheses away typically does more harm than good
-"  \   {'at': '\[\%#\]', 'char': '<BS>', 'input': '<BS><Del>'},
+"  \   {'at': '\[\]\%#', 'char': '<BS>', 'input': '<BS><BS>'},
   call urules.add('[]', [
   \   {'at': '\%#', 'char': '[', 'input': '[]<Left>'},
-  \   {'at': '\[\]\%#', 'char': '<BS>', 'input': '<BS><BS>'},
+  \   {'at': '\[\%#\]', 'char': '<BS>', 'input': '<BS><Del>'},
   \   {'at': '\\\%#', 'char': '[', 'input': '['},
   \   {'at': '\[\%#\]', 'char': '<Enter>', 'input': '<Enter><Esc>"_O'},
   \   {'at': '\[\n\t*\%#\n\t*\]', 'char': '<BS>', 'input': '<Esc>dd:left<CR>i<BS>'},
-  \   {'at': '\%#\s*\]', 'char': ']', 'input': '<C-r>=smartinput#_leave_block('']'')<Enter><Right>'},
   \   {'at': '^\s*\S\+\%#\S*,$', 'char': '<Enter>', 'input': '<Esc>o,<Left>'},
   \ ])
   "\   {'at': '\%#\_s*\]', 'char': ']', 'input': '<C-r>=smartinput#_leave_block('']'')<Enter><Right>'},
 "  backspacing both parentheses away typically does more harm than good
-"  \   {'at': '{\%#}', 'char': '<BS>', 'input': '<BS><Del>'},
+"  \   {'at': '{}\%#', 'char': '<BS>', 'input': '<BS><BS>'},
   call urules.add('{}', [
   \   {'at': '\%#', 'char': '{', 'input': '{}<Left>'},
-  \   {'at': '{}\%#', 'char': '<BS>', 'input': '<BS><BS>'},
+  \   {'at': '{\%#}', 'char': '<BS>', 'input': '<BS><Del>'},
   \   {'at': '\\\%#', 'char': '{', 'input': '{'},
   \   {'at': '{\%#}', 'char': '<Enter>', 'input': '<Enter><Esc>"_O'},
   \   {'at': '{\n\t*\%#\n\t*}', 'char': '<BS>', 'input': '<Esc>dd:left<CR>i<BS>'},
-  \   {'at': '\%#\s*}', 'char': '}', 'input': '<C-r>=smartinput#_leave_block(''}'')<Enter><Right>'},
   \ ])
-  call urules.add('Common patterns', [
-  \   {'at': '=[^>][^)]*{\%#}', 'char': '<Space>', 'input': '<Space><Space><Left>'},
-  \   {'at': '=[^>][^)]*(\%#)', 'char': '<Space>', 'input': '<Space><Space><Left>'},
-  \   {'at': '=[^>][^)]*\[\%#\]', 'char': '<Space>', 'input': '<Space><Space><Left>'},
-  \   {'at': '=[^>][^)]*{\s\%#\s}', 'char': '<BS>', 'input': '<BS><Del>'},
-  \   {'at': '=[^>][^)]*(\s\%#\s)', 'char': '<BS>', 'input': '<BS><Del>'},
-  \   {'at': '=[^>][^)]*\[\s\%#\s\]', 'char': '<BS>', 'input': '<BS><Del>'},
-  \   {'at': '[A-Za-z0-9_]\%#', 'char': ',', 'input': ', '},
-  \   {'at': '[,=] \%#', 'char': '<Space>', 'input': ''},
-  \   {'at': '^\s*[A-Za-z0-9_.$]\+\%#', 'char': '=', 'input': ' = '},
+  " Rules for escaping out of current block/string/list
+  " These are more aggressive than the original versions I removed
+  call urules.add('Escape patterns', [
+  \   {'at': '\%#[^)]*)', 'char': ')', 'input': '<C-r>=smartinput#_leave_block('')'')<Enter><Right>'},
+  \   {'at': '\%#[^\]]*\]', 'char': ']', 'input': '<C-r>=smartinput#_leave_block('']'')<Enter><Right>'},
+  \   {'at': '\%#[^}]*}', 'char': '}', 'input': '<C-r>=smartinput#_leave_block(''}'')<Enter><Right>'},
+  \   {'at': '\%#[^"]*"', 'char': '"', 'input': '<C-r>=smartinput#_leave_block(''"'')<Enter><Right>'},
+  \   {'at': '\\\%#[^"]*"', 'char': '"', 'input': '"'},
+  \   {'at': '\%#[^'']*''', 'char': '''', 'input': '<C-r>=smartinput#_leave_block('''''''')<Enter><Right>'},
+  \   {'at': '\\\%#[^'']*''', 'char': '''', 'input': ''''},
+  \ ])
+  " Basic patterns should be supported by all languages (including bash)
+  " 1: clean lagging space
+  " 2: prevent multiple spaces in a row
+  " 3-6: maintain space equilibrium
+  " 7: space after comma
+  call urules.add('Basic patterns', [
   \   {'at': ',\s\%#$', 'char': '<Enter>', 'input': '<Esc>Da<Enter>'},
+  \   {'at': '[,=] \%#', 'char': '<Space>', 'input': ''},
+  \   {'at': '{\%#}', 'char': '<Space>', 'input': '<Space><Space><Left>'},
+  \   {'at': '(\%#)', 'char': '<Space>', 'input': '<Space><Space><Left>'},
+  \   {'at': '\[\%#\]', 'char': '<Space>', 'input': '<Space><Space><Left>'},
+  \   {'at': '{\s\%#\s}', 'char': '<BS>', 'input': '<BS><Del>'},
+  \   {'at': '(\s\%#\s)', 'char': '<BS>', 'input': '<BS><Del>'},
+  \   {'at': '\[\s\%#\s\]', 'char': '<BS>', 'input': '<BS><Del>'},
+  \   {'at': '[A-Za-z0-9_]\%#', 'char': ',', 'input': ', '},
+  \ ])
+  " Common patterns should be supported by most, but may break some arcane
+  " langauges like bash
+  " 1: prettify assignment
+  call urules.add('Common patterns', [
+  \   {'at': '^\s*[A-Za-z0-9_.$]\+\%#', 'char': '=', 'input': ' = '},
   \ ])
   call urules.add('C blocks', [
   \   {'at': '=[^>][^)]*{\%#}$', 'char': '<Enter>', 'input': '<Enter><End>;<Esc>"_O'},
@@ -129,11 +148,19 @@ function! smartinput#define_default_rules()  "{{{2
   \   {'at': '=\%#$', 'char': '<Space>', 'input': '<Space>;<Left>'},
   \   {'at': '^\s*return\%#$', 'char': '<Space>', 'input': '<Space>;<Left>'},
   \ ])
+  " I tend to use Python/RapydScript more, this is to do the right thing in JS
+  " even when my muscle memory does the wrong thing
   call urules.add('JS macro', [
   \   {'at': '^\_s*\%#', 'char': '#', 'input': '// '},
   \ ])
+"  Convenience macros for markdown
+"  1-5: list manipulation
 "  \   {'at': '^\_s*-.*\%#', 'char': '<Enter>', 'input': '<Enter><BS><BS>-<Space>'},
   call urules.add('markdown macro', [
+  \   {'at': '^\s*\%#$', 'char': '-', 'input': '- '},
+  \   {'at': '^\s*- \%#$', 'char': ' ', 'input': ''},
+  \   {'at': '^\s*- \%#$', 'char': '-', 'input': '<Esc>>>A '},
+  \   {'at': '^\s*- \%#$', 'char': '_', 'input': '<Esc><<A '},
   \   {'at': '-\%#', 'char': '<Enter>', 'input': '<Enter><BS><BS>+<Space>'},
   \ ])
 "  \   {'at': '(.*{\%#})', 'char': '<Enter>', 'input': '<Enter><Enter><BS><End><Up><Esc>"_A'},
@@ -161,11 +188,11 @@ function! smartinput#define_default_rules()  "{{{2
   "\   {'at': '\%#\_s*}', 'char': '}', 'input': '<C-r>=smartinput#_leave_block(''}'')<Enter><Right>'},
   "\   {'at': '(.*{\%#})', 'char': '<Enter>', 'input': '<Enter><Enter><BS><Up><Esc>"_A'},
 "  backspacing both quotes away typically does more harm than good
-"  \   {'at': '''\%#''', 'char': '<BS>', 'input': '<BS><Del>'},
+"  \   {'at': '''''\%#', 'char': '<BS>', 'input': '<BS><BS>'},
   call urules.add('''''', [
   \   {'at': '\%#', 'char': '''', 'input': '''''<Left>'},
   \   {'at': '\%#''\ze', 'char': '''', 'input': '<Right>'},
-  \   {'at': '''''\%#', 'char': '<BS>', 'input': '<BS><BS>'},
+  \   {'at': '''\%#''', 'char': '<BS>', 'input': '<BS><Del>'},
   \   {'at': '\\\%#\ze', 'char': '''', 'input': ''''},
   \ ])
   " Though strong quote is a useful feature and it is supported in several
@@ -182,11 +209,11 @@ function! smartinput#define_default_rules()  "{{{2
   \   {'at': '''''''''''''\%#', 'char': '<BS>', 'input': '<BS><BS><BS><BS><BS><BS>'},
   \ ])
 "  backspacing both quotes away typically does more harm than good
-"  \   {'at': '"\%#"', 'char': '<BS>', 'input': '<BS><Del>'},
+"  \   {'at': '""\%#', 'char': '<BS>', 'input': '<BS><BS>'},
   call urules.add('""', [
   \   {'at': '\%#', 'char': '"', 'input': '""<Left>'},
   \   {'at': '\%#"', 'char': '"', 'input': '<Right>'},
-  \   {'at': '""\%#', 'char': '<BS>', 'input': '<BS><BS>'},
+  \   {'at': '"\%#"', 'char': '<BS>', 'input': '<BS><Del>'},
   \   {'at': '\\\%#', 'char': '"', 'input': '"'},
   \ ])
   call urules.add('"""', [
@@ -196,11 +223,11 @@ function! smartinput#define_default_rules()  "{{{2
   \   {'at': '""""""\%#', 'char': '<BS>', 'input': '<BS><BS><BS><BS><BS><BS>'},
   \ ])
 "  backspacing both quotes away typically does more harm than good
-"  \   {'at': '`\%#`', 'char': '<BS>', 'input': '<BS><Del>'},
+"  \   {'at': '``\%#', 'char': '<BS>', 'input': '<BS><BS>'},
   call urules.add('``', [
   \   {'at': '\%#', 'char': '`', 'input': '``<Left>'},
   \   {'at': '\%#`', 'char': '`', 'input': '<Right>'},
-  \   {'at': '``\%#', 'char': '<BS>', 'input': '<BS><BS>'},
+  \   {'at': '`\%#`', 'char': '<BS>', 'input': '<BS><Del>'},
   \   {'at': '\\\%#', 'char': '`', 'input': '`'},
   \ ])
   call urules.add('```', [
@@ -245,7 +272,7 @@ function! smartinput#define_default_rules()  "{{{2
   \     urules.table['``'],
   \     urules.table['```'],
   \     urules.table['English'],
-  \     urules.table['Common patterns'],
+  \     urules.table['Basic patterns'],
   \   ],
   \   'clojure': [
   \     urules.table['Lisp quote'],
@@ -257,6 +284,8 @@ function! smartinput#define_default_rules()  "{{{2
   \     urules.table[''''' as strong quote'],
   \     urules.table['C blocks'],
   \     urules.table['JS macro'],
+  \     urules.table['Common patterns'],
+  \     urules.table['Escape patterns'],
   \   ],
   \   'lisp': [
   \     urules.table['Lisp quote'],
@@ -274,18 +303,26 @@ function! smartinput#define_default_rules()  "{{{2
   \     urules.table[''''' as strong quote'],
   \     urules.table['C blocks'],
   \     urules.table['Perl blocks'],
+  \     urules.table['Common patterns'],
+  \     urules.table['Escape patterns'],
   \   ],
   \   'python': [
   \     urules.table['Python blocks'],
   \     urules.table['Python string'],
+  \     urules.table['Common patterns'],
+  \     urules.table['Escape patterns'],
   \   ],
   \   'rapydscript': [
   \     urules.table['Python blocks'],
   \     urules.table['Python string'],
   \     urules.table['RapydScript blocks'],
+  \     urules.table['Common patterns'],
+  \     urules.table['Escape patterns'],
   \   ],
   \   'ruby': [
   \     urules.table[''''' as strong quote'],
+  \     urules.table['Common patterns'],
+  \     urules.table['Escape patterns'],
   \   ],
   \   'scheme': [
   \     urules.table['Lisp quote'],
