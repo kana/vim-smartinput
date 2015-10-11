@@ -68,8 +68,8 @@ function! panacea#define_default_rules()  "{{{2
   let urules = {}
   let urules.names = []
   let urules.table = {}
-  let lcAlphabet = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z']
-  let ucAlphabet = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z']
+  let lc_alphabet = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z']
+  let uc_alphabet = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z']
   let digits = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']
   function! urules.add(name, urules)
     call add(self.names, a:name)
@@ -169,7 +169,7 @@ function! panacea#define_default_rules()  "{{{2
 "  1-6: list manipulation
 "  7-9: punctuation handling in sentences
 "  \   {'at': '^\_s*-.*\%#', 'char': '<Enter>', 'input': '<Enter><BS><BS>-<Space>'},
-  let mdRules = [
+  let md_rules = [
   \   {'at': '^\s*\%#$', 'char': '-', 'input': '- '},
   \   {'at': '^\s*- \%#$', 'char': '-', 'input': '<BS>-'},
   \   {'at': '^\s*- \%#$', 'char': ' ', 'input': ''},
@@ -180,11 +180,11 @@ function! panacea#define_default_rules()  "{{{2
   \   {'at': '^[A-Za-z0-9_].*\%#$', 'char': '?', 'input': '? '},
   \ ]
   " alphabet capitalization (lookout Clippy!)
-  for i in lcAlphabet
-      call add(mdRules, {'at': '^\%#$', 'char': i, 'input': i . '<Esc>gUwa'})
-      call add(mdRules, {'at': '[.?!] *\%#$', 'char': i, 'input': i . '<Esc>gUwa'})
+  for i in lc_alphabet
+      call add(md_rules, {'at': '^\%#$', 'char': i, 'input': i . '<Esc>gUwa'})
+      call add(md_rules, {'at': '[.?!] *\%#$', 'char': i, 'input': i . '<Esc>gUwa'})
   endfor
-  call urules.add('markdown macro', mdRules)
+  call urules.add('markdown macro', md_rules)
 "  \   {'at': '(.*{\%#})', 'char': '<Enter>', 'input': '<Enter><Enter><BS><End><Up><Esc>"_A'},
 "  \   {'at': '(.*{\%#})$', 'char': '<Enter>', 'input': '<Enter><Enter><BS><End>;<Up><Esc>"_A'},
   call urules.add('Perl blocks', [
@@ -200,7 +200,7 @@ function! panacea#define_default_rules()  "{{{2
   \   {'at': '^\s\+\%#', 'char': '#', 'input': '# '},
   \ ])
   " macros for RS, mostly for def completions/expansions
-  let rsRules = [
+  let rs_rules = [
   \   {'at': '[^A-Za-z0-9_]def\%#$', 'char': '(', 'input': '():<Left><Left>'},
   \   {'at': '[^A-Za-z0-9_]def\%#.\+$', 'char': '(', 'input': '(): ;<Left><Left><Left><Left>'},
   \   {'at': '[^A-Za-z0-9_]def(\(.*[^,]\)\?\%#):', 'char': ':', 'input': '<Right><Right><Right>'},
@@ -209,23 +209,23 @@ function! panacea#define_default_rules()  "{{{2
   \   {'at': '[^A-Za-z0-9_]def(\(.*[^,]\)\?):\s\%#;', 'char': '<Enter>', 'input': '<BS><Del><Enter><Esc>O'},
   \ ]
   " code conventions
-  for i in lcAlphabet
+  for i in lc_alphabet
 	  " capitalize class names
-      call add(rsRules, {'at': '^\s*class \%#$', 'char': i, 'input': i . '<Esc>gUwa'})
+      call add(rs_rules, {'at': '^\s*class \%#$', 'char': i, 'input': i . '<Esc>gUwa'})
   endfor
-  call urules.add('RapydScript blocks', rsRules)
+  call urules.add('RapydScript blocks', rs_rules)
   " enforce camel-case
-  let camelcaseRules = []
-  for i in lcAlphabet
-      call add(camelcaseRules, {'at': '[a-z0-9]_\%#$', 'char': i, 'input': i . '<Esc>gUwi<BS><Right>'})
+  let camelcase_rules = []
+  for i in lc_alphabet
+      call add(camelcase_rules, {'at': '[a-z0-9]_\%#$', 'char': i, 'input': i . '<Esc>gUwi<BS><Right>'})
   endfor
-  call urules.add('camelCase', camelcaseRules)
+  call urules.add('camelCase', camelcase_rules)
   " enforce snake-case
-  let snakeRules = []
-  for i in ucAlphabet
-      call add(snakeRules, {'at': '[a-z0-9]\%#$', 'char': i, 'input': '_'.i.'<Esc>guwa'})
+  let snake_rules = []
+  for i in uc_alphabet
+      call add(snake_rules, {'at': '[a-z0-9]\%#$', 'char': i, 'input': '_'.i.'<Esc>guwa'})
   endfor
-  call urules.add('snake_case', snakeRules)
+  call urules.add('snake_case', snake_rules)
   "\   {'at': '\%#\_s*}', 'char': '}', 'input': '<C-r>=panacea#_leave_block(''}'')<Enter><Right>'},
   "\   {'at': '(.*{\%#})', 'char': '<Enter>', 'input': '<Enter><Enter><BS><Up><Esc>"_A'},
 "  backspacing both quotes away typically does more harm than good
