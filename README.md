@@ -4,9 +4,9 @@ What does this plugin do? It auto-completes your input as you type, without aski
 - Do you like when your editor auto-completes matching parentheses and brackets for you?
 - Do you like when your editor auto-indents stuff for you (assuming it gets it right)?
 - Do you like when your editor automatically determines that there should be a semicolon at the end?
-- Do you like when your editor spaces things correctly for you (space after that comma before next argument)?
+- Do you like when your editor spaces things correctly for you (based on language best practices)?
 - Do you like when your editor auto-aligns things?
-- Do you like when your editor lets you quickly jump out of a block you're in?
+- Do you like when your editor lets you quickly jump out of a block you're in (without leaving insert mode)?
 - Do you like when your editor auto-completes your code patterns?
 - Do you like when your editor helps you with code conventions automatically?
 - Do you keep forgetting which language conventions ask for camelCase and which ask for snake_case?
