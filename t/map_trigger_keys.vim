@@ -1,10 +1,10 @@
-let g:smartinput_no_default_key_mappings = !0
+let g:panacea_no_default_key_mappings = !0
 
-runtime! plugin/smartinput.vim
+runtime! plugin/panacea.vim
 
-call vspec#hint({'scope': 'smartinput#scope()', 'sid': 'smartinput#sid()'})
+call vspec#hint({'scope': 'panacea#scope()', 'sid': 'panacea#sid()'})
 
-describe 'smartinput#map_trigger_keys'
+describe 'panacea#map_trigger_keys'
   before
     new
 
@@ -20,7 +20,7 @@ describe 'smartinput#map_trigger_keys'
 
     imapclear
     cmapclear
-    call smartinput#clear_rules()
+    call panacea#clear_rules()
   end
 
   after
@@ -28,7 +28,7 @@ describe 'smartinput#map_trigger_keys'
   end
 
   it 'should not map anything but "alias" ones if there is no rule'
-    call smartinput#map_trigger_keys()
+    call panacea#map_trigger_keys()
 
     Expect b:get_lhss('imap') ==# [
     \   '<C-H>',
@@ -44,12 +44,12 @@ describe 'smartinput#map_trigger_keys'
 
   it 'should not override existing key mappings if overridep is omitted'
     inoremap x  FOO
-    call smartinput#define_rule({'at': '', 'char': 'x', 'input': 'BAR',
+    call panacea#define_rule({'at': '', 'char': 'x', 'input': 'BAR',
     \                          'mode': 'i'})
     cnoremap y  foo
-    call smartinput#define_rule({'at': '', 'char': 'y', 'input': 'bar',
+    call panacea#define_rule({'at': '', 'char': 'y', 'input': 'bar',
     \                          'mode': ':'})
-    call smartinput#map_trigger_keys()
+    call panacea#map_trigger_keys()
 
     Expect b:get_lhss('imap') ==# [
     \   '<C-H>',
@@ -69,12 +69,12 @@ describe 'smartinput#map_trigger_keys'
 
   it 'should not override existing key mappings if overridep is false'
     inoremap x  FOO
-    call smartinput#define_rule({'at': '', 'char': 'x', 'input': 'BAR',
+    call panacea#define_rule({'at': '', 'char': 'x', 'input': 'BAR',
     \                          'mode': 'i'})
     cnoremap y  foo
-    call smartinput#define_rule({'at': '', 'char': 'y', 'input': 'bar',
+    call panacea#define_rule({'at': '', 'char': 'y', 'input': 'bar',
     \                          'mode': ':'})
-    call smartinput#map_trigger_keys(!!0)
+    call panacea#map_trigger_keys(!!0)
 
     Expect b:get_lhss('imap') ==# [
     \   '<C-H>',
@@ -94,12 +94,12 @@ describe 'smartinput#map_trigger_keys'
 
   it 'should override existing key mappings if overridep is true'
     inoremap x  FOO
-    call smartinput#define_rule({'at': '', 'char': 'x', 'input': 'BAR',
+    call panacea#define_rule({'at': '', 'char': 'x', 'input': 'BAR',
     \                          'mode': 'i'})
     cnoremap y  foo
-    call smartinput#define_rule({'at': '', 'char': 'y', 'input': 'bar',
+    call panacea#define_rule({'at': '', 'char': 'y', 'input': 'bar',
     \                          'mode': ':'})
-    call smartinput#map_trigger_keys(!0)
+    call panacea#map_trigger_keys(!0)
 
     Expect b:get_lhss('imap') ==# [
     \   '<C-H>',

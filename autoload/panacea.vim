@@ -1,4 +1,4 @@
-" smartinput - Provide smart input assistant
+" panacea - Provide smart input assistant
 " Version: 0.0.5
 " Copyright (C) 2015 Alexander Tsepkov <atsepkov@gmail.com>
 " Originally by: (C) 2012 Kana Natsuno <http://whileimautomaton.net/>
@@ -56,14 +56,14 @@ let s:available_nrules = []  "{{{2
 
 
 " Interface  "{{{1
-function! smartinput#clear_rules()  "{{{2
+function! panacea#clear_rules()  "{{{2
   let s:available_nrules = []
 endfunction
 
 
 
 
-function! smartinput#define_default_rules()  "{{{2
+function! panacea#define_default_rules()  "{{{2
   " urules  "{{{
   let urules = {}
   let urules.names = []
@@ -77,7 +77,7 @@ function! smartinput#define_default_rules()  "{{{2
   endfunction
 "  backspacing both parentheses away typically does more harm than good
 "  \   {'at': '()\%#', 'char': '<BS>', 'input': '<BS><BS>'},
-"  \   {'at': '\%#\s*)', 'char': ')', 'input': '<C-r>=smartinput#_leave_block('')'')<Enter><Right>'},
+"  \   {'at': '\%#\s*)', 'char': ')', 'input': '<C-r>=panacea#_leave_block('')'')<Enter><Right>'},
   call urules.add('()', [
   \   {'at': '\%#', 'char': '(', 'input': '()<Left>'},
   \   {'at': '(\%#)', 'char': '<BS>', 'input': '<BS><Del>'},
@@ -85,7 +85,7 @@ function! smartinput#define_default_rules()  "{{{2
   \   {'at': '(\%#)', 'char': '<Enter>', 'input': '<Enter><Esc>"_O'},
   \   {'at': '(\n\t*\%#\n\t*)', 'char': '<BS>', 'input': '<Esc>dd:left<CR>i<BS>'},
   \ ])
-  "\   {'at': '\%#\_s*)', 'char': ')', 'input': '<C-r>=smartinput#_leave_block('')'')<Enter><Right>'},
+  "\   {'at': '\%#\_s*)', 'char': ')', 'input': '<C-r>=panacea#_leave_block('')'')<Enter><Right>'},
   "\   {'at': '(\%#)', 'char': '<Enter>', 'input': '<Enter><Enter><BS><Up><Esc>"_A'},
 "  backspacing both parentheses away typically does more harm than good
 "  \   {'at': '\[\]\%#', 'char': '<BS>', 'input': '<BS><BS>'},
@@ -97,7 +97,7 @@ function! smartinput#define_default_rules()  "{{{2
   \   {'at': '\[\n\t*\%#\n\t*\]', 'char': '<BS>', 'input': '<Esc>dd:left<CR>i<BS>'},
   \   {'at': '^\s*\S\+\%#\S*,$', 'char': '<Enter>', 'input': '<Esc>o,<Left>'},
   \ ])
-  "\   {'at': '\%#\_s*\]', 'char': ']', 'input': '<C-r>=smartinput#_leave_block('']'')<Enter><Right>'},
+  "\   {'at': '\%#\_s*\]', 'char': ']', 'input': '<C-r>=panacea#_leave_block('']'')<Enter><Right>'},
 "  backspacing both parentheses away typically does more harm than good
 "  \   {'at': '{}\%#', 'char': '<BS>', 'input': '<BS><BS>'},
   call urules.add('{}', [
@@ -110,12 +110,12 @@ function! smartinput#define_default_rules()  "{{{2
   " Rules for escaping out of current block/string/list
   " These are more aggressive than the original versions I removed
   call urules.add('Escape patterns', [
-  \   {'at': '\%#[^)]*)', 'char': ')', 'input': '<C-r>=smartinput#_leave_block('')'')<Enter><Right>'},
-  \   {'at': '\%#[^\]]*\]', 'char': ']', 'input': '<C-r>=smartinput#_leave_block('']'')<Enter><Right>'},
-  \   {'at': '\%#[^}]*}', 'char': '}', 'input': '<C-r>=smartinput#_leave_block(''}'')<Enter><Right>'},
-  \   {'at': '\%#[^"]*"', 'char': '"', 'input': '<C-r>=smartinput#_leave_block(''"'')<Enter><Right>'},
+  \   {'at': '\%#[^)]*)', 'char': ')', 'input': '<C-r>=panacea#_leave_block('')'')<Enter><Right>'},
+  \   {'at': '\%#[^\]]*\]', 'char': ']', 'input': '<C-r>=panacea#_leave_block('']'')<Enter><Right>'},
+  \   {'at': '\%#[^}]*}', 'char': '}', 'input': '<C-r>=panacea#_leave_block(''}'')<Enter><Right>'},
+  \   {'at': '\%#[^"]*"', 'char': '"', 'input': '<C-r>=panacea#_leave_block(''"'')<Enter><Right>'},
   \   {'at': '\\\%#[^"]*"', 'char': '"', 'input': '"'},
-  \   {'at': '\%#[^'']*''', 'char': '''', 'input': '<C-r>=smartinput#_leave_block('''''''')<Enter><Right>'},
+  \   {'at': '\%#[^'']*''', 'char': '''', 'input': '<C-r>=panacea#_leave_block('''''''')<Enter><Right>'},
   \   {'at': '\\\%#[^'']*''', 'char': '''', 'input': ''''},
   \ ])
   " Basic patterns should be supported by all languages (including bash)
@@ -193,8 +193,8 @@ function! smartinput#define_default_rules()  "{{{2
   \   {'at': '=>.*\[\%#\]$', 'char': '<Enter>', 'input': '<Enter><End>,<Esc>"_O'},
   \   {'at': '=>\%#$', 'char': '<Space>', 'input': '<Space>,<Left>'},
   \ ])
+"  \   {'at': '^\s*def\%#$', 'char': '<Space>', 'input': '<Space>:<Left>'},
   call urules.add('Python blocks', [
-  \   {'at': '^\s*def\%#$', 'char': '<Space>', 'input': '<Space>:<Left>'},
   \   {'at': '\%#:$', 'char': ':', 'input': '<Right>'},
   \   {'at': '(.\+\%#[''"]\?):\?$', 'char': '<Enter>', 'input': '<Esc>o'},
   \   {'at': '^\s\+\%#', 'char': '#', 'input': '# '},
@@ -226,7 +226,7 @@ function! smartinput#define_default_rules()  "{{{2
       call add(snakeRules, {'at': '[a-z0-9]\%#$', 'char': i, 'input': '_'.i.'<Esc>guwa'})
   endfor
   call urules.add('snake_case', snakeRules)
-  "\   {'at': '\%#\_s*}', 'char': '}', 'input': '<C-r>=smartinput#_leave_block(''}'')<Enter><Right>'},
+  "\   {'at': '\%#\_s*}', 'char': '}', 'input': '<C-r>=panacea#_leave_block(''}'')<Enter><Right>'},
   "\   {'at': '(.*{\%#})', 'char': '<Enter>', 'input': '<Enter><Enter><BS><Up><Esc>"_A'},
 "  backspacing both quotes away typically does more harm than good
 "  \   {'at': '''''\%#', 'char': '<BS>', 'input': '<BS><BS>'},
@@ -298,7 +298,7 @@ function! smartinput#define_default_rules()  "{{{2
   \   {'at': '^\s*\%#', 'char': '"', 'input': '"'},
   \ ])
   "}}}
-"  autocmd FileType perl call smartinput#perl_define_default_rules(urules)
+"  autocmd FileType perl call panacea#perl_define_default_rules(urules)
 
   " ft_urule_sets_table... "{{{
   let ft_urule_sets_table = {
@@ -405,7 +405,7 @@ function! smartinput#define_default_rules()  "{{{2
 
   for urule_set in ft_urule_sets_table['*']
     for urule in urule_set
-      call smartinput#define_rule(urule)
+      call panacea#define_rule(urule)
     endfor
   endfor
 
@@ -430,7 +430,7 @@ function! smartinput#define_default_rules()  "{{{2
   for [urule, fts] in overlaid_urules.pairs
     let completed_urule = copy(urule)
     let completed_urule.filetype = fts
-    call smartinput#define_rule(completed_urule)
+    call panacea#define_rule(completed_urule)
   endfor
 
   " Add more useful rules?
@@ -448,7 +448,7 @@ function! s:_operator_pattern_from(operator_name)
   return k
 endfunction
 
-function! smartinput#_leave_block(end_char)
+function! panacea#_leave_block(end_char)
   " NB: Originally <C-o> was used to execute search(), but <C-o> in
   " Visual-block Insert acts as if <Esc>a, so visually selected lines will be
   " updated and the current mode will be shifted to Insert mode.  It means
@@ -461,7 +461,7 @@ endfunction
 
 
 
-function! smartinput#define_rule(urule)  "{{{2
+function! panacea#define_rule(urule)  "{{{2
   let nrule = s:normalize_rule(a:urule)
   call s:insert_or_replace_a_rule(s:available_nrules, nrule)
 endfunction
@@ -469,7 +469,7 @@ endfunction
 
 
 
-function! smartinput#map_to_trigger(mode, lhs, rhs_char, rhs_fallback)  "{{{2
+function! panacea#map_to_trigger(mode, lhs, rhs_char, rhs_fallback)  "{{{2
   " According to :help 'autoindent' --
   "
   " > Copy indent from current line when starting a new line
@@ -522,7 +522,7 @@ endfunction
 
 
 
-function! smartinput#map_trigger_keys(...)  "{{{2
+function! panacea#map_trigger_keys(...)  "{{{2
   let overridep = 1 <= a:0 ? a:1 : 0
 
   let d = {'i': {}, 'c': {}}
@@ -536,7 +536,7 @@ function! smartinput#map_trigger_keys(...)  "{{{2
     endif
   endfor
 
-  let M = function('smartinput#map_to_trigger')
+  let M = function('panacea#map_to_trigger')
   let map_modifier = overridep ? '' : '<unique>'
   for mode in keys(d)
     let unique_chars = keys(d[mode])
@@ -565,7 +565,7 @@ endfunction
 
 
 " Misc.  "{{{1
-function! smartinput#invoke_the_initial_setup_if_necessary()  "{{{2
+function! panacea#invoke_the_initial_setup_if_necessary()  "{{{2
   " The initial setup is invoked implicitly by :source'ing the autoload file.
   " So that this function does nothing explicitly.
 endfunction
@@ -573,14 +573,14 @@ endfunction
 
 
 
-function! smartinput#scope()  "{{{2
+function! panacea#scope()  "{{{2
   return s:
 endfunction
 
 
 
 
-function! smartinput#sid()  "{{{2
+function! panacea#sid()  "{{{2
   return maparg('<SID>', 'n')
 endfunction
 nnoremap <SID>  <SID>
@@ -760,7 +760,7 @@ endfunction
 
 
 function! s:sid_value()  "{{{2
-  return substitute(smartinput#sid(), '<SNR>', "\<SNR>", 'g')
+  return substitute(panacea#sid(), '<SNR>', "\<SNR>", 'g')
 endfunction
 
 
@@ -773,10 +773,10 @@ endfunction
 
 " The initial setup  "{{{1
 function! s:do_initial_setup()  "{{{2
-  call smartinput#define_default_rules()
+  call panacea#define_default_rules()
 
-  if !exists('g:smartinput_no_default_key_mappings')
-    call smartinput#map_trigger_keys()
+  if !exists('g:panacea_no_default_key_mappings')
+    call panacea#map_trigger_keys()
   endif
 endfunction
 

@@ -1,4 +1,4 @@
-*smartinput.txt*	Provide smart input assistant
+*panacea.txt*	Provide smart input assistant
 
 Version 0.0.5
 Script ID: ****
@@ -24,24 +24,24 @@ License: So-called MIT/X license  {{{
     SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 }}}
 
-CONTENTS					*smartinput-contents*
+CONTENTS					*panacea-contents*
 
-Introduction            |smartinput-introduction|
-Interface               |smartinput-interface|
-  Functions               |smartinput-functions|
-  Key Mappings            |smartinput-key-mappings|
-Rules                   |smartinput-rules|
-Customization           |smartinput-customization|
-Bugs                    |smartinput-bugs|
-Changelog               |smartinput-changelog|
+Introduction            |panacea-introduction|
+Interface               |panacea-interface|
+  Functions               |panacea-functions|
+  Key Mappings            |panacea-key-mappings|
+Rules                   |panacea-rules|
+Customization           |panacea-customization|
+Bugs                    |panacea-bugs|
+Changelog               |panacea-changelog|
 
 
 
 
 ==============================================================================
-INTRODUCTION					*smartinput-introduction*
+INTRODUCTION					*panacea-introduction*
 
-*smartinput* is a Vim plugin to provide smart input assistant.
+*panacea* is a Vim plugin to provide smart input assistant.
 Whenever you write a text, especially source code, you have to input and deal
 with pairs of punctuations such as (), [], {}, and so on.  This plugin
 provides various input assistants for such characters according to the current
@@ -112,32 +112,32 @@ Requirements:
 - Vim 7.3 or later
 
 Latest version:
-https://github.com/kana/vim-smartinput
+https://github.com/kana/vim-panacea
 
 Document in HTML format:
-http://vim-doc.heroku.com/view?https://github.com/kana/vim-smartinput/blob/master/doc/smartinput.txt
+http://vim-doc.heroku.com/view?https://github.com/kana/vim-panacea/blob/master/doc/panacea.txt
 
 
 
 
 ==============================================================================
-INTERFACE					*smartinput-interface*
+INTERFACE					*panacea-interface*
 
 ------------------------------------------------------------------------------
-FUNCTIONS					*smartinput-functions*
+FUNCTIONS					*panacea-functions*
 
-smartinput#clear_rules()			*smartinput#clear_rules()*
+panacea#clear_rules()			*panacea#clear_rules()*
 			Clear all defined rules.
 
-smartinput#define_default_rules()	   *smartinput#define_default_rules()*
-			Define |smartinput-default-rules|.
+panacea#define_default_rules()	   *panacea#define_default_rules()*
+			Define |panacea-default-rules|.
 
-smartinput#define_rule({rule})			*smartinput#define_rule()*
+panacea#define_rule({rule})			*panacea#define_rule()*
 			Define a rule for the smart input assistant.
-			See |smartinput-rules| for the details of {rule}.
+			See |panacea-rules| for the details of {rule}.
 
-						*smartinput#map_to_trigger()*
-smartinput#map_to_trigger({mode}, {lhs}, {rhs-char}, {rhs-fallback})
+						*panacea#map_to_trigger()*
+panacea#map_to_trigger({mode}, {lhs}, {rhs-char}, {rhs-fallback})
 			Map {lhs} to trigger the smart input assistant for
 			{rhs-char} in {mode}.  If there is no proper rule
 			for the current context, {rhs-fallback} will be
@@ -149,9 +149,9 @@ smartinput#map_to_trigger({mode}, {lhs}, {rhs-char}, {rhs-fallback})
 			{lhs} is mapped in Insert mode if {mode} is 'i'.
 			{lhs} is mapped in Command-line mode if {mode} is 'c'.
 
-			See also |smartinput-customization| for the details.
+			See also |panacea-customization| for the details.
 
-smartinput#map_trigger_keys([{overridep}])     *smartinput#map_trigger_keys()*
+panacea#map_trigger_keys([{overridep}])     *panacea#map_trigger_keys()*
 			Map keys to trigger smart input assistant according to
 			rules which are currently defined.
 			Existing key mappings are overridden if {overridep} is
@@ -161,13 +161,13 @@ smartinput#map_trigger_keys([{overridep}])     *smartinput#map_trigger_keys()*
 
 
 ------------------------------------------------------------------------------
-KEY MAPPINGS					*smartinput-key-mappings*
+KEY MAPPINGS					*panacea-key-mappings*
 
 Several characters in Insert mode and Command-line mode are mapped by default
-with |smartinput#map_to_trigger()| to trigger the smart input assistant.
-See |smartinput-default-rules| for the details.
+with |panacea#map_to_trigger()| to trigger the smart input assistant.
+See |panacea-default-rules| for the details.
 
-Set any value to *g:smartinput_no_default_key_mappings*
+Set any value to *g:panacea_no_default_key_mappings*
 if you don't want to define the default key mappings.
 
 Each default key mapping will not be defined if the {lhs} is already mapped to
@@ -178,10 +178,10 @@ you map "(" to something in your vimrc.
 
 
 ==============================================================================
-RULES						*smartinput-rules*
+RULES						*panacea-rules*
 
 ------------------------------------------------------------------------------
-RULE DEFINITION					*smartinput-rule-definition*
+RULE DEFINITION					*panacea-rule-definition*
 
 Smart input assistants are defined by "rules".  Each "rule" is represented as
 a |Dictionary| which contains the following items:
@@ -202,13 +202,13 @@ a |Dictionary| which contains the following items:
 
 "char" (string) (required)
 	Specifies a character to trigger the smart input assistant.
-	See also |smartinput-special-keys|.
+	See also |panacea-special-keys|.
 
 "input" (string) (required)
 	Specifies a result of the smart input assistant.
 	This value is used like {rhs} for |:map| commands.
 	This value is inputted instead of the "char" value.
-	See also |smartinput-special-keys|.
+	See also |panacea-special-keys|.
 
 "mode" (string) (optional)
 	Specifies the context to use the smart input assistant.
@@ -251,7 +251,7 @@ a |Dictionary| which contains the following items:
 	- The cursor position is highlighted as one of this value.
 
 	See also |group-name| for examples of available values.
-	See also |smartinput-check-syntax-highlighting|.
+	See also |panacea-check-syntax-highlighting|.
 
 	Note that only "wide" syntax items are effective.  In other words,
 	syntax items which is linked to another is not effective, and they
@@ -263,7 +263,7 @@ a |Dictionary| which contains the following items:
 
 	This specification works only for Insert mode.
 
-						*smartinput-special-keys*
+						*panacea-special-keys*
 Values of "char" and "input" are internally passed to |:map| commands.  So
 that:
 
@@ -271,7 +271,7 @@ that:
 - "|" must be written '<Bar>'.
 - "\" must be written '<Bslash>'.
 
-					*smartinput-check-syntax-highlighting*
+					*panacea-check-syntax-highlighting*
 To investigate how the character under the cursor is highlighted, use the
 following command:
 >
@@ -280,23 +280,23 @@ following command:
 
 
 ------------------------------------------------------------------------------
-DEFAULT RULES					*smartinput-default-rules*
+DEFAULT RULES					*panacea-default-rules*
 
 For convenience, there are many rules defined by default.  And it's hard to
 list and to describe each rule here, because the default rules will be often
 updated.
 
-See |smartinput-introduction| for a short digest of the default rules.
+See |panacea-introduction| for a short digest of the default rules.
 
-See the source code of |smartinput#define_default_rules()| for the details:
+See the source code of |panacea#define_default_rules()| for the details:
 - If you read this document in Vim,
-  open ../autoload/smartinput.vim (type |gf| at the file name).
+  open ../autoload/panacea.vim (type |gf| at the file name).
 - If you read this document with a Web browser, open the following:
-  https://github.com/kana/vim-smartinput/blob/master/autoload/smartinput.vim
+  https://github.com/kana/vim-panacea/blob/master/autoload/panacea.vim
 
 
 ------------------------------------------------------------------------------
-PRIORITIES					*smartinput-rule-priorities*
+PRIORITIES					*panacea-rule-priorities*
 
 Rules have priorities.  It is used to select the best rule for the smart input
 assistant.
@@ -340,7 +340,7 @@ For example:
 
 
 ------------------------------------------------------------------------------
-RULE SELECTION ALGORITHM		 *smartinput-rule-selection-algorithm*
+RULE SELECTION ALGORITHM		 *panacea-rule-selection-algorithm*
 
 Whenever you type a key in Insert mode or Command-line mode, the plugin
 selects the best rule for the current context with the following steps:
@@ -358,7 +358,7 @@ selects the best rule for the current context with the following steps:
     (m) The current mode matches to "mode" value.
 
 (2) If two or more rules are selected at the step (1),
-    select the rule with the highest |smartinput-rule-priority|.
+    select the rule with the highest |panacea-rule-priority|.
 
 (3) If two or more rules are selected at the step (2),
     select the rule with the greatest "at".
@@ -366,7 +366,7 @@ selects the best rule for the current context with the following steps:
 
 
 ------------------------------------------------------------------------------
-RULE CONVENTIONS				*smartinput-rule-conventions*
+RULE CONVENTIONS				*panacea-rule-conventions*
 
 Like |i_<BS>| and |i_CTRL-H|, there are several keys which does the same
 effects.  If you want to define rules for such keys,
@@ -379,7 +379,7 @@ For example, if you want to define rules on both |i_<BS>| and |i_CTRL-H|,
 * Define rules only for <BS>.
 * Map <C-h> to trigger rules for <BS>, with the following command:
 >
-	smartinput#map_to_trigger('<C-h>', '<BS>', '<C-h>')
+	panacea#map_to_trigger('<C-h>', '<BS>', '<C-h>')
 <
 This convention is to avoid rule duplication.  See also the following table:
 
@@ -394,26 +394,26 @@ This convention is to avoid rule duplication.  See also the following table:
 
 
 ==============================================================================
-CUSTOMIZATION					*smartinput-customization*
+CUSTOMIZATION					*panacea-customization*
 
-						*smartinput-customization-a*
-(A) To define your own |smartinput-rules| for the smart input assistant,
-    use |smartinput#define_rule()|.  See also |smartinput-default-rules| for
+						*panacea-customization-a*
+(A) To define your own |panacea-rules| for the smart input assistant,
+    use |panacea#define_rule()|.  See also |panacea-default-rules| for
     the real world examples.
 
-						*smartinput-customization-b*
-(B) If you define your own |smartinput-rules| which "char" values are
-    different from ones of |smartinput-default-rules|, you have to define
-    trigger keys for your own rules with |smartinput#map_to_trigger()| or
-    |smartinput#map_trigger_keys()|.
+						*panacea-customization-b*
+(B) If you define your own |panacea-rules| which "char" values are
+    different from ones of |panacea-default-rules|, you have to define
+    trigger keys for your own rules with |panacea#map_to_trigger()| or
+    |panacea#map_trigger_keys()|.
 
-						*smartinput-customization-c*
+						*panacea-customization-c*
 (C) Example #1: If you often write Ruby script and you want to insert "#{}"
     by typing "#" in a string literal to input string interpolation easily,
     add the following lines into your |vimrc|:
 >
-    call smartinput#map_to_trigger('i', '#', '#', '#')
-    call smartinput#define_rule({
+    call panacea#map_to_trigger('i', '#', '#', '#')
+    call panacea#define_rule({
     \   'at': '\%#',
     \   'char': '#',
     \   'input': '#{}<Left>',
@@ -421,13 +421,13 @@ CUSTOMIZATION					*smartinput-customization*
     \   'syntax': ['Constant', 'Special'],
     \ })
 <
-						*smartinput-customization-d*
+						*panacea-customization-d*
 (D) Example #2: If you often write Ruby script and you want to insert "||"
     by typing "|" to declare block-local variable easily,
     add the following lines into your |vimrc|:
 >
-    call smartinput#map_to_trigger('i', '<Bar>', '<Bar>', '<Bar>')
-    call smartinput#define_rule({
+    call panacea#map_to_trigger('i', '<Bar>', '<Bar>', '<Bar>')
+    call panacea#define_rule({
     \   'at': '\%#',
     \   'char': '<Bar>',
     \   'input': '<Bar><Bar><Left>',
@@ -439,7 +439,7 @@ CUSTOMIZATION					*smartinput-customization*
     idiom: "foo ||= bar".  So that it's better to tweak the "at" value to
     activate the rule if and only if the cursor is just after "{" or "do":
 >
-    call smartinput#define_rule({
+    call panacea#define_rule({
     \   'at': '\({\|\<do\>\)\s*\%#',
     \   'char': '<Bar>',
     \   'input': '<Bar><Bar><Left>',
@@ -450,29 +450,29 @@ CUSTOMIZATION					*smartinput-customization*
 
 
 ==============================================================================
-BUGS						*smartinput-bugs*
+BUGS						*panacea-bugs*
 
 - Still this plugin is not mature, there might be problematic behavior and
   missing features.  If you find any problem or have any suggestion, please
   give your feedback to the author via:
-  https://github.com/kana/vim-smartinput/issues
+  https://github.com/kana/vim-panacea/issues
 
-				   *smartinput-disable-completion-temporarily*
+				   *panacea-disable-completion-temporarily*
 - Though there are many default rules to support user input naturally, the
   smart input assistant is not perfect.  It sometimes completes quotes etc
   where such completion is not necessary.  In that case, use |i_CTRL-V| to
   input a character solely.  For example, type "<C-v>(" to input only "(".
 
-					    *smartinput-backspace-requirement*
+					    *panacea-backspace-requirement*
 - Several rules require that 'backspace' is set to "indent,eol,start" or 2.
 
 
 
 
 ==============================================================================
-CHANGELOG					*smartinput-changelog*
+CHANGELOG					*panacea-changelog*
 
-0.0.5	2012-04-11T21:48:41+09:00		*smartinput-changelog-0.0.5*
+0.0.5	2012-04-11T21:48:41+09:00		*panacea-changelog-0.0.5*
 	- Fix rules to leave from a (), [], or {} block.  They did not work
 	  properly with Visual-block Insert (|v_b_I|), etc.  Thanks to Dennis
 	  Sjögren for reporting the problem.
@@ -480,23 +480,23 @@ CHANGELOG					*smartinput-changelog*
 	  <Esc> had to be typed twice to return to Normal mode.  Thanks to
 	  Jonas Haag for reporting the problem.
 
-0.0.4	2012-04-07T16:26:23+09:00		*smartinput-changelog-0.0.4*
+0.0.4	2012-04-07T16:26:23+09:00		*panacea-changelog-0.0.4*
 	- Add rules for Clojure.  Thanks to Bodaniel Jeanes for the feedback.
 	- Add rules for Python-specific string literals such as r'...'.
 	  Thanks to Adrian Sampson for the initial rules and the ideas.
 	- Add examples to write custom rules.
-	  See |smartinput-customization-c| and |smartinput-customization-d|
+	  See |panacea-customization-c| and |panacea-customization-d|
 	  for the details.  Thanks to Guillaume for the feedback.
 
-0.0.3	2012-04-04T21:33:34+09:00		*smartinput-changelog-0.0.3*
+0.0.3	2012-04-04T21:33:34+09:00		*panacea-changelog-0.0.3*
 	- Revise rules for expanding {} and () blocks to indent correctly for
 	  some 'filetype's, especially for PHP.  Thanks to Jon Duell for the
 	  feedback on this problem.
 	- Add a note on how to disable completion temporarily.
-	  See |smartinput-disable-completion-temporarily| for the details.
-	- Add a note on 'backspace'.  See |smartinput-backspace-requirement|.
+	  See |panacea-disable-completion-temporarily| for the details.
+	- Add a note on 'backspace'.  See |panacea-backspace-requirement|.
 
-0.0.2	2012-04-01T16:11:14+09:00		*smartinput-changelog-0.0.2*
+0.0.2	2012-04-01T16:11:14+09:00		*panacea-changelog-0.0.2*
 	- Revise the default rules to easily leave from multiline {}, [] and
 	  () blocks.  Thanks to Curtis McEnroe for the suggestion.
 	- Revise the default rules for escaped ' and rules to leave from a ''
@@ -505,7 +505,7 @@ CHANGELOG					*smartinput-changelog*
 	  blocks, for example, Perl, Ruby, shell script and Vim script.
 	  Thanks to Andrew Ray for the suggestion.
 
-0.0.1	2012-03-30T19:38:53+09:00		*smartinput-changelog-0.0.1*
+0.0.1	2012-03-30T19:38:53+09:00		*panacea-changelog-0.0.1*
 	- Fix side effects in the default configuration.  <C-h> in
 	  Command-line mode did not update the screen immediately.
 	- Add the default rules to input triple quotes such as '''...''',
@@ -515,7 +515,7 @@ CHANGELOG					*smartinput-changelog*
 	  quoted with ".  Now " is completed only if the current context is to
 	  input string literals.
 
-0.0.0	2012-02-09T22:35:02+09:00		*smartinput-changelog-0.0.0*
+0.0.0	2012-02-09T22:35:02+09:00		*panacea-changelog-0.0.0*
 	- Initial version.
 
 
