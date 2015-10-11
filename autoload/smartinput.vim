@@ -68,6 +68,9 @@ function! smartinput#define_default_rules()  "{{{2
   let urules = {}
   let urules.names = []
   let urules.table = {}
+  let lcAlphabet = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z']
+  let ucAlphabet = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z']
+  let digits = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']
   function! urules.add(name, urules)
     call add(self.names, a:name)
     let self.table[a:name] = a:urules
@@ -164,9 +167,9 @@ function! smartinput#define_default_rules()  "{{{2
   \ ])
 "  Convenience macros for markdown
 "  1-6: list manipulation
-"  7: period handling in sentences
+"  7-9: punctuation handling in sentences
 "  \   {'at': '^\_s*-.*\%#', 'char': '<Enter>', 'input': '<Enter><BS><BS>-<Space>'},
-  call urules.add('markdown macro', [
+  let mdRules = [
   \   {'at': '^\s*\%#$', 'char': '-', 'input': '- '},
   \   {'at': '^\s*- \%#$', 'char': '-', 'input': '<BS>-'},
   \   {'at': '^\s*- \%#$', 'char': ' ', 'input': ''},
@@ -175,7 +178,13 @@ function! smartinput#define_default_rules()  "{{{2
   \   {'at': '^\s*- \%#$', 'char': '<Enter>', 'input': '<BS><BS><Enter>'},
   \   {'at': '^[A-Za-z0-9_].*\%#$', 'char': '.', 'input': '. '},
   \   {'at': '^[A-Za-z0-9_].*\%#$', 'char': '?', 'input': '? '},
-  \ ])
+  \ ]
+  " alphabet capitalization (lookout Clippy!)
+  for i in lcAlphabet
+      call add(mdRules, {'at': '^\%#$', 'char': i, 'input': i . '<Esc>gUwa'})
+      call add(mdRules, {'at': '[.?!] *\%#$', 'char': i, 'input': i . '<Esc>gUwa'})
+  endfor
+  call urules.add('markdown macro', mdRules)
 "  \   {'at': '(.*{\%#})', 'char': '<Enter>', 'input': '<Enter><Enter><BS><End><Up><Esc>"_A'},
 "  \   {'at': '(.*{\%#})$', 'char': '<Enter>', 'input': '<Enter><Enter><BS><End>;<Up><Esc>"_A'},
   call urules.add('Perl blocks', [
@@ -191,14 +200,32 @@ function! smartinput#define_default_rules()  "{{{2
   \   {'at': '^\s\+\%#', 'char': '#', 'input': '# '},
   \ ])
   " macros for RS, mostly for def completions/expansions
-  call urules.add('RapydScript blocks', [
+  let rsRules = [
   \   {'at': '[^A-Za-z0-9_]def\%#$', 'char': '(', 'input': '():<Left><Left>'},
   \   {'at': '[^A-Za-z0-9_]def\%#.\+$', 'char': '(', 'input': '(): ;<Left><Left><Left><Left>'},
   \   {'at': '[^A-Za-z0-9_]def(\(.*[^,]\)\?\%#):', 'char': ':', 'input': '<Right><Right><Right>'},
   \   {'at': '[^A-Za-z0-9_]def\(\s[A-Za-z0-9_$]\+\)(\(.*[^,]\)\?\%#):$', 'char': '<Enter>', 'input': '<Right><Right><Enter>'},
   \   {'at': '[^A-Za-z0-9_]def(\(.*[^,]\)\?\%#):\s;', 'char': '<Enter>', 'input': '<Right><Right><Right><BS><Del><Enter><Esc>O'},
   \   {'at': '[^A-Za-z0-9_]def(\(.*[^,]\)\?):\s\%#;', 'char': '<Enter>', 'input': '<BS><Del><Enter><Esc>O'},
-  \ ])
+  \ ]
+  " code conventions
+  for i in lcAlphabet
+	  " capitalize class names
+      call add(rsRules, {'at': '^\s*class \%#$', 'char': i, 'input': i . '<Esc>gUwa'})
+  endfor
+  call urules.add('RapydScript blocks', rsRules)
+  " enforce camel-case
+  let camelcaseRules = []
+  for i in lcAlphabet
+      call add(camelcaseRules, {'at': '[a-z0-9]_\%#$', 'char': i, 'input': i . '<Esc>gUwi<BS><Right>'})
+  endfor
+  call urules.add('camelCase', camelcaseRules)
+  " enforce snake-case
+  let snakeRules = []
+  for i in ucAlphabet
+      call add(snakeRules, {'at': '[a-z0-9]\%#$', 'char': i, 'input': '_'.i.'<Esc>guwa'})
+  endfor
+  call urules.add('snake_case', snakeRules)
   "\   {'at': '\%#\_s*}', 'char': '}', 'input': '<C-r>=smartinput#_leave_block(''}'')<Enter><Right>'},
   "\   {'at': '(.*{\%#})', 'char': '<Enter>', 'input': '<Enter><Enter><BS><Up><Esc>"_A'},
 "  backspacing both quotes away typically does more harm than good
@@ -294,12 +321,19 @@ function! smartinput#define_default_rules()  "{{{2
   \   'csh': [
   \     urules.table[''''' as strong quote'],
   \   ],
+  \   'java': [
+  \     urules.table['C blocks'],
+  \     urules.table['Common patterns'],
+  \     urules.table['Escape patterns'],
+  \     urules.table['camelCase'],
+  \   ],
   \   'javascript': [
   \     urules.table[''''' as strong quote'],
   \     urules.table['C blocks'],
   \     urules.table['JS macro'],
   \     urules.table['Common patterns'],
   \     urules.table['Escape patterns'],
+  \     urules.table['camelCase'],
   \   ],
   \   'lisp': [
   \     urules.table['Lisp quote'],
@@ -308,6 +342,7 @@ function! smartinput#define_default_rules()  "{{{2
   \     urules.table['Lua macros'],
   \     urules.table['Common patterns'],
   \     urules.table['Escape patterns'],
+  \     urules.table['snake_case'],
   \   ],
   \   'vimwiki': [
   \     urules.table['markdown macro'],
@@ -330,6 +365,7 @@ function! smartinput#define_default_rules()  "{{{2
   \     urules.table['Python string'],
   \     urules.table['Common patterns'],
   \     urules.table['Escape patterns'],
+  \     urules.table['snake_case'],
   \   ],
   \   'rapydscript': [
   \     urules.table['Python blocks'],
@@ -337,17 +373,20 @@ function! smartinput#define_default_rules()  "{{{2
   \     urules.table['RapydScript blocks'],
   \     urules.table['Common patterns'],
   \     urules.table['Escape patterns'],
+  \     urules.table['camelCase'],
   \   ],
   \   'ruby': [
   \     urules.table[''''' as strong quote'],
   \     urules.table['Common patterns'],
   \     urules.table['Escape patterns'],
+  \     urules.table['snake_case'],
   \   ],
   \   'scheme': [
   \     urules.table['Lisp quote'],
   \   ],
   \   'sh': [
   \     urules.table[''''' as strong quote'],
+  \     urules.table['snake_case'],
   \   ],
   \   'tcsh': [
   \     urules.table[''''' as strong quote'],
@@ -356,6 +395,7 @@ function! smartinput#define_default_rules()  "{{{2
   \     urules.table[''''' as strong quote'],
   \     urules.table['Vim script comment'],
   \     urules.table['Common patterns'],
+  \     urules.table['snake_case'],
   \   ],
   \   'zsh': [
   \     urules.table[''''' as strong quote'],

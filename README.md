@@ -9,6 +9,7 @@ What does this plugin do? It auto-completes your input as you type, without aski
 - Do you like when your editor lets you quickly jump out of a block you're in?
 - Do you like when your editor auto-completes your code patterns?
 - Do you like when your editor helps you with code conventions automatically?
+- Do you keep forgetting which language conventions ask for camelCase and which ask for snake_case?
 - Do you like when your backspace is smart enough to undo the macro you may have unintentionally triggered?
 - Do you want a single plugin to give vim all those type-completion features that your friend gets for free with Sublime/Atom?
 - Do you want to one-up that Sublime/Atom friend?
@@ -18,6 +19,7 @@ If you answered "yes" to any of the above, you, my friend, probably want this pl
 
 # Features
 - Everything `auto-pairs` plugin can do
+- snake_case vs camelCase auto-correction based on language
 - Support for most of the popular languages, with unique auto-completion macros for each (as well as some common ones)
 - Easy way to add your own macros to the plugin
 - Automatic bracket/quote/parentheses completion/pairing
