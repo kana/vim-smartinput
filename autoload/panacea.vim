@@ -395,7 +395,6 @@ function! panacea#define_default_rules()  "{{{2
   \     urules.table[''''' as strong quote'],
   \     urules.table['Vim script comment'],
   \     urules.table['Common patterns'],
-  \     urules.table['snake_case'],
   \   ],
   \   'zsh': [
   \     urules.table[''''' as strong quote'],
