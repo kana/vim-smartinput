@@ -1,4 +1,4 @@
-# SmartInput
+# Panacea
 What does this plugin do? It auto-completes your input as you type, without asking you for permission or giving you options. Think of it like a more aggressive version of `snipmate`! "And how is that a good thing?", you may ask. Well, let me ask you this:
 
 - Do you like when your editor auto-completes matching parentheses and brackets for you?
