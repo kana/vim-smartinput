@@ -1,4 +1,4 @@
-" smartinput - Provide smart input assistant
+" panacea - Provide smart input assistant
 " Version: 0.0.5
 " Copyright (C) 2012 Kana Natsuno <http://whileimautomaton.net/>
 " License: So-called MIT/X license  {{{
@@ -22,19 +22,19 @@
 "     SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 " }}}
 
-if exists('g:loaded_smartinput')
+if exists('g:loaded_panacea')
   finish
 endif
 
 
 
 
-call smartinput#invoke_the_initial_setup_if_necessary()
+call panacea#invoke_the_initial_setup_if_necessary()
 
 
 
 
-let g:loaded_smartinput = 1
+let g:loaded_panacea = 1
 
 " __END__
 " vim: foldmethod=marker

@@ -6,13 +6,13 @@
 imapclear
 cmapclear
 
-let g:smartinput_no_default_key_mappings = !0
+let g:panacea_no_default_key_mappings = !0
 
-runtime! plugin/smartinput.vim
+runtime! plugin/panacea.vim
 
-call vspec#hint({'scope': 'smartinput#scope()', 'sid': 'smartinput#sid()'})
+call vspec#hint({'scope': 'panacea#scope()', 'sid': 'panacea#sid()'})
 
-describe 'g:smartinput_no_default_key_mappings'
+describe 'g:panacea_no_default_key_mappings'
   it 'should suppress to define the default key mappings'
     redir => si
     0 verbose imap

@@ -9,9 +9,9 @@ cmapclear
 inoremap (  (((
 cnoremap <BS>  Backspace!!!
 
-runtime! plugin/smartinput.vim
+runtime! plugin/panacea.vim
 
-call vspec#hint({'scope': 'smartinput#scope()', 'sid': 'smartinput#sid()'})
+call vspec#hint({'scope': 'panacea#scope()', 'sid': 'panacea#sid()'})
 
 describe 'Start-up'
   it 'should preverse existing key mappings prior to the default key mappings'

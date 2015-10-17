@@ -1,6 +1,7 @@
-" smartinput - Provide smart input assistant
+" panacea - Provide smart input assistant
 " Version: 0.0.5
-" Copyright (C) 2012 Kana Natsuno <http://whileimautomaton.net/>
+" Copyright (C) 2015 Alexander Tsepkov <atsepkov@gmail.com>
+" Originally by: (C) 2012 Kana Natsuno <http://whileimautomaton.net/>
 " License: So-called MIT/X license  {{{
 "     Permission is hereby granted, free of charge, to any person obtaining
 "     a copy of this software and associated documentation files (the
@@ -55,50 +56,184 @@ let s:available_nrules = []  "{{{2
 
 
 " Interface  "{{{1
-function! smartinput#clear_rules()  "{{{2
+function! panacea#clear_rules()  "{{{2
   let s:available_nrules = []
 endfunction
 
 
 
 
-function! smartinput#define_default_rules()  "{{{2
+function! panacea#define_default_rules()  "{{{2
   " urules  "{{{
   let urules = {}
   let urules.names = []
   let urules.table = {}
+  let lc_alphabet = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z']
+  let uc_alphabet = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z']
+  let digits = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']
   function! urules.add(name, urules)
     call add(self.names, a:name)
     let self.table[a:name] = a:urules
   endfunction
+"  backspacing both parentheses away typically does more harm than good
+"  \   {'at': '()\%#', 'char': '<BS>', 'input': '<BS><BS>'},
+"  \   {'at': '\%#\s*)', 'char': ')', 'input': '<C-r>=panacea#_leave_block('')'')<Enter><Right>'},
   call urules.add('()', [
   \   {'at': '\%#', 'char': '(', 'input': '()<Left>'},
-  \   {'at': '\%#\_s*)', 'char': ')', 'input': '<C-r>=smartinput#_leave_block('')'')<Enter><Right>'},
   \   {'at': '(\%#)', 'char': '<BS>', 'input': '<BS><Del>'},
-  \   {'at': '()\%#', 'char': '<BS>', 'input': '<BS><BS>'},
   \   {'at': '\\\%#', 'char': '(', 'input': '('},
-  \   {'at': '(\%#)', 'char': '<Enter>', 'input': '<Enter><Enter><Up><Esc>"_S'},
+  \   {'at': '(\%#)', 'char': '<Enter>', 'input': '<Enter><Esc>"_O'},
+  \   {'at': '(\n\t*\%#\n\t*)', 'char': '<BS>', 'input': '<Esc>dd:left<CR>i<BS>'},
   \ ])
+  "\   {'at': '\%#\_s*)', 'char': ')', 'input': '<C-r>=panacea#_leave_block('')'')<Enter><Right>'},
+  "\   {'at': '(\%#)', 'char': '<Enter>', 'input': '<Enter><Enter><BS><Up><Esc>"_A'},
+"  backspacing both parentheses away typically does more harm than good
+"  \   {'at': '\[\]\%#', 'char': '<BS>', 'input': '<BS><BS>'},
   call urules.add('[]', [
   \   {'at': '\%#', 'char': '[', 'input': '[]<Left>'},
-  \   {'at': '\%#\_s*\]', 'char': ']', 'input': '<C-r>=smartinput#_leave_block('']'')<Enter><Right>'},
   \   {'at': '\[\%#\]', 'char': '<BS>', 'input': '<BS><Del>'},
-  \   {'at': '\[\]\%#', 'char': '<BS>', 'input': '<BS><BS>'},
   \   {'at': '\\\%#', 'char': '[', 'input': '['},
+  \   {'at': '\[\%#\]', 'char': '<Enter>', 'input': '<Enter><Esc>"_O'},
+  \   {'at': '\[\n\t*\%#\n\t*\]', 'char': '<BS>', 'input': '<Esc>dd:left<CR>i<BS>'},
+  \   {'at': '^\s*\S\+\%#\S*,$', 'char': '<Enter>', 'input': '<Esc>o,<Left>'},
   \ ])
+  "\   {'at': '\%#\_s*\]', 'char': ']', 'input': '<C-r>=panacea#_leave_block('']'')<Enter><Right>'},
+"  backspacing both parentheses away typically does more harm than good
+"  \   {'at': '{}\%#', 'char': '<BS>', 'input': '<BS><BS>'},
   call urules.add('{}', [
   \   {'at': '\%#', 'char': '{', 'input': '{}<Left>'},
-  \   {'at': '\%#\_s*}', 'char': '}', 'input': '<C-r>=smartinput#_leave_block(''}'')<Enter><Right>'},
   \   {'at': '{\%#}', 'char': '<BS>', 'input': '<BS><Del>'},
-  \   {'at': '{}\%#', 'char': '<BS>', 'input': '<BS><BS>'},
   \   {'at': '\\\%#', 'char': '{', 'input': '{'},
-  \   {'at': '{\%#}', 'char': '<Enter>', 'input': '<Enter><Enter><Up><Esc>"_S'},
+  \   {'at': '{\%#}', 'char': '<Enter>', 'input': '<Enter><Esc>"_O'},
+  \   {'at': '{\n\t*\%#\n\t*}', 'char': '<BS>', 'input': '<Esc>dd:left<CR>i<BS>'},
   \ ])
+  " Rules for escaping out of current block/string/list
+  " These are more aggressive than the original versions I removed
+  call urules.add('Escape patterns', [
+  \   {'at': '\%#[^)]*)', 'char': ')', 'input': '<C-r>=panacea#_leave_block('')'')<Enter><Right>'},
+  \   {'at': '\%#[^\]]*\]', 'char': ']', 'input': '<C-r>=panacea#_leave_block('']'')<Enter><Right>'},
+  \   {'at': '\%#[^}]*}', 'char': '}', 'input': '<C-r>=panacea#_leave_block(''}'')<Enter><Right>'},
+  \   {'at': '\%#[^"]*"', 'char': '"', 'input': '<C-r>=panacea#_leave_block(''"'')<Enter><Right>'},
+  \   {'at': '\\\%#[^"]*"', 'char': '"', 'input': '"'},
+  \   {'at': '\%#[^'']*''', 'char': '''', 'input': '<C-r>=panacea#_leave_block('''''''')<Enter><Right>'},
+  \   {'at': '\\\%#[^'']*''', 'char': '''', 'input': ''''},
+  \ ])
+  " Basic patterns should be supported by all languages (including bash)
+  " 1: clean lagging space
+  " 2: prevent multiple spaces in a row
+  " 3-6: maintain space equilibrium
+  " 7: space after comma
+  call urules.add('Basic patterns', [
+  \   {'at': ',\s\%#$', 'char': '<Enter>', 'input': '<Esc>Da<Enter>'},
+  \   {'at': '[,-=] \%#', 'char': '<Space>', 'input': ''},
+  \   {'at': '{\%#}', 'char': '<Space>', 'input': '<Space><Space><Left>'},
+  \   {'at': '(\%#)', 'char': '<Space>', 'input': '<Space><Space><Left>'},
+  \   {'at': '\[\%#\]', 'char': '<Space>', 'input': '<Space><Space><Left>'},
+  \   {'at': '{\s\%#\s}', 'char': '<BS>', 'input': '<BS><Del>'},
+  \   {'at': '(\s\%#\s)', 'char': '<BS>', 'input': '<BS><Del>'},
+  \   {'at': '\[\s\%#\s\]', 'char': '<BS>', 'input': '<BS><Del>'},
+  \   {'at': '[A-Za-z0-9_]\%#', 'char': ',', 'input': ', '},
+  \ ])
+  " Common patterns should be supported by most, but may break some arcane
+  " langauges like bash
+  " 1: prettify assignment
+  call urules.add('Common patterns', [
+  \   {'at': '^\s*[A-Za-z0-9_.$]\+\%#', 'char': '=', 'input': ' = '},
+  \ ])
+  call urules.add('C blocks', [
+  \   {'at': '=[^>][^)]*{\%#}$', 'char': '<Enter>', 'input': '<Enter><End>;<Esc>"_O'},
+  \   {'at': '=[^>][^)]*(\%#)$', 'char': '<Enter>', 'input': '<Enter><End>;<Esc>"_O'},
+  \   {'at': '=[^>][^)]*\[\%#\]$', 'char': '<Enter>', 'input': '<Enter><End>;<Esc>"_O'},
+  \   {'at': '^\_s*return .*{\%#}$', 'char': '<Enter>', 'input': '<Enter><End>;<Esc>"_O'},
+  \   {'at': '(.*{\%#})$', 'char': '<Enter>', 'input': '<Enter><End>;<Esc>"_O'},
+  \   {'at': '^\s*[A-Za-z_][A-Za-z0-9_.]*\%#$', 'char': '(', 'input': '();<Left><Left>'},
+  \   {'at': '\%#[,;]', 'char': ';', 'input': '<Del>;'},
+  \   {'at': '\%#[,;]', 'char': ',', 'input': '<Del>,'},
+  \   {'at': '=\%#$', 'char': '<Space>', 'input': '<Space>;<Left>'},
+  \   {'at': '^\s*return\%#$', 'char': '<Space>', 'input': '<Space>;<Left>'},
+  \ ])
+  " I tend to use Python/RapydScript more, this is to do the right thing in JS
+  " even when my muscle memory does the wrong thing
+  call urules.add('JS macro', [
+  \   {'at': '^\_s*\%#', 'char': '#', 'input': '// '},
+  \ ])
+  " since I use awesome WM and Hammerspoon, I have to use lua more often than
+  " I'd like, these help me with common macros so it's less painful
+  call urules.add('Lua macros', [
+  \   {'at': '^\_s*\%#', 'char': '#', 'input': '-- '},
+  \   {'at': '^\s*if\%#$', 'char': '<Space>', 'input': ' end<Esc>gea '},
+  \   {'at': '\sfunction\%#', 'char': '<Space>', 'input': ' () end<Esc>gea'},
+  \   {'at': '\%#\s*end', 'char': '<Enter>', 'input': '<Esc><Right>dtei<Enter><Esc>O'},
+  \ ])
+"  Convenience macros for markdown
+"  1-6: list manipulation
+"  7-9: punctuation handling in sentences
+"  \   {'at': '^\_s*-.*\%#', 'char': '<Enter>', 'input': '<Enter><BS><BS>-<Space>'},
+  let md_rules = [
+  \   {'at': '^\s*\%#$', 'char': '-', 'input': '- '},
+  \   {'at': '^\s*- \%#$', 'char': '-', 'input': '<BS>-'},
+  \   {'at': '^\s*- \%#$', 'char': ' ', 'input': ''},
+  \   {'at': '^\s*- \%#$', 'char': '<Tab>', 'input': '<Esc>>>A '},
+  \   {'at': '^\s*- \%#$', 'char': '<S-Tab>', 'input': '<Esc><<A '},
+  \   {'at': '^\s*- \%#$', 'char': '<Enter>', 'input': '<BS><BS><Enter>'},
+  \   {'at': '^[A-Za-z0-9_].*\%#$', 'char': '.', 'input': '. '},
+  \   {'at': '^[A-Za-z0-9_].*\%#$', 'char': '?', 'input': '? '},
+  \ ]
+  " alphabet capitalization (lookout Clippy!)
+  for i in lc_alphabet
+      call add(md_rules, {'at': '^\%#$', 'char': i, 'input': i . '<Esc>gUwa'})
+      call add(md_rules, {'at': '[.?!] *\%#$', 'char': i, 'input': i . '<Esc>gUwa'})
+  endfor
+  call urules.add('markdown macro', md_rules)
+"  \   {'at': '(.*{\%#})', 'char': '<Enter>', 'input': '<Enter><Enter><BS><End><Up><Esc>"_A'},
+"  \   {'at': '(.*{\%#})$', 'char': '<Enter>', 'input': '<Enter><Enter><BS><End>;<Up><Esc>"_A'},
+  call urules.add('Perl blocks', [
+  \   {'at': '=>.*{\%#}$', 'char': '<Enter>', 'input': '<Enter><End>,<Esc>"_O'},
+  \   {'at': '=>.*(\%#)$', 'char': '<Enter>', 'input': '<Enter><End>,<Esc>"_O'},
+  \   {'at': '=>.*\[\%#\]$', 'char': '<Enter>', 'input': '<Enter><End>,<Esc>"_O'},
+  \   {'at': '=>\%#$', 'char': '<Space>', 'input': '<Space>,<Left>'},
+  \ ])
+"  \   {'at': '^\s*def\%#$', 'char': '<Space>', 'input': '<Space>:<Left>'},
+  call urules.add('Python blocks', [
+  \   {'at': '\%#:$', 'char': ':', 'input': '<Right>'},
+  \   {'at': '(.\+\%#[''"]\?):\?$', 'char': '<Enter>', 'input': '<Esc>o'},
+  \   {'at': '^\s\+\%#', 'char': '#', 'input': '# '},
+  \ ])
+  " macros for RS, mostly for def completions/expansions
+  let rs_rules = [
+  \   {'at': '[^A-Za-z0-9_]def\%#$', 'char': '(', 'input': '():<Left><Left>'},
+  \   {'at': '[^A-Za-z0-9_]def\%#.\+$', 'char': '(', 'input': '(): ;<Left><Left><Left><Left>'},
+  \   {'at': '[^A-Za-z0-9_]def(\(.*[^,]\)\?\%#):', 'char': ':', 'input': '<Right><Right><Right>'},
+  \   {'at': '[^A-Za-z0-9_]def\(\s[A-Za-z0-9_$]\+\)(\(.*[^,]\)\?\%#):$', 'char': '<Enter>', 'input': '<Right><Right><Enter>'},
+  \   {'at': '[^A-Za-z0-9_]def(\(.*[^,]\)\?\%#):\s;', 'char': '<Enter>', 'input': '<Right><Right><Right><BS><Del><Enter><Esc>O'},
+  \   {'at': '[^A-Za-z0-9_]def(\(.*[^,]\)\?):\s\%#;', 'char': '<Enter>', 'input': '<BS><Del><Enter><Esc>O'},
+  \ ]
+  " code conventions
+  for i in lc_alphabet
+	  " capitalize class names
+      call add(rs_rules, {'at': '^\s*class \%#$', 'char': i, 'input': i . '<Esc>gUwa'})
+  endfor
+  call urules.add('RapydScript blocks', rs_rules)
+  " enforce camel-case
+  let camelcase_rules = []
+  for i in lc_alphabet
+      call add(camelcase_rules, {'at': '[a-z0-9]_\%#$', 'char': i, 'input': i . '<Esc>gUwi<BS><Right>'})
+  endfor
+  call urules.add('camelCase', camelcase_rules)
+  " enforce snake-case
+  let snake_rules = []
+  for i in uc_alphabet
+      call add(snake_rules, {'at': '[a-z0-9]\%#$', 'char': i, 'input': '_'.i.'<Esc>guwa'})
+  endfor
+  call urules.add('snake_case', snake_rules)
+  "\   {'at': '\%#\_s*}', 'char': '}', 'input': '<C-r>=panacea#_leave_block(''}'')<Enter><Right>'},
+  "\   {'at': '(.*{\%#})', 'char': '<Enter>', 'input': '<Enter><Enter><BS><Up><Esc>"_A'},
+"  backspacing both quotes away typically does more harm than good
+"  \   {'at': '''''\%#', 'char': '<BS>', 'input': '<BS><BS>'},
   call urules.add('''''', [
   \   {'at': '\%#', 'char': '''', 'input': '''''<Left>'},
   \   {'at': '\%#''\ze', 'char': '''', 'input': '<Right>'},
   \   {'at': '''\%#''', 'char': '<BS>', 'input': '<BS><Del>'},
-  \   {'at': '''''\%#', 'char': '<BS>', 'input': '<BS><BS>'},
   \   {'at': '\\\%#\ze', 'char': '''', 'input': ''''},
   \ ])
   " Though strong quote is a useful feature and it is supported in several
@@ -114,11 +249,12 @@ function! smartinput#define_default_rules()  "{{{2
   \   {'at': '''''''\%#''''''', 'char': '<BS>', 'input': '<BS><BS><BS><Del><Del><Del>'},
   \   {'at': '''''''''''''\%#', 'char': '<BS>', 'input': '<BS><BS><BS><BS><BS><BS>'},
   \ ])
+"  backspacing both quotes away typically does more harm than good
+"  \   {'at': '""\%#', 'char': '<BS>', 'input': '<BS><BS>'},
   call urules.add('""', [
   \   {'at': '\%#', 'char': '"', 'input': '""<Left>'},
   \   {'at': '\%#"', 'char': '"', 'input': '<Right>'},
   \   {'at': '"\%#"', 'char': '<BS>', 'input': '<BS><Del>'},
-  \   {'at': '""\%#', 'char': '<BS>', 'input': '<BS><BS>'},
   \   {'at': '\\\%#', 'char': '"', 'input': '"'},
   \ ])
   call urules.add('"""', [
@@ -127,11 +263,12 @@ function! smartinput#define_default_rules()  "{{{2
   \   {'at': '"""\%#"""', 'char': '<BS>', 'input': '<BS><BS><BS><Del><Del><Del>'},
   \   {'at': '""""""\%#', 'char': '<BS>', 'input': '<BS><BS><BS><BS><BS><BS>'},
   \ ])
+"  backspacing both quotes away typically does more harm than good
+"  \   {'at': '``\%#', 'char': '<BS>', 'input': '<BS><BS>'},
   call urules.add('``', [
   \   {'at': '\%#', 'char': '`', 'input': '``<Left>'},
   \   {'at': '\%#`', 'char': '`', 'input': '<Right>'},
   \   {'at': '`\%#`', 'char': '<BS>', 'input': '<BS><Del>'},
-  \   {'at': '``\%#', 'char': '<BS>', 'input': '<BS><BS>'},
   \   {'at': '\\\%#', 'char': '`', 'input': '`'},
   \ ])
   call urules.add('```', [
@@ -161,6 +298,7 @@ function! smartinput#define_default_rules()  "{{{2
   \   {'at': '^\s*\%#', 'char': '"', 'input': '"'},
   \ ])
   "}}}
+"  autocmd FileType perl call panacea#perl_define_default_rules(urules)
 
   " ft_urule_sets_table... "{{{
   let ft_urule_sets_table = {
@@ -175,6 +313,7 @@ function! smartinput#define_default_rules()  "{{{2
   \     urules.table['``'],
   \     urules.table['```'],
   \     urules.table['English'],
+  \     urules.table['Basic patterns'],
   \   ],
   \   'clojure': [
   \     urules.table['Lisp quote'],
@@ -182,23 +321,72 @@ function! smartinput#define_default_rules()  "{{{2
   \   'csh': [
   \     urules.table[''''' as strong quote'],
   \   ],
+  \   'java': [
+  \     urules.table['C blocks'],
+  \     urules.table['Common patterns'],
+  \     urules.table['Escape patterns'],
+  \     urules.table['camelCase'],
+  \   ],
+  \   'javascript': [
+  \     urules.table[''''' as strong quote'],
+  \     urules.table['C blocks'],
+  \     urules.table['JS macro'],
+  \     urules.table['Common patterns'],
+  \     urules.table['Escape patterns'],
+  \     urules.table['camelCase'],
+  \   ],
   \   'lisp': [
   \     urules.table['Lisp quote'],
   \   ],
+  \   'lua': [
+  \     urules.table['Lua macros'],
+  \     urules.table['Common patterns'],
+  \     urules.table['Escape patterns'],
+  \     urules.table['snake_case'],
+  \   ],
+  \   'vimwiki': [
+  \     urules.table['markdown macro'],
+  \   ],
+  \   'vimwiki_markdown': [
+  \     urules.table['markdown macro'],
+  \   ],
+  \   'markdown': [
+  \     urules.table['markdown macro'],
+  \   ],
   \   'perl': [
   \     urules.table[''''' as strong quote'],
+  \     urules.table['C blocks'],
+  \     urules.table['Perl blocks'],
+  \     urules.table['Common patterns'],
+  \     urules.table['Escape patterns'],
   \   ],
   \   'python': [
+  \     urules.table['Python blocks'],
   \     urules.table['Python string'],
+  \     urules.table['Common patterns'],
+  \     urules.table['Escape patterns'],
+  \     urules.table['snake_case'],
+  \   ],
+  \   'rapydscript': [
+  \     urules.table['Python blocks'],
+  \     urules.table['Python string'],
+  \     urules.table['RapydScript blocks'],
+  \     urules.table['Common patterns'],
+  \     urules.table['Escape patterns'],
+  \     urules.table['camelCase'],
   \   ],
   \   'ruby': [
   \     urules.table[''''' as strong quote'],
+  \     urules.table['Common patterns'],
+  \     urules.table['Escape patterns'],
+  \     urules.table['snake_case'],
   \   ],
   \   'scheme': [
   \     urules.table['Lisp quote'],
   \   ],
   \   'sh': [
   \     urules.table[''''' as strong quote'],
+  \     urules.table['snake_case'],
   \   ],
   \   'tcsh': [
   \     urules.table[''''' as strong quote'],
@@ -206,6 +394,7 @@ function! smartinput#define_default_rules()  "{{{2
   \   'vim': [
   \     urules.table[''''' as strong quote'],
   \     urules.table['Vim script comment'],
+  \     urules.table['Common patterns'],
   \   ],
   \   'zsh': [
   \     urules.table[''''' as strong quote'],
@@ -215,13 +404,13 @@ function! smartinput#define_default_rules()  "{{{2
 
   for urule_set in ft_urule_sets_table['*']
     for urule in urule_set
-      call smartinput#define_rule(urule)
+      call panacea#define_rule(urule)
     endfor
   endfor
 
-  let overlaied_urules = {}
-  let overlaied_urules.pairs = []  " [(URule, [FileType])]
-  function! overlaied_urules.add(urule, ft)
+  let overlaid_urules = {}
+  let overlaid_urules.pairs = []  " [(URule, [FileType])]
+  function! overlaid_urules.add(urule, ft)
     for [urule, fts] in self.pairs
       if urule is a:urule
         call add(fts, a:ft)
@@ -233,14 +422,14 @@ function! smartinput#define_default_rules()  "{{{2
   for ft in filter(keys(ft_urule_sets_table), 'v:val != "*"')
     for urule_set in ft_urule_sets_table[ft]
       for urule in urule_set
-        call overlaied_urules.add(urule, ft)
+        call overlaid_urules.add(urule, ft)
       endfor
     endfor
   endfor
-  for [urule, fts] in overlaied_urules.pairs
+  for [urule, fts] in overlaid_urules.pairs
     let completed_urule = copy(urule)
     let completed_urule.filetype = fts
-    call smartinput#define_rule(completed_urule)
+    call panacea#define_rule(completed_urule)
   endfor
 
   " Add more useful rules?
@@ -258,7 +447,7 @@ function! s:_operator_pattern_from(operator_name)
   return k
 endfunction
 
-function! smartinput#_leave_block(end_char)
+function! panacea#_leave_block(end_char)
   " NB: Originally <C-o> was used to execute search(), but <C-o> in
   " Visual-block Insert acts as if <Esc>a, so visually selected lines will be
   " updated and the current mode will be shifted to Insert mode.  It means
@@ -271,7 +460,7 @@ endfunction
 
 
 
-function! smartinput#define_rule(urule)  "{{{2
+function! panacea#define_rule(urule)  "{{{2
   let nrule = s:normalize_rule(a:urule)
   call s:insert_or_replace_a_rule(s:available_nrules, nrule)
 endfunction
@@ -279,7 +468,7 @@ endfunction
 
 
 
-function! smartinput#map_to_trigger(mode, lhs, rhs_char, rhs_fallback)  "{{{2
+function! panacea#map_to_trigger(mode, lhs, rhs_char, rhs_fallback)  "{{{2
   " According to :help 'autoindent' --
   "
   " > Copy indent from current line when starting a new line
@@ -332,7 +521,7 @@ endfunction
 
 
 
-function! smartinput#map_trigger_keys(...)  "{{{2
+function! panacea#map_trigger_keys(...)  "{{{2
   let overridep = 1 <= a:0 ? a:1 : 0
 
   let d = {'i': {}, 'c': {}}
@@ -346,7 +535,7 @@ function! smartinput#map_trigger_keys(...)  "{{{2
     endif
   endfor
 
-  let M = function('smartinput#map_to_trigger')
+  let M = function('panacea#map_to_trigger')
   let map_modifier = overridep ? '' : '<unique>'
   for mode in keys(d)
     let unique_chars = keys(d[mode])
@@ -375,7 +564,7 @@ endfunction
 
 
 " Misc.  "{{{1
-function! smartinput#invoke_the_initial_setup_if_necessary()  "{{{2
+function! panacea#invoke_the_initial_setup_if_necessary()  "{{{2
   " The initial setup is invoked implicitly by :source'ing the autoload file.
   " So that this function does nothing explicitly.
 endfunction
@@ -383,14 +572,14 @@ endfunction
 
 
 
-function! smartinput#scope()  "{{{2
+function! panacea#scope()  "{{{2
   return s:
 endfunction
 
 
 
 
-function! smartinput#sid()  "{{{2
+function! panacea#sid()  "{{{2
   return maparg('<SID>', 'n')
 endfunction
 nnoremap <SID>  <SID>
@@ -451,6 +640,11 @@ let s:UNTYPABLE_CHAR = "\x01"  " FIXME: Use a more proper value.
 
 
 function! s:find_the_most_proper_rule_in_insert_mode(nrules, char)  "{{{2
+
+  if exists('g:panacea_avoid_autocomplete_collisions') && pumvisible() && g:panacea_avoid_autocomplete_collisions == a:char
+    return 0
+  endif
+
   " FIXME: Optimize for speed if necessary.
   let syntax_names = map(synstack(line('.'), col('.')),
   \                      'synIDattr(synIDtrans(v:val), "name")')
@@ -570,7 +764,7 @@ endfunction
 
 
 function! s:sid_value()  "{{{2
-  return substitute(smartinput#sid(), '<SNR>', "\<SNR>", 'g')
+  return substitute(panacea#sid(), '<SNR>', "\<SNR>", 'g')
 endfunction
 
 
@@ -583,10 +777,10 @@ endfunction
 
 " The initial setup  "{{{1
 function! s:do_initial_setup()  "{{{2
-  call smartinput#define_default_rules()
+  call panacea#define_default_rules()
 
-  if !exists('g:smartinput_no_default_key_mappings')
-    call smartinput#map_trigger_keys()
+  if !exists('g:panacea_no_default_key_mappings')
+    call panacea#map_trigger_keys()
   endif
 endfunction
 

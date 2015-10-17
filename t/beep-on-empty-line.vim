@@ -1,20 +1,20 @@
-runtime! plugin/smartinput.vim
+runtime! plugin/panacea.vim
 
-call vspec#hint({'scope': 'smartinput#scope()', 'sid': 'smartinput#sid()'})
+call vspec#hint({'scope': 'panacea#scope()', 'sid': 'panacea#sid()'})
 set backspace=indent,eol,start
 
-describe 'smartinput#map_to_trigger'
+describe 'panacea#map_to_trigger'
   before
     SaveContext
     new
 
     " If the cursor will be moved to an empty line...
-    call smartinput#define_rule({
+    call panacea#define_rule({
     \   'at': '(\%#)',
     \   'char': '<Return>',
     \   'input': '<Return>X<Return>)<BS><Up><C-o>$<BS>',
     \ })
-    call smartinput#map_to_trigger('i', '<buffer> <Return>', '<Return>')
+    call panacea#map_to_trigger('i', '<buffer> <Return>', '<Return>')
   end
 
   after

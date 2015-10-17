@@ -1,6 +1,6 @@
-runtime! plugin/smartinput.vim
+runtime! plugin/panacea.vim
 
-call vspec#hint({'scope': 'smartinput#scope()', 'sid': 'smartinput#sid()'})
+call vspec#hint({'scope': 'panacea#scope()', 'sid': 'panacea#sid()'})
 syntax enable
 set backspace=indent,eol,start
 
