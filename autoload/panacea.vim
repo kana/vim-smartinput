@@ -640,6 +640,11 @@ let s:UNTYPABLE_CHAR = "\x01"  " FIXME: Use a more proper value.
 
 
 function! s:find_the_most_proper_rule_in_insert_mode(nrules, char)  "{{{2
+
+  if exists('g:panacea_avoid_autocomplete_collisions') && pumvisible() && g:panacea_avoid_autocomplete_collisions == a:char
+    return 0
+  endif
+
   " FIXME: Optimize for speed if necessary.
   let syntax_names = map(synstack(line('.'), col('.')),
   \                      'synIDattr(synIDtrans(v:val), "name")')

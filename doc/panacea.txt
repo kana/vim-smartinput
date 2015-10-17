@@ -107,15 +107,23 @@ Care to write C-like syntax source code:
 		|         |     #
 		|         | }
 
+Note that panacea may steal input from auto-completion engines like
+neocomplete, this is only a problem is the trigger key for panacea's
+rule conflicts with the completion key (typiclaly Tab or Enter). You
+can prevent this behavior if undesired by adding the following line in
+your vimrc:
+
+    let g:panacea_avoid_autocomplete_collisions='\t'
+
 
 Requirements:
 - Vim 7.3 or later
 
 Latest version:
-https://github.com/kana/vim-panacea
+https://github.com/atsepkov/vim-panacea
 
 Document in HTML format:
-http://vim-doc.heroku.com/view?https://github.com/kana/vim-panacea/blob/master/doc/panacea.txt
+http://vim-doc.heroku.com/view?https://github.com/atsepkov/vim-panacea/blob/master/doc/panacea.txt
 
 
 
