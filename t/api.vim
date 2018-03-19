@@ -980,7 +980,7 @@ describe 'The default configuration'
     normal S(define filetype "'scheme
     Expect getline(1, line('$')) ==# ['(define filetype "''scheme''")']
     Expect [line('.'), col('.')] ==# [1, 26 - 1]
-    Expect b:.getSynNames(line('.'), col('.')) ==# ['schemeStruc', 'Constant']
+    Expect b:.getSynNames(line('.'), col('.')) ==# ['schemeForm', 'Constant']
     normal S; (define filetype 'scheme
     Expect getline(1, line('$')) ==# ['; (define filetype ''scheme)']
     Expect [line('.'), col('.')] ==# [1, 27 - 1]
