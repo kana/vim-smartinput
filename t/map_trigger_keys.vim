@@ -8,7 +8,7 @@ describe 'smartinput#map_trigger_keys'
   before
     new
 
-    function! b:get_lhss(map_command)
+    function! b:.get_lhss(map_command)
       redir => s
       execute '0 verbose' a:map_command
       redir END
@@ -30,12 +30,12 @@ describe 'smartinput#map_trigger_keys'
   it 'should not map anything but "alias" ones if there is no rule'
     call smartinput#map_trigger_keys()
 
-    Expect b:get_lhss('imap') ==# [
+    Expect b:.get_lhss('imap') ==# [
     \   '<C-H>',
     \   '<CR>',
     \   '<NL>',
     \ ]
-    Expect b:get_lhss('cmap') ==# [
+    Expect b:.get_lhss('cmap') ==# [
     \   '<C-H>',
     \   '<CR>',
     \   '<NL>',
@@ -51,14 +51,14 @@ describe 'smartinput#map_trigger_keys'
     \                          'mode': ':'})
     call smartinput#map_trigger_keys()
 
-    Expect b:get_lhss('imap') ==# [
+    Expect b:.get_lhss('imap') ==# [
     \   '<C-H>',
     \   '<CR>',
     \   '<NL>',
     \   'x',
     \ ]
     Expect maparg('x', 'i') ==# 'FOO'
-    Expect b:get_lhss('cmap') ==# [
+    Expect b:.get_lhss('cmap') ==# [
     \   '<C-H>',
     \   '<CR>',
     \   '<NL>',
@@ -76,14 +76,14 @@ describe 'smartinput#map_trigger_keys'
     \                          'mode': ':'})
     call smartinput#map_trigger_keys(!!0)
 
-    Expect b:get_lhss('imap') ==# [
+    Expect b:.get_lhss('imap') ==# [
     \   '<C-H>',
     \   '<CR>',
     \   '<NL>',
     \   'x',
     \ ]
     Expect maparg('x', 'i') ==# 'FOO'
-    Expect b:get_lhss('cmap') ==# [
+    Expect b:.get_lhss('cmap') ==# [
     \   '<C-H>',
     \   '<CR>',
     \   '<NL>',
@@ -101,14 +101,14 @@ describe 'smartinput#map_trigger_keys'
     \                          'mode': ':'})
     call smartinput#map_trigger_keys(!0)
 
-    Expect b:get_lhss('imap') ==# [
+    Expect b:.get_lhss('imap') ==# [
     \   '<C-H>',
     \   '<CR>',
     \   '<NL>',
     \   'x',
     \ ]
     Expect maparg('x', 'i') !=# 'FOO'
-    Expect b:get_lhss('cmap') ==# [
+    Expect b:.get_lhss('cmap') ==# [
     \   '<C-H>',
     \   '<CR>',
     \   '<NL>',

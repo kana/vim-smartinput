@@ -103,7 +103,7 @@ describe 's:find_the_most_proper_rule_in_command_line_mode'
     \ })
     let b:nrules = [b:nrule5, b:nrule4, b:nrule3, b:nrule2, b:nrule1]
 
-    function! b:find(...)
+    function! b:.find(...)
       return call('Call',
       \           ['s:find_the_most_proper_rule_in_command_line_mode'] + a:000)
     endfunction
@@ -114,26 +114,26 @@ describe 's:find_the_most_proper_rule_in_command_line_mode'
   end
 
   it 'should fail if there is no rule for a given char'
-    Expect b:find(b:nrules, '[', '', 1, ':') ==# 0
+    Expect b:.find(b:nrules, '[', '', 1, ':') ==# 0
   end
 
   it 'should fail if there is no rule for a given command-line type'
-    Expect b:find(b:nrules, '<', '', 1, 'X') ==# 0
+    Expect b:.find(b:nrules, '<', '', 1, 'X') ==# 0
   end
 
   it 'should check the text under the cursor by "at"'
     " foo #bar
-    Expect b:find(b:nrules, '<', 'foo bar', 5, ':') ==# b:nrule1
+    Expect b:.find(b:nrules, '<', 'foo bar', 5, ':') ==# b:nrule1
 
     " foo# bar
-    Expect b:find(b:nrules, '<', 'foo bar', 4, ':') ==# b:nrule2
+    Expect b:.find(b:nrules, '<', 'foo bar', 4, ':') ==# b:nrule2
   end
 
   it 'should ignore "filetype" and "syntax"'
     setfiletype scheme
 
     " foo #bar
-    Expect b:find(b:nrules, '<', 'foo bar', 5, '/') ==# b:nrule4
+    Expect b:.find(b:nrules, '<', 'foo bar', 5, '/') ==# b:nrule4
   end
 end
 
@@ -171,7 +171,7 @@ describe 's:find_the_most_proper_rule_in_insert_mode'
     \ })
     let b:nrules = [b:nrule5, b:nrule4, b:nrule3, b:nrule2, b:nrule1]
 
-    function! b:find(...)
+    function! b:.find(...)
       return call('Call',
       \           ['s:find_the_most_proper_rule_in_insert_mode'] + a:000)
     endfunction
@@ -182,7 +182,7 @@ describe 's:find_the_most_proper_rule_in_insert_mode'
   end
 
   it 'should fail if there is no rule for a given char'
-    Expect b:find(b:nrules, '[') ==# 0
+    Expect b:.find(b:nrules, '[') ==# 0
   end
 
   it 'should check the text under the cursor by "at"'
@@ -193,12 +193,12 @@ describe 's:find_the_most_proper_rule_in_insert_mode'
     " (define foo #)  ; ...
     normal! ggf)
     Expect [line('.'), col('.')] ==# [1, 13]
-    Expect b:find(b:nrules, '<') ==# b:nrule1
+    Expect b:.find(b:nrules, '<') ==# b:nrule1
 
     " (define foo# )  ; ...
     normal! ggf)h
     Expect [line('.'), col('.')] ==# [1, 12]
-    Expect b:find(b:nrules, '<') ==# b:nrule2
+    Expect b:.find(b:nrules, '<') ==# b:nrule2
   end
 
   it 'should check the filetype of the current buffer with "filetype"'
@@ -209,12 +209,12 @@ describe 's:find_the_most_proper_rule_in_insert_mode'
     " (define foo #)  ; ...
     normal! ggf)
     Expect [line('.'), col('.')] ==# [1, 13]
-    Expect b:find(b:nrules, '<') ==# b:nrule3
+    Expect b:.find(b:nrules, '<') ==# b:nrule3
 
     " (define foo# )  ; ...
     normal! ggf)h
     Expect [line('.'), col('.')] ==# [1, 12]
-    Expect b:find(b:nrules, '<') ==# b:nrule3
+    Expect b:.find(b:nrules, '<') ==# b:nrule3
   end
 
   it 'should check the syntax name of text under the cursor with "syntax"'
@@ -225,12 +225,12 @@ describe 's:find_the_most_proper_rule_in_insert_mode'
     " (define foo #)  ; ...
     normal! ggf)
     Expect [line('.'), col('.')] ==# [1, 13]
-    Expect b:find(b:nrules, '<') ==# b:nrule3
+    Expect b:.find(b:nrules, '<') ==# b:nrule3
 
     " (define foo )  ; #...
     normal! ggf.
     Expect [line('.'), col('.')] ==# [1, 18]
-    Expect b:find(b:nrules, '<') ==# b:nrule4
+    Expect b:.find(b:nrules, '<') ==# b:nrule4
   end
 end
 
