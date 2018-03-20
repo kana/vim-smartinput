@@ -5,7 +5,7 @@ example_count=0
 example_count=$((example_count + 1))
 subject='smartinput#map_to_trigger'
 example='should not beep if the cursor will be moved to an empty line'
-if make TEST_TARGETS="${0%.t}.vim" test | grep --quiet --invert-match $'\a'
+if bundle exec vim-flavor test "${0%.t}.vim" | grep --quiet --invert-match $'\a'
 then
   result='ok'
 else

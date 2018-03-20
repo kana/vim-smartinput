@@ -479,19 +479,19 @@ describe 'smartinput#map_to_trigger'
   end
 
   it 'should do smart input assistant in Command-line mode'
-    let b:log = []
-    function! b:check()
-      call add(b:log, [getcmdtype(), getcmdline(), getcmdpos()])
+    let b:.log = []
+    function! b:.check()
+      call add(b:.log, [getcmdtype(), getcmdline(), getcmdpos()])
       return ''
     endfunction
-    cnoremap <buffer> <expr> C  b:check()
+    cnoremap <buffer> <expr> C  b:.check()
 
     " '([x#])'
     " '([#])'
     " '(#)'
     " '#)'
     execute 'normal' ":([x])\<Left>\<Left>C\<BS>C\<BS>C\<BS>C\<C-c>"
-    Expect b:log ==# [
+    Expect b:.log ==# [
     \   [':', '([x])', 4],
     \   [':', '([])', 3],
     \   [':', '()', 2],
@@ -937,7 +937,7 @@ describe 'The default configuration'
   it 'should have rules to write Lisp/Scheme source code'
     " NB: For some reason, :setfiletype doesn't work as I expected.
 
-    function! b:getSynNames(line, col)
+    function! b:.getSynNames(line, col)
       return map(synstack(a:line, a:col),
       \          'synIDattr(synIDtrans(v:val), "name")')
     endfunction
@@ -947,30 +947,30 @@ describe 'The default configuration'
     normal S(define filetype 'foo
     Expect getline(1, line('$')) ==# ['(define filetype ''foo'')']
     Expect [line('.'), col('.')] ==# [1, 22 - 1]
-    Expect b:getSynNames(line('.'), col('.')) ==# []
+    Expect b:.getSynNames(line('.'), col('.')) ==# []
     normal S(define filetype "'foo
     Expect getline(1, line('$')) ==# ['(define filetype "''foo''")']
     Expect [line('.'), col('.')] ==# [1, 23 - 1]
-    Expect b:getSynNames(line('.'), col('.')) ==# []
+    Expect b:.getSynNames(line('.'), col('.')) ==# []
     normal S; (define filetype 'foo
     Expect getline(1, line('$')) ==# ['; (define filetype ''foo'')']
     Expect [line('.'), col('.')] ==# [1, 24 - 1]
-    Expect b:getSynNames(line('.'), col('.')) ==# []
+    Expect b:.getSynNames(line('.'), col('.')) ==# []
 
     setlocal filetype=lisp
     Expect &l:filetype ==# 'lisp'
     normal S(define filetype 'lisp
     Expect getline(1, line('$')) ==# ['(define filetype ''lisp)']
     Expect [line('.'), col('.')] ==# [1, 23 - 1]
-    Expect b:getSynNames(line('.'), col('.')) ==# ['lispList', 'Identifier']
+    Expect b:.getSynNames(line('.'), col('.')) ==# ['lispList', 'Identifier']
     normal S(define filetype "'lisp
     Expect getline(1, line('$')) ==# ['(define filetype "''lisp''")']
     Expect [line('.'), col('.')] ==# [1, 24 - 1]
-    Expect b:getSynNames(line('.'), col('.')) ==# ['lispList', 'Constant']
+    Expect b:.getSynNames(line('.'), col('.')) ==# ['lispList', 'Constant']
     normal S; (define filetype 'lisp
     Expect getline(1, line('$')) ==# ['; (define filetype ''lisp)']
     Expect [line('.'), col('.')] ==# [1, 25 - 1]
-    Expect b:getSynNames(line('.'), col('.')) ==# ['Comment']
+    Expect b:.getSynNames(line('.'), col('.')) ==# ['Comment']
 
     setlocal filetype=scheme
     Expect &l:filetype ==# 'scheme'
@@ -980,11 +980,11 @@ describe 'The default configuration'
     normal S(define filetype "'scheme
     Expect getline(1, line('$')) ==# ['(define filetype "''scheme''")']
     Expect [line('.'), col('.')] ==# [1, 26 - 1]
-    Expect b:getSynNames(line('.'), col('.')) ==# ['schemeStruc', 'Constant']
+    Expect b:.getSynNames(line('.'), col('.')) ==# ['schemeForm', 'Constant']
     normal S; (define filetype 'scheme
     Expect getline(1, line('$')) ==# ['; (define filetype ''scheme)']
     Expect [line('.'), col('.')] ==# [1, 27 - 1]
-    Expect b:getSynNames(line('.'), col('.')) ==# ['Comment']
+    Expect b:.getSynNames(line('.'), col('.')) ==# ['Comment']
 
     setlocal filetype=clojure
     setlocal syntax=lisp
@@ -993,15 +993,15 @@ describe 'The default configuration'
     normal S(def filetype 'clojure
     Expect getline(1, line('$')) ==# ['(def filetype ''clojure)']
     Expect [line('.'), col('.')] ==# [1, 23 - 1]
-    Expect b:getSynNames(line('.'), col('.')) ==# ['lispList', 'Identifier']
+    Expect b:.getSynNames(line('.'), col('.')) ==# ['lispList', 'Identifier']
     normal S(def filetype "'clojure
     Expect getline(1, line('$')) ==# ['(def filetype "''clojure''")']
     Expect [line('.'), col('.')] ==# [1, 24 - 1]
-    Expect b:getSynNames(line('.'), col('.')) ==# ['lispList', 'Constant']
+    Expect b:.getSynNames(line('.'), col('.')) ==# ['lispList', 'Constant']
     normal S; (def filetype 'clojure
     Expect getline(1, line('$')) ==# ['; (def filetype ''clojure)']
     Expect [line('.'), col('.')] ==# [1, 25 - 1]
-    Expect b:getSynNames(line('.'), col('.')) ==# ['Comment']
+    Expect b:.getSynNames(line('.'), col('.')) ==# ['Comment']
   end
 
   it 'should have rules to expand a () block and a {} block'

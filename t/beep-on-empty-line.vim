@@ -14,7 +14,7 @@ describe 'smartinput#map_to_trigger'
     \   'char': '<Return>',
     \   'input': '<Return>X<Return>)<BS><Up><C-o>$<BS>',
     \ })
-    call smartinput#map_to_trigger('i', '<buffer> <Return>', '<Return>')
+    call smartinput#map_to_trigger('i', '<buffer> <Return>', '<Return>', '<Return>')
   end
 
   after
