@@ -37,7 +37,6 @@ describe 'g:smartinput_break_undo'
     function! b:.test_no_break_undo()
       " define with "i_CTRL-G_U"
       call smartinput#define_default_rules()
-      Expect string(Ref('s:available_nrules')) =~# '<C-g>U'
 
       call b:.test_keys_undo('*', 'call ', [
       \  ['a(foo)bar', ['call (foo)bar', 'call ']],
@@ -92,7 +91,6 @@ describe 'g:smartinput_break_undo'
 
     " define without i_CTRL-G_U
     call smartinput#define_default_rules()
-    Expect string(Ref('s:available_nrules')) not =~# '<C-g>U'
 
     call b:.test_keys_undo('*', 'echo ', [
     \  ['a(foo)bar', ['echo (foo)bar', 'echo (foo)', 'echo ()', 'echo ']],
