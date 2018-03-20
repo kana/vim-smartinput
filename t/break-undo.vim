@@ -40,35 +40,35 @@ describe 'g:smartinput_break_undo'
       Expect string(Ref('s:available_nrules')) =~# '<C-g>U'
 
       call b:.test_keys_undo('*', 'call ', [
-      \ ['a(foo)bar', ['call (foo)bar', 'call ']],
-      \])
+      \  ['a(foo)bar', ['call (foo)bar', 'call ']],
+      \ ])
 
       call b:.test_keys_undo('*', 'echo ', [
-      \ ['a(foo)bar', ['echo (foo)bar', 'echo ']],
-      \ ['a[foo]bar', ['echo [foo]bar', 'echo ']],
-      \ ['a{foo}bar', ['echo {foo}bar', 'echo ']],
-      \ ["a'foo' bar", ["echo 'foo' bar", "echo "]],
-      \ ['a"foo" bar', ['echo "foo" bar', 'echo ']],
-      \ ['a`foo` bar', ['echo `foo` bar', 'echo ']],
-      \ ["a'''foo' bar", ["echo '''foo''' bar", 'echo ']],
-      \ ['a"""foo" bar', ['echo """foo""" bar', 'echo ']],
-      \ ['a```foo` bar', ['echo ```foo``` bar', 'echo ']],
-      \])
+      \  ['a(foo)bar', ['echo (foo)bar', 'echo ']],
+      \  ['a[foo]bar', ['echo [foo]bar', 'echo ']],
+      \  ['a{foo}bar', ['echo {foo}bar', 'echo ']],
+      \  ["a'foo' bar", ["echo 'foo' bar", "echo "]],
+      \  ['a"foo" bar', ['echo "foo" bar', 'echo ']],
+      \  ['a`foo` bar', ['echo `foo` bar', 'echo ']],
+      \  ["a'''foo' bar", ["echo '''foo''' bar", 'echo ']],
+      \  ['a"""foo" bar', ['echo """foo""" bar', 'echo ']],
+      \  ['a```foo` bar', ['echo ```foo``` bar', 'echo ']],
+      \ ])
 
       setfiletype python
       call b:.test_keys_undo('Python string', 'echo ', [
-      \ ["au'foo' bar", ["echo u'foo' bar", "echo "]],
-      \])
+      \  ["au'foo' bar", ["echo u'foo' bar", "echo "]],
+      \ ])
 
       setfiletype lisp
       call b:.test_keys_undo('Lisp quote', '(define ', [
-      \ ['afiletype "''lisp', ['(define filetype "''lisp''")', '(define )']],
-      \])
+      \  ['afiletype "''lisp', ['(define filetype "''lisp''")', '(define )']],
+      \ ])
 
       setfiletype vim
       call b:.test_keys_undo('strong quote', 'echo ', [
-      \ ["a'foo\\' bar", ["echo 'foo\\' bar", "echo "]],
-      \])
+      \  ["a'foo\\' bar", ["echo 'foo\\' bar", "echo "]],
+      \ ])
     endfunction
   end
 
@@ -95,30 +95,30 @@ describe 'g:smartinput_break_undo'
     Expect string(Ref('s:available_nrules')) not =~# '<C-g>U'
 
     call b:.test_keys_undo('*', 'echo ', [
-    \ ['a(foo)bar', ['echo (foo)bar', 'echo (foo)', 'echo ()', 'echo ']],
-    \ ['a[foo]bar', ['echo [foo]bar', 'echo [foo]', 'echo []', 'echo ']],
-    \ ['a{foo}bar', ['echo {foo}bar', 'echo {foo}', 'echo {}', 'echo ']],
-    \ ["a'foo' bar", ["echo 'foo' bar", "echo 'foo'", "echo ''", 'echo ']],
-    \ ['a"foo" bar', ['echo "foo" bar', 'echo "foo"', 'echo ""', 'echo ']],
-    \ ['a`foo` bar', ['echo `foo` bar', 'echo `foo`', 'echo ``', 'echo ']],
-    \ ["a'''foo' bar", ["echo '''foo''' bar", "echo '''foo'''", "echo ''''''", "echo ''", 'echo ']],
-    \ ['a"""foo" bar', ['echo """foo""" bar', 'echo """foo"""', 'echo """"""', 'echo ""', 'echo ']],
-    \ ['a```foo` bar', ['echo ```foo``` bar', 'echo ```foo```', 'echo ``````', 'echo ``', 'echo ']],
-    \])
+    \  ['a(foo)bar', ['echo (foo)bar', 'echo (foo)', 'echo ()', 'echo ']],
+    \  ['a[foo]bar', ['echo [foo]bar', 'echo [foo]', 'echo []', 'echo ']],
+    \  ['a{foo}bar', ['echo {foo}bar', 'echo {foo}', 'echo {}', 'echo ']],
+    \  ["a'foo' bar", ["echo 'foo' bar", "echo 'foo'", "echo ''", 'echo ']],
+    \  ['a"foo" bar', ['echo "foo" bar', 'echo "foo"', 'echo ""', 'echo ']],
+    \  ['a`foo` bar', ['echo `foo` bar', 'echo `foo`', 'echo ``', 'echo ']],
+    \  ["a'''foo' bar", ["echo '''foo''' bar", "echo '''foo'''", "echo ''''''", "echo ''", 'echo ']],
+    \  ['a"""foo" bar', ['echo """foo""" bar', 'echo """foo"""', 'echo """"""', 'echo ""', 'echo ']],
+    \  ['a```foo` bar', ['echo ```foo``` bar', 'echo ```foo```', 'echo ``````', 'echo ``', 'echo ']],
+    \ ])
 
     setfiletype python
     call b:.test_keys_undo('Python string', 'echo ', [
-    \ ["au'foo' bar", ["echo u'foo' bar", "echo u'foo'", "echo u''", 'echo ']],
-    \])
+    \  ["au'foo' bar", ["echo u'foo' bar", "echo u'foo'", "echo u''", 'echo ']],
+    \ ])
 
     setfiletype lisp
     call b:.test_keys_undo('Lisp quote', '(define ', [
-    \ ['afiletype "''lisp', ['(define filetype "''lisp''")', '(define filetype "''''")', '(define filetype "")', '(define )']],
-    \])
+    \  ['afiletype "''lisp', ['(define filetype "''lisp''")', '(define filetype "''''")', '(define filetype "")', '(define )']],
+    \ ])
 
     setfiletype vim
     call b:.test_keys_undo('strong quote', 'echo ', [
-    \ ["a'foo\\' bar", ["echo 'foo\\' bar", "echo 'foo\\'", "echo ''", 'echo ']],
-    \])
+    \  ["a'foo\\' bar", ["echo 'foo\\' bar", "echo 'foo\\'", "echo ''", 'echo ']],
+    \ ])
   end
 end
