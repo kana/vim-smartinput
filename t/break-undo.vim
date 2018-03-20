@@ -78,17 +78,17 @@ describe 'g:smartinput_break_undo'
     ResetContext
   end
 
-  it 'should define the default rules with no-break-undo, if it is not exists.'
+  it 'should define the default rules with no-break-undo, if it is not exists'
     unlet! g:smartinput_break_undo
     call b:.test_no_break_undo()
   end
 
-  it 'should define the default rules with no-break-undo, if it is 0.'
+  it 'should define the default rules with no-break-undo, if it is 0'
     let g:smartinput_break_undo = 0
     call b:.test_no_break_undo()
   end
 
-  it 'should define the default rules with break-undo, if it is not 0.'
+  it 'should define the default rules with break-undo, if it is not 0'
     let g:smartinput_break_undo = !0
 
     " define without i_CTRL-G_U
