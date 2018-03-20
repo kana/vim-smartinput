@@ -15,7 +15,6 @@ syntax enable
 
 describe 'g:smartinput_break_undo'
   before
-    SaveContext
     call smartinput#clear_rules()
     new
 
@@ -73,7 +72,6 @@ describe 'g:smartinput_break_undo'
 
   after
     close!
-    ResetContext
   end
 
   it 'should define the default rules with no-break-undo, if it is not exists'
