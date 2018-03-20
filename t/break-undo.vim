@@ -6,7 +6,6 @@
 imapclear
 cmapclear
 
-let g:smartinput_break_undo = 1
 runtime! plugin/smartinput.vim
 
 call vspec#hint({'scope': 'smartinput#scope()', 'sid': 'smartinput#sid()'})
