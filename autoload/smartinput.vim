@@ -71,7 +71,7 @@ function! smartinput#define_default_rules()  "{{{2
     call add(self.names, a:name)
     let self.table[a:name] = a:urules
   endfunction
-  if exists('g:smartinput_break_undo') || v:version < 800
+  if get(g:, 'smartinput_break_undo', 1) || v:version < 800
     let left = '<Left>'
     let right = '<Right>'
   else
