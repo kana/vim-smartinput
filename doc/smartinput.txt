@@ -1,6 +1,6 @@
 *smartinput.txt*	Provide smart input assistant
 
-Version 0.0.5
+Version 0.1.0
 Script ID: ****
 Copyright (C) 2012 Kana Natsuno <http://whileimautomaton.net/>
 License: So-called MIT/X license  {{{
