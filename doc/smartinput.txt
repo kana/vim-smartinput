@@ -475,6 +475,10 @@ BUGS						*smartinput-bugs*
 ==============================================================================
 CHANGELOG					*smartinput-changelog*
 
+0.1.0	2018-03-22T19:29:34+09:00		*smartinput-changelog-0.1.0*
+        - Update some |smartinput-default-rules| to not break undo by default
+          for Vim 8.0 or later.  See also |g:smartinput_break_undo|.
+
 0.0.5	2012-04-11T21:48:41+09:00		*smartinput-changelog-0.0.5*
 	- Fix rules to leave from a (), [], or {} block.  They did not work
 	  properly with Visual-block Insert (|v_b_I|), etc.  Thanks to Dennis
